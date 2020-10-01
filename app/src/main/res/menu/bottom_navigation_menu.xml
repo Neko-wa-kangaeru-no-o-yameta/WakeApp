@@ -1,0 +1,7 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/bottomNavHomeBtn"
+        android:enabled="true"
+        android:icon="@drawable/home_fill_24"
+        android:title="@string/BOTTOM_NAV_TITLE_MAIN_PAGE"/>
+</menu>
