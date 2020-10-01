@@ -22,9 +22,9 @@
         tools:layout="@layout/fragment_focus" />
     <action android:id="@+id/action_global_focusFragment" app:destination="@id/focusFragment" />
     <fragment
-        android:id="@+id/schedule"
+        android:id="@+id/scheduleFragment"
         android:name="indi.hitszse2020g6.wakeapp.Schedule"
         android:label="fragment_schedule"
         tools:layout="@layout/fragment_schedule" />
-    <action android:id="@+id/action_global_scheduleFragment" app:destination="@id/schedule" />
+    <action android:id="@+id/action_global_scheduleFragment" app:destination="@id/scheduleFragment" />
 </navigation>
