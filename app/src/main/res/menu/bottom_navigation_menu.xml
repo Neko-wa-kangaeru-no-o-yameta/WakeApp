@@ -2,6 +2,21 @@
     <item
         android:id="@+id/bottomNavHomeBtn"
         android:enabled="true"
-        android:icon="@drawable/home_fill_24"
+        android:icon="@drawable/home_outline_24"
         android:title="@string/BOTTOM_NAV_TITLE_MAIN_PAGE"/>
+    <item
+        android:id="@+id/bottomNavScheduleBtn"
+        android:enabled="true"
+        android:icon="@drawable/course_outline_24"
+        android:title="@string/BOTTOM_NAV_TITLE_COURSE"/>
+    <item
+        android:id="@+id/bottomNavFocusBtn"
+        android:enabled="true"
+        android:icon="@drawable/hourglass_outline_24"
+        android:title="@string/BOTTOM_NAV_TITLE_FOCUS"/>
+    <item
+        android:id="@+id/bottomNavSettingBtn"
+        android:enabled="true"
+        android:icon="@drawable/settings_outline_24"
+        android:title="@string/BOTTOM_NAV_TITLE_SETTING"/>
 </menu>

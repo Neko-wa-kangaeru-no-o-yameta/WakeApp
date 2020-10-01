@@ -18,7 +18,7 @@ class MyMainPageRecyclerViewAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.fragment_main_page, parent, false)
+            .inflate(R.layout.fragment_main_page_list_item, parent, false)
         return ViewHolder(view)
     }
 
