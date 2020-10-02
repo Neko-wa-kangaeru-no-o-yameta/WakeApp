@@ -7,10 +7,15 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
 import android.widget.DatePicker
 import android.widget.NumberPicker
 import android.widget.TimePicker
 import androidx.annotation.RequiresApi
+import androidx.core.view.marginLeft
+import androidx.dynamicanimation.animation.SpringAnimation
+import androidx.dynamicanimation.animation.SpringForce
 import kotlinx.android.synthetic.main.fragment_focus_timer.*
 
 // TODO: Rename parameter arguments, choose names that match
@@ -28,6 +33,7 @@ class FocusTimerFragment : Fragment(),NumberPicker.OnValueChangeListener,NumberP
     private val TAG:String = "FocusTimerFragment"
     private var param1: String? = null
     private var param2: String? = null
+    private var btnFlag:Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,10 +50,102 @@ class FocusTimerFragment : Fragment(),NumberPicker.OnValueChangeListener,NumberP
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_focus_timer, container, false)
     }
-    
+
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         init(hourpicker, minuteicker)
+
+        startBtn.setOnClickListener (object : View.OnClickListener {
+            override fun onClick(v: View?) {
+                val startSpring = SpringForce(0f).setDampingRatio(1f).setStiffness(SpringForce.STIFFNESS_LOW)
+                val startAnima = SpringAnimation(startBtn,SpringAnimation.TRANSLATION_Z).setSpring(startSpring)
+                val pauseSpring = SpringForce(-150f).setDampingRatio(1f).setStiffness(SpringForce.STIFFNESS_LOW)
+                val pauseAnima = SpringAnimation(pauseBtn,SpringAnimation.TRANSLATION_X).setSpring(pauseSpring)
+                val cancelSpring = SpringForce(150f).setDampingRatio(1f).setStiffness(SpringForce.STIFFNESS_LOW)
+                val cancelAnima = SpringAnimation(cancelBtn,SpringAnimation.TRANSLATION_X).setSpring(cancelSpring)
+
+                val sAnimation = AlphaAnimation(1.0f,0.0f)
+                sAnimation.duration = 120
+                startBtn.startAnimation(sAnimation)
+
+                val LRAnimation = AlphaAnimation(0.0f,1.0f)
+                LRAnimation.duration = 120
+                pauseBtn.startAnimation(LRAnimation)
+                cancelBtn.startAnimation(LRAnimation)
+
+                startAnima.cancel()
+                startAnima.setStartValue(0f)
+                startAnima.start()
+
+                pauseAnima.cancel()
+                pauseAnima.setStartValue(0f)
+                pauseAnima.start()
+
+                cancelAnima.cancel()
+                cancelAnima.setStartValue(0f)
+                cancelAnima.start()
+
+                startBtn.visibility = View.INVISIBLE
+                startBtn.isClickable = false
+                pauseBtn.visibility = View.VISIBLE
+                pauseBtn.isClickable = true
+                cancelBtn.visibility = View.VISIBLE
+                cancelBtn.isClickable = true
+            }
+        })
+
+        pauseBtn.setOnClickListener{
+            if(!btnFlag){
+                pauseBtn.setImageDrawable(resources.getDrawable(R.drawable.startbutton_fill_24))
+                btnFlag = true
+            }else{
+                pauseBtn.setImageDrawable(resources.getDrawable(R.drawable.pausebutton_fill_24))
+                btnFlag = false
+            }
+        }
+
+        cancelBtn.setOnClickListener(object :View.OnClickListener{
+            override fun onClick(v: View?) {
+                val startSpring = SpringForce(0f).setDampingRatio(1f).setStiffness(SpringForce.STIFFNESS_LOW)
+                val startAnima = SpringAnimation(startBtn,SpringAnimation.TRANSLATION_Z).setSpring(startSpring)
+                val pauseSpring = SpringForce(150f).setDampingRatio(1f).setStiffness(SpringForce.STIFFNESS_LOW)
+                val pauseAnima = SpringAnimation(pauseBtn,SpringAnimation.TRANSLATION_X).setSpring(pauseSpring)
+                val cancelSpring = SpringForce(-150f).setDampingRatio(1f).setStiffness(SpringForce.STIFFNESS_LOW)
+                val cancelAnima = SpringAnimation(cancelBtn,SpringAnimation.TRANSLATION_X).setSpring(cancelSpring)
+
+                val sAnimation = AlphaAnimation(0.0f,1.0f)
+                sAnimation.duration = 500
+                startBtn.startAnimation(sAnimation)
+
+                val LRAnimation = AlphaAnimation(1.0f,0.0f)
+                LRAnimation.duration = 300
+                pauseBtn.startAnimation(LRAnimation)
+                cancelBtn.startAnimation(LRAnimation)
+
+                startAnima.cancel()
+                startAnima.setStartValue(0f)
+                startAnima.start()
+
+                pauseAnima.cancel()
+                pauseAnima.setStartValue(0f)
+                pauseAnima.start()
+
+                cancelAnima.cancel()
+                cancelAnima.setStartValue(0f)
+                cancelAnima.start()
+
+                startBtn.visibility = View.VISIBLE
+                startBtn.isClickable = true
+                pauseBtn.visibility = View.INVISIBLE
+                pauseBtn.isClickable = false
+                cancelBtn.visibility = View.INVISIBLE
+                cancelBtn.isClickable = false
+
+                Log.d(TAG,"!!!!!!!!!!!!!!")
+            }
+
+        })
     }
 
     companion object {
