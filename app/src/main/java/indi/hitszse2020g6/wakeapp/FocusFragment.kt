@@ -1,17 +1,10 @@
 package indi.hitszse2020g6.wakeapp
 
-import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.DatePicker
-import android.widget.NumberPicker
-import android.widget.TimePicker
-import androidx.annotation.RequiresApi
-import kotlinx.android.synthetic.main.fragment_focus.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -23,10 +16,8 @@ private const val ARG_PARAM2 = "param2"
  * Use the [FocusFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class FocusFragment : Fragment(), NumberPicker.OnValueChangeListener, NumberPicker.OnScrollListener,
-    NumberPicker.Formatter {
+class FocusFragment : Fragment() {
     // TODO: Rename and change types of parameters
-    val TAG: String = "FocusFragment"
     private var param1: String? = null
     private var param2: String? = null
 
@@ -44,18 +35,6 @@ class FocusFragment : Fragment(), NumberPicker.OnValueChangeListener, NumberPick
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_focus, container, false)
-    }
-
-    @RequiresApi(Build.VERSION_CODES.Q)
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        var myHourPicker = hourpicker
-        var myMinutePicker = minuteicker
-        if (myHourPicker == null || myMinutePicker == null) {
-            Log.d(TAG, "ooooooops")
-        } else {
-            initNumberPicker(hourpicker, minuteicker)
-        }
     }
 
     companion object {
@@ -76,66 +55,5 @@ class FocusFragment : Fragment(), NumberPicker.OnValueChangeListener, NumberPick
                     putString(ARG_PARAM2, param2)
                 }
             }
-    }
-
-    override fun onValueChange(picker: NumberPicker?, oldVal: Int, newVal: Int) {
-        Log.i(
-            TAG, "onValueChange: 原来的值 " + oldVal + "--新值: "
-                    + newVal
-        );
-    }
-
-    override fun onScrollStateChange(view: NumberPicker?, scrollState: Int) {
-        when (scrollState) {
-            NumberPicker.OnScrollListener.SCROLL_STATE_FLING -> Log.i(
-                TAG,
-                "onScrollStateChange: 后续滑动"
-            )
-            NumberPicker.OnScrollListener.SCROLL_STATE_IDLE -> Log.i(
-                TAG,
-                "onScrollStateChange: 不滑动"
-            )
-            NumberPicker.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL -> Log.i(
-                TAG,
-                "onScrollStateChange: 滑动中"
-            )
-        }
-    }
-
-    override fun format(value: Int): String {
-        Log.i(TAG, "format: value")
-        var tmpStr = java.lang.String.valueOf(value)
-        if (value < 10) {
-            tmpStr = "0$tmpStr"
-        }
-        return tmpStr
-    }
-
-    @RequiresApi(Build.VERSION_CODES.Q)
-    private fun initNumberPicker(hourPicker: NumberPicker, minutePicker: NumberPicker) {
-        hourPicker.setFormatter(this)
-        hourPicker.setOnValueChangedListener(this)
-        hourPicker.setOnScrollListener(this)
-        hourPicker.setMaxValue(3)
-        hourPicker.setMinValue(0)
-        hourPicker.setValue(0)
-        hourPicker.textSize = 80f
-
-
-        minutePicker.setFormatter(this)
-        minutePicker.setOnValueChangedListener(this)
-        minutePicker.setOnScrollListener(this)
-        minutePicker.setMaxValue(59)
-        minutePicker.setMinValue(0)
-        minutePicker.setValue(0)
-        minutePicker.textSize = 80f
-
-        //设置为对当前值不可编辑
-        hourPicker.setDescendantFocusability(DatePicker.FOCUS_BLOCK_DESCENDANTS)
-        minutePicker.setDescendantFocusability(TimePicker.FOCUS_BLOCK_DESCENDANTS)
-
-        //这里设置为不循环显示，默认值为true
-        hourPicker.setWrapSelectorWheel(true)
-        minutePicker.setWrapSelectorWheel(true)
     }
 }
