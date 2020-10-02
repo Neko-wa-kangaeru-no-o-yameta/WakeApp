@@ -5,7 +5,8 @@ import android.os.Bundle
 import android.util.Log
 import androidx.navigation.findNavController
 import kotlinx.android.synthetic.main.activity_main.*
-
+const val INTENT_EVENT_DETAIL = 1
+const val REQUEST_SETTING_EVENT = 2
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

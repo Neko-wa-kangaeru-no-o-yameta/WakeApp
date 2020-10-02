@@ -1,19 +1,20 @@
-package indi.hitszse2020g6.wakeapp
+package indi.hitszse2020g6.wakeapp.mainPage
 
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-
-import indi.hitszse2020g6.wakeapp.dummy.DummyContent.DummyItem
+import androidx.lifecycle.LiveData
+import indi.hitszse2020g6.wakeapp.EventTableEntry
+import indi.hitszse2020g6.wakeapp.R
 
 /**
  * [RecyclerView.Adapter] that can display a [DummyItem].
  * TODO: Replace the implementation with code for your data type.
  */
 class MyMainPageRecyclerViewAdapter(
-    private val values: List<DummyItem>
+    private val values: LiveData<List<EventTableEntry>>
 ) : RecyclerView.Adapter<MyMainPageRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -23,12 +24,15 @@ class MyMainPageRecyclerViewAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = values[position]
-        holder.idView.text = item.id
-        holder.contentView.text = item.content
+        val item = values.value!![position]
+        holder.idView.text = item.title
+        holder.contentView.text = item.uid.toString()
     }
 
-    override fun getItemCount(): Int = values.size
+    override fun getItemCount(): Int {
+        return if(values.value == null) 0
+        else values.value!!.size
+    }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val idView: TextView = view.findViewById(R.id.item_number)

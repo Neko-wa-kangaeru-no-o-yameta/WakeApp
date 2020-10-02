@@ -6,7 +6,7 @@
     app:startDestination="@id/mainPageFragment">
     <fragment
         android:id="@+id/mainPageFragment"
-        android:name="indi.hitszse2020g6.wakeapp.MainPageFragment"
+        android:name="indi.hitszse2020g6.wakeapp.mainPage.MainPageFragment"
         android:label="fragment_main_page"
         tools:layout="@layout/fragment_main_page" />
     <action android:id="@+id/action_global_mainPageFragment" app:destination="@id/mainPageFragment" />
