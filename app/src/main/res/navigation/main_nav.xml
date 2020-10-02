@@ -6,7 +6,7 @@
     app:startDestination="@id/mainPageFragment">
     <fragment
         android:id="@+id/mainPageFragment"
-        android:name="indi.hitszse2020g6.wakeapp.MainPageFragment"
+        android:name="indi.hitszse2020g6.wakeapp.mainPage.MainPageFragment"
         android:label="fragment_main_page"
         tools:layout="@layout/fragment_main_page" />
     <action android:id="@+id/action_global_mainPageFragment" app:destination="@id/mainPageFragment" />
@@ -22,9 +22,9 @@
         tools:layout="@layout/fragment_focus" />
     <action android:id="@+id/action_global_focusFragment" app:destination="@id/focusFragment" />
     <fragment
-        android:id="@+id/schedule"
+        android:id="@+id/scheduleFragment"
         android:name="indi.hitszse2020g6.wakeapp.Schedule"
         android:label="fragment_schedule"
         tools:layout="@layout/fragment_schedule" />
-    <action android:id="@+id/action_global_scheduleFragment" app:destination="@id/schedule" />
+    <action android:id="@+id/action_global_scheduleFragment" app:destination="@id/scheduleFragment" />
 </navigation>

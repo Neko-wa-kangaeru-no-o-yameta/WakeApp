@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/focus_nav"
+    app:startDestination="@id/focusTimerFragment">
+
+    <fragment
+        android:id="@+id/focusTimerFragment"
+        android:name="indi.hitszse2020g6.wakeapp.FocusTimerFragment"
+        android:label="fragment_focus_timer"
+        tools:layout="@layout/fragment_focus_timer" >
+        <action
+            android:id="@+id/action_focusTimerFragment_to_focusStatisticFragment"
+            app:destination="@id/focusStatisticFragment"
+            app:enterAnim="@anim/slide_up_in"
+            app:exitAnim="@anim/slide_up_out"
+            app:popEnterAnim="@anim/slide_up_in"
+            app:popExitAnim="@anim/slide_up_out" />
+    </fragment>
+    <fragment
+        android:id="@+id/focusStatisticFragment"
+        android:name="indi.hitszse2020g6.wakeapp.FocusStatisticFragment"
+        android:label="fragment_focus_statistic"
+        tools:layout="@layout/fragment_focus_statistic" >
+        <action
+            android:id="@+id/action_focusStatisticFragment_to_focusTimerFragment"
+            app:destination="@id/focusTimerFragment"
+            app:enterAnim="@anim/slide_down_in"
+            app:exitAnim="@anim/slide_down_out"
+            app:popEnterAnim="@anim/slide_down_in"
+            app:popExitAnim="@anim/slide_down_out" />
+    </fragment>
+</navigation>
