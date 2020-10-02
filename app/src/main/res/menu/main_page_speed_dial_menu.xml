@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/mainPage_speedDialNewAffair"
+        android:checkable="false"
+        android:enabled="true"
+        android:icon="@drawable/add_fill_24"
+        android:title="@string/mainPage_speedDialNewAffairTitle" />
+    <item
+        android:id="@+id/mainPage_speedDialNewSchedule"
+        android:checkable="false"
+        android:enabled="true"
+        android:icon="@drawable/add_fill_24"
+        android:title="@string/mainPage_speedDialNewScheduleTitle" />
+</menu>

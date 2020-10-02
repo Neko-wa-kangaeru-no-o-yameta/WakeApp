@@ -20,8 +20,8 @@ data class Detail (
 data class Reminder (
     var time: Long,     // UNIX style
     var ring: Boolean,
-    var vibrate: Boolean,
-    var notice: Boolean,
+    var vibration: Boolean,
+    var notification: Boolean,
     var description: String
 )
 
@@ -59,8 +59,7 @@ class Converters {
 
 @Entity(tableName = "EventTable")
 class EventTableEntry (
-    @PrimaryKey(autoGenerate = true)
-    var uid                 : Long,             // unique id
+    @PrimaryKey(autoGenerate = true)var uid                 : Long,             // unique id
     ////////////////////////////////////////////////////////////////////////////////////////////////
     var title               : String,           // title
     var detail              : List<Detail>,     // detail, Serialized Json
@@ -78,8 +77,6 @@ class EventTableEntry (
     var isClass             : Boolean,          // is class?
     var ruleId              : Long,             // generated from...
     var classId             : Long              // generated from...
-
-
 )
 
 @Entity(tableName = "GenRuleTable")
@@ -119,12 +116,12 @@ abstract class AppRoomDB: RoomDatabase() {
 interface RoomDAO {
 
     @Query("SELECT * FROM EventTable ORDER BY priority ASC")
-    fun getEvents(): LiveData<List<EventTableEntry>>
+    suspend fun getEvents(): List<EventTableEntry>
 
     @Query("SELECT * FROM EventTable WHERE uid=:uid")
-    fun getEvent(uid: Long): LiveData<EventTableEntry>
+    suspend fun getEvent(uid: Long): EventTableEntry
 
-    @Insert(onConflict = OnConflictStrategy.ABORT)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(re: EventTableEntry) : Long
 
     @Query("DELETE FROM EventTable")

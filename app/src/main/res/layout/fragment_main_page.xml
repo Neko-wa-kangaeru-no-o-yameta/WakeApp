@@ -8,18 +8,25 @@
     android:layout_height="match_parent"
     android:background="#ffffff">
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/mainPageAddEvent"
+    <com.leinardi.android.speeddial.SpeedDialOverlayLayout
+        android:id="@+id/mainPage_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.leinardi.android.speeddial.SpeedDialView
+        android:id="@+id/mainPage_speedDial"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:clickable="true"
-        android:src="@drawable/add_fill_24"
+        android:padding="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:sdMainFabClosedSrc="@drawable/add_fill_24"
+        app:sdOverlayLayout="@id/mainPage_overlay"/>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/list"
+        android:id="@+id/mainPageRecyclerView"
         android:name="indi.hitszse2020g6.wakeapp.MainPageFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

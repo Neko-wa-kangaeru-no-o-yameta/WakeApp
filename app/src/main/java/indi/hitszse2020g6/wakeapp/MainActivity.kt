@@ -1,12 +1,15 @@
 package indi.hitszse2020g6.wakeapp
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.navigation.findNavController
+import com.leinardi.android.speeddial.SpeedDialView
 import kotlinx.android.synthetic.main.activity_main.*
-const val INTENT_EVENT_DETAIL = 1
-const val REQUEST_SETTING_EVENT = 2
+const val INTENT_AFFAIR_DETAIL = 1
+const val INTENT_SCHEDULE_DETAIL = 2
+const val REQUEST_SETTING_EVENT = 3
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,5 +37,9 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
     }
 }
