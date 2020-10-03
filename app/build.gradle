@@ -70,4 +70,7 @@ dependencies {
     def dynamicanimation_version = "1.0.0"
     implementation "androidx.dynamicanimation:dynamicanimation:$dynamicanimation_version"
 
+    implementation 'com.diogobernardino:williamchart:3.7.1'
+    implementation 'com.diogobernardino.williamchart:tooltip-slider:3.7.1'
+    implementation 'com.diogobernardino.williamchart:tooltip-points:3.7.1'
 }
