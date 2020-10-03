@@ -10,6 +10,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 const val INTENT_AFFAIR_DETAIL = 1
 const val INTENT_SCHEDULE_DETAIL = 2
 const val REQUEST_SETTING_EVENT = 3
+
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

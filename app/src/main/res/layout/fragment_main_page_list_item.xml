@@ -5,9 +5,10 @@
     android:id="@+id/mainPageList_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:contentPadding="8dp"
     android:layout_margin="8dp"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    app:cardCornerRadius="10dp"
+    app:contentPadding="8dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -18,17 +19,80 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/default_event_title"
-            android:textAppearance="?attr/textAppearanceListItem"
+
+            android:textColor="#000000"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toTopOf="@+id/divider"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/eventList_noticeBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/eventList_toggleAlarm"
+            android:padding="12dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/alarm_on_24" />
+
+        <ImageButton
+            android:id="@+id/eventList_focusBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/eventList_toggleFocus"
+            android:padding="12dp"
+            app:layout_constraintEnd_toStartOf="@+id/eventList_noticeBtn"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/focus_on_24" />
+
+        <ImageButton
+            android:id="@+id/eventList_muteBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/eventList_toggleMute"
+            android:padding="12dp"
+            app:layout_constraintEnd_toStartOf="@+id/eventList_focusBtn"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/mute_on_24" />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/eventList_noticeBtn" />
+
+        <TextView
+            android:id="@+id/eventDetail_startTimeTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="4dp"
+            android:text="@string/eventList_startTimeTVContent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/divider" />
+
+        <TextView
+            android:id="@+id/eventDetail_stopTimeTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="4dp"
+            android:text="@string/eventList_stopTimeTVContent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/eventDetail_startTimeTV" />
 
         <LinearLayout
             android:id="@+id/mainPageList_cardDetailContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/eventList_eventTitle"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical"
             app:layout_constraintStart_toStartOf="parent"
-            android:orientation="vertical" />
+            app:layout_constraintTop_toBottomOf="@id/eventDetail_stopTimeTV" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

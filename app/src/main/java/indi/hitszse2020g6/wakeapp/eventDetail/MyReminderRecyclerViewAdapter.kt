@@ -15,6 +15,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
 import indi.hitszse2020g6.wakeapp.R
@@ -90,6 +91,13 @@ class MyReminderRecyclerViewAdapter(
 
         holder.cardView.findViewById<TextView>(R.id.eventDetail_reminderListItem_content).setOnClickListener {
             Toast.makeText(context, "还没想好怎么表示", Toast.LENGTH_SHORT).show()
+        }
+
+        holder.cardView.findViewById<EditText>(R.id.eventDetail_reminderListItem_detailContent).apply {
+            setText(item.description)
+            addTextChangedListener {
+                item.description = it.toString()
+            }
         }
     }
 

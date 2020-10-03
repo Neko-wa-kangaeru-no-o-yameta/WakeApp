@@ -7,6 +7,8 @@ import android.content.Context
 import android.graphics.*
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.widget.*
 import androidx.cardview.widget.CardView
@@ -18,12 +20,9 @@ import indi.hitszse2020g6.wakeapp.mainPage.MainPageEventList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.sql.Timestamp
-import java.time.LocalDateTime
 import java.util.*
-import kotlin.math.min
 
-const val UNIQUE_ID_TO_AFFAIR_DETAIL = "indi.hitszse2020g6.wakeapp.UNIQUE_ID_FOR_MAIN_TO_NEW_INTENT"
+const val UNIQUE_ID_TO_AFFAIR_DETAIL = "indi.hitszse2020g6.wakeapp.UNIQUE_ID_FOR_MAIN_TO_AFFAIR_DETAIL"
 
 class AffairDetailActivity : AppCompatActivity() {
 
@@ -31,7 +30,7 @@ class AffairDetailActivity : AppCompatActivity() {
     private lateinit var entryToEdit: EventTableEntry
 
     companion object{
-        private val c: Calendar = Calendar.getInstance()
+        private var c: Calendar = Calendar.getInstance()
         var year    : Int = c.get(Calendar.YEAR)
         var month   : Int = c.get(Calendar.MONTH)
         var date    : Int = c.get(Calendar.DAY_OF_MONTH)
@@ -62,41 +61,66 @@ class AffairDetailActivity : AppCompatActivity() {
 
         if(intent.extras != null) {
             isNewAffair = false
-            GlobalScope.launch(Dispatchers.IO) {
-                entryToEdit = AppRoomDB.getDataBase(applicationContext).getDAO().getEvent(intent.getLongExtra(UNIQUE_ID_TO_AFFAIR_DETAIL, -1))
-                EventDetailList.ITEMS = entryToEdit.detail.toMutableList()
-                EventReminderList.ITEMS = entryToEdit.reminder.toMutableList()
-                findViewById<RecyclerView>(R.id.eventDetail_descriptionListContainer).adapter?.notifyDataSetChanged()
-                findViewById<RecyclerView>(R.id.eventDetail_reminderListContainer).adapter?.notifyDataSetChanged()
-                Log.d("AffairDetailActivity", "onCreate: loaded db data")
+            val uid = intent.getLongExtra(UNIQUE_ID_TO_AFFAIR_DETAIL, -1)
+            for(entry in MainPageEventList.eventList) {
+                if(entry.uid == uid) {
+                    entryToEdit = entry
+                    alarm = entryToEdit.notice
+                    c = Calendar.getInstance().apply {
+                        timeInMillis = entryToEdit.stopTime * 1000
+                    }
+                    year   = c.get(Calendar.YEAR)
+                    month  = c.get(Calendar.MONTH)
+                    date   = c.get(Calendar.DAY_OF_MONTH)
+                    hour   = c.get(Calendar.HOUR_OF_DAY)
+                    minute = c.get(Calendar.MINUTE)
+                    alarm  = entryToEdit.notice
+                    EventDetailList.ITEMS = entryToEdit.detail.toMutableList()
+                    EventReminderList.ITEMS = entryToEdit.reminder.toMutableList()
+                    findViewById<EditText>(R.id.affairDetail_eventTitle).setText(entryToEdit.title)
+                    Log.d("AffairDetailActivity ", "detail and reminder Loaded: ${entryToEdit.detail} & ${entryToEdit.detail}")
+                    break
+                }
             }
+
         }
 
         findViewById<ImageButton>(R.id.affairDetail_confirm).setOnClickListener {
-            if(isNewAffair) {
-                val stopTime = Calendar.getInstance()
-                stopTime.set(year, month, date, hour, minute)
+            val stopTime = Calendar.getInstance()
+            stopTime.set(year, month, date, hour, minute)
 
-                if(isNewAffair) {
-                    MainPageEventList.addAffair(
-                        title       = findViewById<EditText>(R.id.affairDetail_eventTitle).text.toString(),
-                        detail      = EventDetailList.ITEMS,
-                        reminder    = EventReminderList.ITEMS,
-                        stopTime    = stopTime.timeInMillis / 1000,
-                        notice      = alarm,
-                        isAutoGen   = false,
-                        ruleId      = -1
-                    )
-                } else {
-                    entryToEdit.title       = findViewById<EditText>(R.id.affairDetail_eventTitle).text.toString()
-                    entryToEdit.detail      = EventDetailList.ITEMS
-                    entryToEdit.reminder    = EventReminderList.ITEMS
-                    entryToEdit.stopTime    = stopTime.timeInMillis / 1000
-                    entryToEdit.notice      = alarm
-                    entryToEdit.isAutoGen   = false
-                    entryToEdit.ruleId      = -1
-                    MainPageEventList.updateAffair(entryToEdit)
-                }
+//            val descHolder = findViewById<RecyclerView>(R.id.eventDetail_descriptionListContainer)
+//            for(i in 0 until EventDetailList.ITEMS.size) {
+//                val holder = descHolder.findViewHolderForLayoutPosition(i) as MyDescriptionRecyclerViewAdapter.ViewHolder
+//                EventDetailList.ITEMS[i].title = holder.titleView.text.toString()
+//                EventDetailList.ITEMS[i].content = holder.contentView.text.toString()
+//            }
+//
+//            val reminderHolder = findViewById<RecyclerView>(R.id.eventDetail_reminderListContainer)
+//            for(i in 0 until EventReminderList.ITEMS.size) {
+//                val holder = reminderHolder.findViewHolderForLayoutPosition(i) as MyReminderRecyclerViewAdapter.ViewHolder
+//                EventReminderList.ITEMS[i].description = holder.cardView.findViewById<EditText>(R.id.eventDetail_reminderListItem_detailContent).text.toString()
+//            }
+
+            if(isNewAffair) {
+                MainPageEventList.addAffair(
+                    title       = findViewById<EditText>(R.id.affairDetail_eventTitle).text.toString(),
+                    detail      = EventDetailList.ITEMS.toList(),
+                    reminder    = EventReminderList.ITEMS.toList(),
+                    stopTime    = stopTime.timeInMillis / 1000,
+                    notice      = alarm,
+                    isAutoGen   = false,
+                    ruleId      = -1
+                )
+            } else {
+                entryToEdit.title       = findViewById<EditText>(R.id.affairDetail_eventTitle).text.toString()
+                entryToEdit.detail      = EventDetailList.ITEMS.toList()
+                entryToEdit.reminder    = EventReminderList.ITEMS.toList()
+                entryToEdit.stopTime    = stopTime.timeInMillis / 1000
+                entryToEdit.notice      = alarm
+                entryToEdit.isAutoGen   = false
+                entryToEdit.ruleId      = -1
+                MainPageEventList.updateAffair(entryToEdit)
             }
             finish()
         }
@@ -131,13 +155,22 @@ class AffairDetailActivity : AppCompatActivity() {
             }
         }
 
-        findViewById<CardView>(R.id.affairDetail_stopTimeCard).setOnClickListener {
-            DatePickerFragment().show(supportFragmentManager, "dataPicker")
+        findViewById<CardView>(R.id.affairDetail_stopTimeCard).apply{
+            if(!isNewAffair) {
+                findViewById<TextView>(R.id.affairDetail_stopTimeText).text = "%d/%d/%d, %d:%d".format(year, month, date, hour, minute)
+            }
+            setOnClickListener {
+                DatePickerFragment().show(supportFragmentManager, "dataPicker")
+            }
         }
 
-        findViewById<ImageButton>(R.id.affairDetail_alarm).setOnClickListener {
-            alarm = !alarm
-            toggleImageDrawable(it as ImageButton, alarm, R.drawable.alarm_on_24, R.drawable.alarm_off_24)
+
+        findViewById<ImageButton>(R.id.affairDetail_alarm).apply {
+            toggleImageDrawable(this, alarm, R.drawable.alarm_on_24, R.drawable.alarm_off_24)
+            setOnClickListener {
+                alarm = !alarm
+                toggleImageDrawable(this, alarm, R.drawable.alarm_on_24, R.drawable.alarm_off_24)
+            }
         }
     }
 

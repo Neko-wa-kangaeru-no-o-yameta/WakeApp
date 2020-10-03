@@ -65,6 +65,7 @@ class MainPageFragment : Fragment() {
                     adapter = MyMainPageRecyclerViewAdapter(MainPageEventList.eventList)
                     ItemTouchHelper(MainPageItemTouchHelperCB(this@with.adapter as MyMainPageRecyclerViewAdapter)).attachToRecyclerView(this@with)
                     this@with.adapter!!.notifyDataSetChanged()
+                    Log.d("MagePageFragment", "Attached to adapter and item touch helper")
                 }
             }
         }
@@ -93,6 +94,11 @@ class MainPageFragment : Fragment() {
             }
         }
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    override fun onResume() {
+        view?.findViewById<RecyclerView>(R.id.mainPageRecyclerView)?.adapter?.notifyDataSetChanged()
+        super.onResume()
     }
 
     override fun onPause() {
