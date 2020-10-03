@@ -24,10 +24,6 @@ import indi.hitszse2020g6.wakeapp.eventDetail.UNIQUE_ID_TO_AFFAIR_DETAIL
 import indi.hitszse2020g6.wakeapp.eventDetail.UNIQUE_ID_TO_SCHEDULE_DETAIL
 import java.util.*
 
-/**
- * [RecyclerView.Adapter] that can display a [DummyItem].
- * TODO: Replace the implementation with code for your data type.
- */
 class MyMainPageRecyclerViewAdapter(
     private val values: List<EventTableEntry>
 ) : RecyclerView.Adapter<MyMainPageRecyclerViewAdapter.ViewHolder>(), ItemTouchHelperAdapter {
@@ -52,7 +48,7 @@ class MyMainPageRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.cardView.setOnClickListener {
-            if(values[position].isAffair) {
+            if(position < values.size && values[position].isAffair) {
                 val intent = Intent(it.context, AffairDetailActivity::class.java)
                 intent.putExtra(UNIQUE_ID_TO_AFFAIR_DETAIL, values[position].uid)
                 (it.context as AppCompatActivity).startActivityForResult(intent, INTENT_AFFAIR_DETAIL)
@@ -70,12 +66,12 @@ class MyMainPageRecyclerViewAdapter(
                 visibility = GONE
             } else {
                 val c = Calendar.getInstance().apply { timeInMillis = values[position].startTime*1000 }
-                text = "开始于%d月%d日 %d:%d".format(c.get(Calendar.MONTH) + 1, c.get(Calendar.DAY_OF_MONTH), c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.DAY_OF_MONTH))
+                text = "开始于%d月%d日 %d:%d".format(c.get(Calendar.MONTH) + 1, c.get(Calendar.DAY_OF_MONTH), c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE))
             }
         }
 
         val c = Calendar.getInstance().apply { timeInMillis = values[position].stopTime*1000 }
-        holder.cardView.findViewById<TextView>(R.id.eventDetail_stopTimeTV).text = "结束于%d月%d日 %d:%d".format(c.get(Calendar.MONTH) + 1, c.get(Calendar.DAY_OF_MONTH), c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.DAY_OF_MONTH))
+        holder.cardView.findViewById<TextView>(R.id.eventDetail_stopTimeTV).text = "结束于%d月%d日 %d:%d".format(c.get(Calendar.MONTH) + 1, c.get(Calendar.DAY_OF_MONTH), c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE))
 
         holder.cardView.findViewById<ImageButton>(R.id.eventList_noticeBtn).apply {
             toggleImageDrawable(this, values[position].notice, R.drawable.alarm_on_24, R.drawable.alarm_off_24)
@@ -134,6 +130,7 @@ class MyMainPageRecyclerViewAdapter(
     override fun onItemMove(fromPosition: Int, toPosition: Int) {
         MainPageEventList.changePriority(fromPosition, toPosition)
         notifyItemMoved(fromPosition, toPosition)
+        notifyItemRangeChanged(fromPosition, toPosition)
     }
 
     override fun onItemDismiss(position: Int): Boolean {

@@ -12,10 +12,6 @@ import indi.hitszse2020g6.wakeapp.R
 
 import indi.hitszse2020g6.wakeapp.dummy.DummyContent.DummyItem
 
-/**
- * [RecyclerView.Adapter] that can display a [DummyItem].
- * TODO: Replace the implementation with code for your data type.
- */
 class MyDescriptionRecyclerViewAdapter(
     private val values: List<Detail>
 ) : RecyclerView.Adapter<MyDescriptionRecyclerViewAdapter.ViewHolder>() {

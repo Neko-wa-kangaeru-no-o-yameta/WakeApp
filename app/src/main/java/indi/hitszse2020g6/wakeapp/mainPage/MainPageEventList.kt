@@ -34,8 +34,8 @@ object MainPageEventList {
         val entry = EventTableEntry(
             uid         = 0,    // auto gen
             title       = title,
-            detail      = detail,
-            reminder    = reminder,
+            detail      = detail.toList(),
+            reminder    = reminder.toList(),
             isAffair    = true,
             startTime   = 0,
             stopTime    = stopTime,
@@ -57,11 +57,53 @@ object MainPageEventList {
         }
     }
 
-    fun updateAffair(
+    fun updateEvent(
         entry       : EventTableEntry
     ) {
         eventList.replaceAll {
             if(it.uid == entry.uid) entry else it
+        }
+    }
+
+    fun addSchedule(
+        title       : String,
+        detail      : List<Detail>,
+        reminder    : List<Reminder>,
+        startTime   : Long,
+        stopTime    : Long,
+        focus       : Boolean,
+        mute        : Boolean,
+        notice      : Boolean,
+        hasWL       : Boolean,
+        whiteList   : List<String>,
+        isAutoGen   : Boolean,
+        isClass     : Boolean,
+        ruleId      : Long,
+        classId     : Long
+    ) {
+        val entry = EventTableEntry(
+            uid         = 0,    // auto gen
+            title       = title,
+            detail      = detail.toList(),
+            reminder    = reminder.toList(),
+            isAffair    = false,
+            startTime   = startTime,
+            stopTime    = stopTime,
+            priority    = if (eventList.isNotEmpty()) (eventList.maxOf { event -> event.priority } + 1) else 0,
+            focus       = focus,
+            mute        = mute,
+            notice      = notice,
+            hasCustomWhiteList = hasWL,
+            customWhiteList = whiteList.toList(),
+            isAutoGen   = isAutoGen,
+            isClass     = isClass,
+            ruleId      = ruleId,
+            classId     = classId
+        )
+        eventList.add(entry)        // uid should catch up in milliseconds
+
+        GlobalScope.launch(Dispatchers.IO) {
+            entry.uid = DAO.insert(entry)
         }
     }
 

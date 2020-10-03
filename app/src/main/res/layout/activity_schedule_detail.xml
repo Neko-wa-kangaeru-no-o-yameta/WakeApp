@@ -9,11 +9,12 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:id="@+id/scheduleDetail_mainContainer"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:layout_constraintTop_toBottomOf="@+id/scheduleDetail_actionBar"
         app:layout_constraintVertical_bias="0.0">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -45,7 +46,7 @@
                 android:contentDescription="@string/eventDetail_alarm" />
 
             <ImageButton
-                android:id="@+id/scheduleDetail_vibrate"
+                android:id="@+id/scheduleDetail_focus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackgroundBorderless"
@@ -61,7 +62,7 @@
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:padding="12dp"
-                app:layout_constraintEnd_toStartOf="@+id/scheduleDetail_vibrate"
+                app:layout_constraintEnd_toStartOf="@+id/scheduleDetail_focus"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/mute_on_24"
                 android:contentDescription="@string/scheduleDetail_mute" />
@@ -204,7 +205,7 @@
     </ScrollView>
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+        android:id="@+id/scheduleDetail_actionBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
