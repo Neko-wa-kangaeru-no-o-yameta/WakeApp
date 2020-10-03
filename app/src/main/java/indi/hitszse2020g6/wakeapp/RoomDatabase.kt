@@ -59,14 +59,14 @@ class Converters {
     }
 }
 
-//@Entity(tableName = "timeTable")
-//class MyTime(
-//    @PrimaryKey val id:Int,
-//    ////////////////////////////////////////////////////////////////////////////////////////////////
-//    var totalTime           :Long,              //The total time of the last count setting
-//    var conditionFlag       :Int,               //1->counting,-1->counting over,0->waiting
-//    var beforeSysTime       :Long               //System time when timing starts
-//)
+@Entity(tableName = "timeTable")
+class MyTimeEntry(
+    @PrimaryKey(autoGenerate = true)val id                  : Int,
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    var totalTime           :Long,              //The total time of the last count setting
+    var conditionFlag       :Int,               //1->counting,-1->counting over,0->waiting
+    var beforeSysTime       :Long               //System time when timing starts
+)
 
 @Entity(tableName = "EventTable")
 class EventTableEntry (
@@ -96,7 +96,7 @@ class GenRuleEntry (
     var uid                 : Long,             // unique id
 )
 
-@Database(entities = [EventTableEntry::class, GenRuleEntry::class], version = 1)
+@Database(entities = [EventTableEntry::class, GenRuleEntry::class,MyTimeEntry::class], version = 1)
 @TypeConverters(Converters::class)
 abstract class AppRoomDB: RoomDatabase() {
     abstract fun getDAO(): RoomDAO
@@ -144,13 +144,13 @@ interface RoomDAO {
     @Update
     suspend fun update(vararg re: EventTableEntry)
 
-//    @Query("SELECT * FROM timeTable WHERE id = 1")
-//    suspend fun findFromTimeTable()
+    @Query("SELECT * FROM timeTable WHERE id = 1")
+    fun findFromTimeTable():List<MyTimeEntry>
 
-//    @Update
-//    suspend fun update(mt:MyTime)
+    @Update
+    fun updateMyTime(mt:MyTimeEntry)
 
-//    @Insert(onConflict = OnConflictStrategy.REPLACE)
-//    suspend fun insert(mt:MyTime)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertMyTime(mt:MyTimeEntry)
 
 }

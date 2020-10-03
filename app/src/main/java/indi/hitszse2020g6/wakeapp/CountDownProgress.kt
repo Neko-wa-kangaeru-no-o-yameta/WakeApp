@@ -11,13 +11,14 @@ import android.graphics.RectF
 import android.os.CountDownTimer
 import android.util.AttributeSet
 import android.view.View
+import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
 
 class CountDownProgress: View {
     private var defaultCircleSolideColor: Int = Color.BLUE
     private var defaultCircleStrokeColor: Int = Color.WHITE
     private var defaultCircleStrokeWidth = 16
-    private var defaultCircleRadius = 400
+    private var defaultCircleRadius = 390
     private var progressColor: Int = Color.BLUE
     private var progressWidth = 8
     private var textColor: Int = Color.BLACK
@@ -27,6 +28,8 @@ class CountDownProgress: View {
     private var currentAngle = 0f
     private var countdownTime: Long = 0
     private var mStartSweepValue = -90
+
+    lateinit var animator:ValueAnimator
 
     constructor(context: Context):super(context)
 
@@ -154,7 +157,7 @@ class CountDownProgress: View {
     }
 
     fun setAnimation(offset: Float){
-        val animator = ValueAnimator.ofFloat(offset, 1f)
+        animator = ValueAnimator.ofFloat(offset, 1f)
         //动画时长，让进度条在CountDown时间内正好从0-360走完，这里由于用的是CountDownTimer定时器，倒计时要想减到0则总时长需要多加1000毫秒，所以这里时间也跟着+1000ms
         animator.duration = countdownTime
         animator.interpolator = LinearInterpolator() //匀速
@@ -177,6 +180,10 @@ class CountDownProgress: View {
             override fun onAnimationCancel(animation: Animator) {}
             override fun onAnimationRepeat(animation: Animator) {}
         })
+    }
+
+    fun stopAnima(){
+        animator.end()
     }
 
     fun startCountDownTime(myCountDownTimer: CountDownTimer){

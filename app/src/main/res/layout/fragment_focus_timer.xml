@@ -7,13 +7,15 @@
     tools:context=".FocusTimerFragment">
 
     <indi.hitszse2020g6.wakeapp.CountDownProgress
+        android:id="@+id/myCircle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="90dp"/>
+        android:layout_marginTop="90dp"
+        android:padding="10dp"/>
 
     <LinearLayout
-        android:id="@+id/linearLayout"
+        android:id="@+id/pickTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -32,7 +34,7 @@
             android:text="时" />
 
         <NumberPicker
-            android:id="@+id/minuteicker"
+            android:id="@+id/minuteipcker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:theme="@style/NumberPickerText"/>
@@ -72,5 +74,49 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="450dp"
         android:src="@drawable/startbutton_fill_24" />
+
+
+    <LinearLayout
+        android:id="@+id/showTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:visibility="invisible"
+        android:layout_marginTop="210dp">
+
+        <TextView
+            android:id="@+id/hour"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textSize="50dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=":"
+            android:textSize="50dp" />
+
+        <TextView
+            android:id="@+id/minute"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textSize="50dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=":"
+            android:textSize="50dp" />
+
+        <TextView
+            android:id="@+id/second"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textSize="50dp" />
+
+    </LinearLayout>
 
 </FrameLayout>
