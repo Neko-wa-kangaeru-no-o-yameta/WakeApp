@@ -1,14 +1,216 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".FocusStatisticFragment">
-
     <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Hello focus statistic fragment" />
 
-</FrameLayout>
+
+    <TextView
+        android:id="@+id/focusTime0"
+        android:layout_width="40dp"
+        android:layout_height="52dp"
+        android:gravity="center|center_vertical"
+        android:text="0"
+        android:textSize="48sp"
+        app:layout_constraintBottom_toBottomOf="@+id/focusTime2"
+        app:layout_constraintStart_toEndOf="@+id/focusTime1"
+        app:layout_constraintTop_toBottomOf="@+id/textView14"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <TextView
+        android:id="@+id/textView17"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="分"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/focusTime0"
+        app:layout_constraintStart_toEndOf="@+id/focusTime0" />
+
+    <TextView
+        android:id="@+id/focusTime1"
+        android:layout_width="40dp"
+        android:layout_height="52dp"
+        android:layout_marginStart="-4dp"
+        android:gravity="center|center_vertical"
+        android:text="0"
+        android:textSize="48sp"
+        app:layout_constraintBottom_toBottomOf="@+id/focusTime2"
+        app:layout_constraintStart_toEndOf="@+id/focusTime2"
+        app:layout_constraintTop_toBottomOf="@+id/textView14"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <TextView
+        android:id="@+id/focusTime2"
+        android:layout_width="40dp"
+        android:layout_height="52dp"
+        android:gravity="center|center_vertical"
+        android:text="0"
+        android:textSize="48sp"
+        app:layout_constraintStart_toStartOf="@+id/textView14"
+        app:layout_constraintTop_toBottomOf="@+id/textView14" />
+
+    <TextView
+        android:id="@+id/breakTimes1"
+        android:layout_width="40dp"
+        android:layout_height="52dp"
+        android:gravity="center|center_vertical"
+        android:text="0"
+        android:textSize="48sp"
+        app:layout_constraintBottom_toBottomOf="@+id/focusFrequency0"
+        app:layout_constraintStart_toStartOf="@+id/textView5"
+        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
+    <TextView
+        android:id="@+id/breakTimes0"
+        android:layout_width="40dp"
+        android:layout_height="52dp"
+        android:layout_marginStart="-4dp"
+        android:gravity="center|center_vertical"
+        android:text="0"
+        android:textSize="48sp"
+        app:layout_constraintBottom_toBottomOf="@+id/breakTimes1"
+        app:layout_constraintStart_toEndOf="@+id/breakTimes1" />
+
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="次"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/breakTimes0"
+        app:layout_constraintStart_toEndOf="@+id/breakTimes0" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="32dp"
+        android:text="今日专注模式被打断"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:text="今日共专注"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/focusFrequency1"
+        android:layout_width="40dp"
+        android:layout_height="52dp"
+        android:gravity="center_horizontal"
+        android:text="0"
+        android:textSize="48sp"
+        app:layout_constraintStart_toStartOf="@+id/textView"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <TextView
+        android:id="@+id/focusFrequency0"
+        android:layout_width="40dp"
+        android:layout_height="52dp"
+        android:layout_marginStart="-4dp"
+        android:gravity="center|center_vertical"
+        android:text="0"
+        android:textSize="48sp"
+        app:layout_constraintBottom_toBottomOf="@+id/focusFrequency1"
+        app:layout_constraintStart_toEndOf="@+id/focusFrequency1"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="次"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/focusFrequency0"
+        app:layout_constraintStart_toEndOf="@+id/focusFrequency0" />
+
+    <TextView
+        android:id="@+id/textView14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:text="今日总专注时长"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/focusFrequency1" />
+
+    <TextView
+        android:id="@+id/lineChartTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="32dp"
+        android:text="本月专注时长统计"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/focusTime1" />
+
+    <com.db.williamchart.view.LineChartView
+        android:id="@+id/lineChart"
+        android:layout_width="365dp"
+        android:layout_height="0dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginBottom="32dp"
+        app:chart_axis="none"
+        app:chart_labelsColor="#FF70977F"
+        app:chart_labelsSize="10sp"
+        app:chart_lineColor="#FF70977F"
+        app:chart_lineThickness="3dp"
+        app:chart_smoothLine="true"
+        app:layout_constraintBottom_toTopOf="@+id/donutChart"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lineChartTitle" />
+
+    <com.db.williamchart.view.HorizontalBarChartView
+        android:id="@+id/horizontalBarChart"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="16dp"
+        app:chart_axis="y"
+        app:chart_barsColor="#4CAF50"
+        app:chart_barsRadius="6dp"
+        app:chart_labelsColor="#475F50"
+        app:chart_labelsSize="14sp"
+        app:chart_spacing="20dp"
+        app:layout_constraintBottom_toBottomOf="@+id/donutChart"
+        app:layout_constraintEnd_toStartOf="@+id/donutChart"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/donutChart" />
+
+    <com.db.williamchart.view.DonutChartView
+        android:id="@+id/donutChart"
+        android:layout_width="161dp"
+        android:layout_height="161dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="24dp"
+        android:background="@android:color/transparent"
+        app:chart_donutBackgroundColor="#70977F"
+        app:chart_donutRoundCorners="true"
+        app:chart_donutThickness="15dp"
+        app:chart_donutTotal="200"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
