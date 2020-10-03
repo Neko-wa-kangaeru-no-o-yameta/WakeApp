@@ -18,6 +18,11 @@ import kotlinx.android.synthetic.main.fragment_focus_statistic.*
 
 //@ExperimentalFeature
 class FocusStatisticFragment : Fragment() {
+
+    private var focusFrequency = 13
+    private var breakTimes = 14
+    private var focusTime = 147
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -32,41 +37,42 @@ class FocusStatisticFragment : Fragment() {
         showStatistic()
         lineChart.animation.duration = animationDuration
         lineChart.animate(lineSet)
+        horizontalBarChart0.animation.duration = animationDuration
+        horizontalBarChart0.animate(horizontalBarSet0)
+        horizontalBarChart1.animation.duration = animationDuration
+        horizontalBarChart1.animate(horizontalBarSet1)
+        horizontalBarChart2.animation.duration = animationDuration
+        horizontalBarChart2.animate(horizontalBarSet2)
         donutChart.animation.duration = animationDuration
         donutChart.donutColors = intArrayOf(
-            Color.parseColor("#8DFFFFFF"),
-            Color.parseColor("#9EFFFFFF"),
-            Color.parseColor("#FFFFFF")
+            Color.parseColor("#8888CC"),
+            Color.parseColor("#CCCCFF"),
+            Color.parseColor("#AAAAFF")
         )
         donutChart.animate(donutSet)
-        horizontalBarChart.animation.duration = animationDuration
-        horizontalBarChart.animate(horizontalBarSet)
+
+
     }
 
     private fun showStatistic()
     {
-        var focusFrequency = 13
-        var breakTimes = 14
-        var focusTime = 147
-        view?.findViewById<TextView>(R.id.focusFrequency1)?.apply{
-            text = (focusFrequency/10).toString()
-        }
-        view?.findViewById<TextView>(R.id.focusFrequency0)?.apply{
+        requireView().findViewById<TextView>(R.id.focusFrequency1)!!.text = (focusFrequency/10).toString()
+        requireView().findViewById<TextView>(R.id.focusFrequency0)!!.apply{
             text = (focusFrequency%10).toString()
         }
-        view?.findViewById<TextView>(R.id.breakTimes1)?.apply{
+        requireView().findViewById<TextView>(R.id.breakTimes1)!!.apply{
             text = (breakTimes/10).toString()
         }
-        view?.findViewById<TextView>(R.id.breakTimes0)?.apply{
+        requireView().findViewById<TextView>(R.id.breakTimes0)!!.apply{
             text = (breakTimes%10).toString()
         }
-        view?.findViewById<TextView>(R.id.focusTime2)?.apply{
+        requireView().findViewById<TextView>(R.id.focusTime2)!!.apply{
             text = (focusTime/100).toString()
         }
-        view?.findViewById<TextView>(R.id.focusTime1)?.apply {
+        requireView().findViewById<TextView>(R.id.focusTime1)!!.apply {
             text = (focusTime/10%10).toString()
         }
-        view?.findViewById<TextView>(R.id.focusTime0)?.apply {
+        requireView().findViewById<TextView>(R.id.focusTime0)!!.apply {
             text = (focusTime%10).toString()
         }
     }
@@ -86,10 +92,21 @@ class FocusStatisticFragment : Fragment() {
             "label11" to 3f,
             "label12" to 4f
         )
-        private val horizontalBarSet = linkedMapOf(
+        private val horizontalBarSet0 = linkedMapOf(
+            "    " to 0F,
             "PORRO" to 3F,
+            "     " to 0F
+        )
+        private val horizontalBarSet1 = linkedMapOf(
+            "    " to 0F,
             "FUSCE" to 3F,
-            "EGET" to 3F
+            "     " to 0F
+        )
+        private val horizontalBarSet2 = linkedMapOf(
+            "    " to 0F,
+            "EGET" to 3F,
+            "     " to 0F
+
         )
         private val donutSet = listOf(
             20f,

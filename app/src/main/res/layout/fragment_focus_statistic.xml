@@ -16,9 +16,9 @@
         android:gravity="center|center_vertical"
         android:text="0"
         android:textSize="48sp"
-        app:layout_constraintBottom_toBottomOf="@+id/focusTime2"
-        app:layout_constraintStart_toEndOf="@+id/focusTime1"
-        app:layout_constraintTop_toBottomOf="@+id/textView14"
+        app:layout_constraintBottom_toBottomOf="@id/focusTime2"
+        app:layout_constraintStart_toEndOf="@id/focusTime1"
+        app:layout_constraintTop_toBottomOf="@id/textView14"
         app:layout_constraintVertical_bias="1.0" />
 
     <TextView
@@ -171,9 +171,9 @@
         android:layout_marginRight="24dp"
         android:layout_marginBottom="32dp"
         app:chart_axis="none"
-        app:chart_labelsColor="#FF70977F"
+        app:chart_labelsColor="#AAAAFF"
         app:chart_labelsSize="10sp"
-        app:chart_lineColor="#FF70977F"
+        app:chart_lineColor="#9999FF"
         app:chart_lineThickness="3dp"
         app:chart_smoothLine="true"
         app:layout_constraintBottom_toTopOf="@+id/donutChart"
@@ -182,22 +182,58 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/lineChartTitle" />
 
+
     <com.db.williamchart.view.HorizontalBarChartView
-        android:id="@+id/horizontalBarChart"
+        android:id="@+id/horizontalBarChart0"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="48dp"
         android:layout_marginStart="24dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="32dp"
+        android:visibility="visible"
         app:chart_axis="y"
-        app:chart_barsColor="#4CAF50"
+        app:chart_barsColor="#8888CC"
         app:chart_barsRadius="6dp"
         app:chart_labelsColor="#475F50"
         app:chart_labelsSize="14sp"
-        app:chart_spacing="20dp"
-        app:layout_constraintBottom_toBottomOf="@+id/donutChart"
+        app:chart_spacing="0dp"
         app:layout_constraintEnd_toStartOf="@+id/donutChart"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/donutChart" />
+
+    <com.db.williamchart.view.HorizontalBarChartView
+        android:id="@+id/horizontalBarChart1"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:visibility="visible"
+        app:chart_axis="y"
+        app:chart_barsColor="#CCCCEE"
+        app:chart_barsRadius="6dp"
+        app:chart_labelsColor="#475F50"
+        app:chart_labelsSize="14sp"
+        app:chart_spacing="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/horizontalBarChart2"
+        app:layout_constraintEnd_toEndOf="@+id/horizontalBarChart0"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/horizontalBarChart0"
+        app:layout_constraintTop_toBottomOf="@+id/horizontalBarChart0" />
+
+    <com.db.williamchart.view.HorizontalBarChartView
+        android:id="@+id/horizontalBarChart2"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:visibility="visible"
+        app:chart_axis="y"
+        app:chart_barsColor="#AAAAFF"
+        app:chart_barsRadius="6dp"
+        app:chart_labelsColor="#475F50"
+        app:chart_labelsSize="14sp"
+        app:chart_spacing="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/donutChart"
+        app:layout_constraintEnd_toEndOf="@+id/horizontalBarChart1"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/horizontalBarChart1" />
 
     <com.db.williamchart.view.DonutChartView
         android:id="@+id/donutChart"
@@ -206,11 +242,12 @@
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="24dp"
         android:background="@android:color/transparent"
-        app:chart_donutBackgroundColor="#70977F"
+        app:chart_donutBackgroundColor="#000000"
         app:chart_donutRoundCorners="true"
         app:chart_donutThickness="15dp"
-        app:chart_donutTotal="200"
+        app:chart_donutTotal="180"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
