@@ -103,8 +103,8 @@ object MainPageEventList {
 
     fun removeEvent(position: Int) {
         Log.d("MainPageEventList", "Removing $position")
+        val uid = eventList[position].uid   // no reference
         GlobalScope.launch(Dispatchers.IO) {
-            val uid = eventList[position].uid   // no reference
             DAO.delete(uid)
         }
         eventList.removeAt(position)

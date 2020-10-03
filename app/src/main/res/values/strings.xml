@@ -50,4 +50,9 @@
     <string name="eventDetail_detailListItem_ringBtn_hint">toggle ring</string>
     <string name="eventDetail_detailListItem_vibrateBtn_hint">toggle vibration</string>
     <string name="eventDetail_detailListItem_notificationBtn_hint">toggle notification</string>
+    <string name="eventList_toggleAlarm">Toggle alarm</string>
+    <string name="eventList_toggleFocus">Toggle focus</string>
+    <string name="eventList_toggleMute">Toggle Mute</string>
+    <string name="eventList_startTimeTVContent">开始于%d:%d</string>
+    <string name="eventList_stopTimeTVContent">结束于%d:%d</string>
 </resources>
