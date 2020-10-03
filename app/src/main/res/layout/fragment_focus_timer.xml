@@ -43,15 +43,6 @@
             android:text="分" />
 
     </LinearLayout>
-
-    <ImageView
-        android:id="@+id/startBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="450dp"
-        android:src="@drawable/startbutton_fill_24" />
-
     <ImageView
         android:id="@+id/pauseBtn"
         android:layout_width="wrap_content"
@@ -71,5 +62,13 @@
         android:visibility="invisible"
         android:clickable="false"
         android:src="@drawable/cancelbutton_fill_24" />
+
+    <ImageView
+        android:id="@+id/startBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="450dp"
+        android:src="@drawable/startbutton_fill_24" />
 
 </FrameLayout>

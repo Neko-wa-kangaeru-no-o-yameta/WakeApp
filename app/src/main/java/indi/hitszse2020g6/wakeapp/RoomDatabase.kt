@@ -1,6 +1,7 @@
 package indi.hitszse2020g6.wakeapp
 
 import android.content.Context
+import android.icu.util.TimeZone
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import kotlinx.serialization.Serializable
@@ -9,6 +10,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.*
 
 @Serializable
 data class Detail (
@@ -56,6 +58,15 @@ class Converters {
         return Json.encodeToString(value)
     }
 }
+
+//@Entity(tableName = "timeTable")
+//class MyTime(
+//    @PrimaryKey val id:Int,
+//    ////////////////////////////////////////////////////////////////////////////////////////////////
+//    var totalTime           :Long,              //The total time of the last count setting
+//    var conditionFlag       :Int,               //1->counting,-1->counting over,0->waiting
+//    var beforeSysTime       :Long               //System time when timing starts
+//)
 
 @Entity(tableName = "EventTable")
 class EventTableEntry (
@@ -132,4 +143,14 @@ interface RoomDAO {
 
     @Update
     suspend fun update(vararg re: EventTableEntry)
+
+//    @Query("SELECT * FROM timeTable WHERE id = 1")
+//    suspend fun findFromTimeTable()
+
+//    @Update
+//    suspend fun update(mt:MyTime)
+
+//    @Insert(onConflict = OnConflictStrategy.REPLACE)
+//    suspend fun insert(mt:MyTime)
+
 }
