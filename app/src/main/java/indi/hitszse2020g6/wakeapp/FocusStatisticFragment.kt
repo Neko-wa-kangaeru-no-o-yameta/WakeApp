@@ -37,11 +37,11 @@ class FocusStatisticFragment : Fragment() {
         showStatistic()
         lineChart.animation.duration = animationDuration
         lineChart.animate(lineSet)
-        horizontalBarChart0.animation.duration = animationDuration
+        horizontalBarChart0.animation.duration = 0L
         horizontalBarChart0.animate(horizontalBarSet0)
-        horizontalBarChart1.animation.duration = animationDuration
+        horizontalBarChart1.animation.duration = 0L
         horizontalBarChart1.animate(horizontalBarSet1)
-        horizontalBarChart2.animation.duration = animationDuration
+        horizontalBarChart2.animation.duration = 0L
         horizontalBarChart2.animate(horizontalBarSet2)
         donutChart.animation.duration = animationDuration
         donutChart.donutColors = intArrayOf(
