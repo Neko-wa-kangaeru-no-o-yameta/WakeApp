@@ -47,7 +47,6 @@ class FocusTimerFragment : Fragment(),NumberPicker.OnValueChangeListener,NumberP
         return inflater.inflate(R.layout.fragment_focus_timer, container, false)
     }
 
-//    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         init(hourpicker, minuteicker)
@@ -95,7 +94,6 @@ class FocusTimerFragment : Fragment(),NumberPicker.OnValueChangeListener,NumberP
             }
     }
 
-//    @RequiresApi(Build.VERSION_CODES.Q)
     private fun init(hourPicker: NumberPicker, minutePicker: NumberPicker){
         hourPicker.setFormatter(this);
         hourPicker.setOnValueChangedListener(this);

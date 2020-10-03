@@ -22,7 +22,8 @@
         <NumberPicker
             android:id="@+id/hourpicker"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:theme="@style/NumberPickerText"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -33,7 +34,8 @@
         <NumberPicker
             android:id="@+id/minuteicker"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:theme="@style/NumberPickerText"/>
 
 
         <TextView
