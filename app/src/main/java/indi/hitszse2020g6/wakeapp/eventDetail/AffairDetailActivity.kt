@@ -7,8 +7,6 @@ import android.content.Context
 import android.graphics.*
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.widget.*
 import androidx.cardview.widget.CardView
@@ -17,9 +15,6 @@ import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.RecyclerView
 import indi.hitszse2020g6.wakeapp.*
 import indi.hitszse2020g6.wakeapp.mainPage.MainPageEventList
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import java.util.*
 
 const val UNIQUE_ID_TO_AFFAIR_DETAIL = "indi.hitszse2020g6.wakeapp.UNIQUE_ID_FOR_MAIN_TO_AFFAIR_DETAIL"
@@ -120,7 +115,7 @@ class AffairDetailActivity : AppCompatActivity() {
                 entryToEdit.notice      = alarm
                 entryToEdit.isAutoGen   = false
                 entryToEdit.ruleId      = -1
-                MainPageEventList.updateAffair(entryToEdit)
+                MainPageEventList.updateEvent(entryToEdit)
             }
             finish()
         }

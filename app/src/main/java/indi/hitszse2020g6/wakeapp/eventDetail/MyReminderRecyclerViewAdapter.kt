@@ -23,10 +23,6 @@ import indi.hitszse2020g6.wakeapp.Reminder
 
 import indi.hitszse2020g6.wakeapp.dummy.DummyContent.DummyItem
 
-/**
- * [RecyclerView.Adapter] that can display a [DummyItem].
- * TODO: Replace the implementation with code for your data type.
- */
 class MyReminderRecyclerViewAdapter(
     private val values: List<Reminder>,
     private val context: FragmentActivity?,
