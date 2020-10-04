@@ -1,122 +1,183 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frameLayout2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".FocusTimerFragment">
+
 
     <indi.hitszse2020g6.wakeapp.CountDownProgress
         android:id="@+id/myCircle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="90dp"
-        android:padding="10dp"/>
+        android:padding="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.347"
+        tools:layout_conversion_absoluteHeight="323dp"
+        tools:layout_conversion_absoluteWidth="323dp" />
 
-    <LinearLayout
-        android:id="@+id/pickTime"
+
+    <NumberPicker
+        android:id="@+id/hourpicker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="150dp">
+        android:theme="@style/NumberPickerText"
+        app:layout_constraintBottom_toBottomOf="@+id/myCircle"
+        app:layout_constraintEnd_toStartOf="@+id/hourText"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/myCircle"
+        app:layout_constraintTop_toTopOf="@+id/myCircle"
+        app:layout_constraintVertical_bias="0.496"
+        tools:layout_conversion_absoluteHeight="180dp"
+        tools:layout_conversion_absoluteWidth="64dp" />
 
-        <NumberPicker
-            android:id="@+id/hourpicker"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:theme="@style/NumberPickerText"/>
+    <TextView
+        android:id="@+id/hourText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="时"
+        app:layout_constraintBottom_toBottomOf="@+id/hourpicker"
+        app:layout_constraintEnd_toStartOf="@+id/minuteipcker"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/hourpicker"
+        app:layout_constraintTop_toTopOf="@+id/hourpicker"
+        tools:layout_conversion_absoluteHeight="19dp"
+        tools:layout_conversion_absoluteWidth="14dp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:text="时" />
+    <NumberPicker
+        android:id="@+id/minuteipcker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:theme="@style/NumberPickerText"
+        app:layout_constraintBottom_toBottomOf="@+id/hourText"
+        app:layout_constraintEnd_toStartOf="@+id/minText"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/hourText"
+        app:layout_constraintTop_toTopOf="@+id/hourText"
+        tools:layout_conversion_absoluteHeight="180dp"
+        tools:layout_conversion_absoluteWidth="64dp" />
 
-        <NumberPicker
-            android:id="@+id/minuteipcker"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:theme="@style/NumberPickerText"/>
+    <TextView
+        android:id="@+id/minText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="分"
+        app:layout_constraintBottom_toBottomOf="@+id/minuteipcker"
+        app:layout_constraintEnd_toStartOf="@+id/myCircle"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/minuteipcker"
+        app:layout_constraintTop_toTopOf="@+id/minuteipcker"
+        tools:layout_conversion_absoluteHeight="19dp"
+        tools:layout_conversion_absoluteWidth="14dp" />
 
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:text="分" />
-
-    </LinearLayout>
     <ImageView
         android:id="@+id/pauseBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="450dp"
-        android:visibility="invisible"
+        android:layout_marginTop="37dp"
         android:clickable="false"
-        android:src="@drawable/pausebutton_fill_24" />
+        android:src="@drawable/pausebutton_fill_24"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/myCircle"
+        tools:layout_conversion_absoluteHeight="36dp"
+        tools:layout_conversion_absoluteWidth="36dp" />
 
     <ImageView
         android:id="@+id/cancelBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="450dp"
-        android:visibility="invisible"
         android:clickable="false"
-        android:src="@drawable/cancelbutton_fill_24" />
+        android:src="@drawable/cancelbutton_fill_24"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="@+id/pauseBtn"
+        app:layout_constraintTop_toTopOf="@+id/pauseBtn"
+        tools:layout_conversion_absoluteHeight="36dp"
+        tools:layout_conversion_absoluteWidth="36dp" />
 
     <ImageView
         android:id="@+id/startBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="450dp"
-        android:src="@drawable/startbutton_fill_24" />
+        android:src="@drawable/startbutton_fill_24"
+        app:layout_constraintStart_toStartOf="@+id/pauseBtn"
+        app:layout_constraintTop_toTopOf="@+id/pauseBtn"
+        tools:layout_conversion_absoluteHeight="36dp"
+        tools:layout_conversion_absoluteWidth="36dp" />
 
 
-    <LinearLayout
-        android:id="@+id/showTime"
+    <TextView
+        android:id="@+id/minute"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:visibility="invisible"
-        android:layout_marginTop="210dp">
+        android:text="0"
+        android:textSize="50dp"
+        app:layout_constraintBottom_toBottomOf="@+id/myCircle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/myCircle"
+        tools:layout_conversion_absoluteHeight="67dp"
+        tools:layout_conversion_absoluteWidth="28dp"
+        android:visibility="invisible"/>
 
-        <TextView
-            android:id="@+id/hour"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0"
-            android:textSize="50dp" />
+    <TextView
+        android:id="@+id/second"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0"
+        android:textSize="50dp"
+        app:layout_constraintBottom_toBottomOf="@+id/myCircle"
+        app:layout_constraintStart_toEndOf="@+id/divide2"
+        app:layout_constraintTop_toTopOf="@+id/myCircle"
+        tools:layout_conversion_absoluteHeight="67dp"
+        tools:layout_conversion_absoluteWidth="28dp"
+        android:visibility="invisible"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=":"
-            android:textSize="50dp" />
+    <TextView
+        android:id="@+id/divide1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=":"
+        android:textSize="50dp"
+        app:layout_constraintBottom_toBottomOf="@+id/myCircle"
+        app:layout_constraintEnd_toStartOf="@+id/minute"
+        app:layout_constraintTop_toTopOf="@+id/myCircle"
+        tools:layout_conversion_absoluteHeight="67dp"
+        tools:layout_conversion_absoluteWidth="12dp"
+        android:visibility="invisible"/>
 
-        <TextView
-            android:id="@+id/minute"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0"
-            android:textSize="50dp" />
+    <TextView
+        android:id="@+id/hour"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0"
+        android:textSize="50dp"
+        app:layout_constraintBottom_toBottomOf="@+id/myCircle"
+        app:layout_constraintEnd_toStartOf="@+id/divide1"
+        app:layout_constraintTop_toTopOf="@+id/myCircle"
+        tools:layout_conversion_absoluteHeight="67dp"
+        tools:layout_conversion_absoluteWidth="28dp"
+        android:visibility="invisible"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=":"
-            android:textSize="50dp" />
+    <TextView
+        android:id="@+id/divide2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=":"
+        android:textSize="50dp"
+        app:layout_constraintBottom_toBottomOf="@+id/myCircle"
+        app:layout_constraintStart_toEndOf="@+id/minute"
+        app:layout_constraintTop_toTopOf="@+id/myCircle"
+        tools:layout_conversion_absoluteHeight="67dp"
+        tools:layout_conversion_absoluteWidth="12dp"
+        android:visibility="invisible"/>
 
-        <TextView
-            android:id="@+id/second"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0"
-            android:textSize="50dp" />
 
-    </LinearLayout>
-
-</FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

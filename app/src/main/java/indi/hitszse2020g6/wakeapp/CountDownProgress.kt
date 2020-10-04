@@ -188,10 +188,6 @@ class CountDownProgress: View {
 
     fun startCountDownTime(myCountDownTimer: CountDownTimer){
         //调用倒计时操作
-        countdownMethod(myCountDownTimer)
-    }
-
-    private fun countdownMethod(myCountDownTimer: CountDownTimer) {
         myCountDownTimer.start()
     }
 

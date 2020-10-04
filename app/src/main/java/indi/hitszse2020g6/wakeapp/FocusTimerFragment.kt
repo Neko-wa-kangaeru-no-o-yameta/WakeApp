@@ -1,8 +1,11 @@
 package indi.hitszse2020g6.wakeapp
 
 
+import android.content.ComponentName
+import android.content.ServiceConnection
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.os.IBinder
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -35,12 +38,12 @@ const val REQUEST_SYS_ALERT = 102
 class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
     NumberPicker.OnScrollListener, NumberPicker.Formatter {
 
-    lateinit var myCountDownTimer: CountDownTimer
-
     private val TAG: String = "FocusTimerFragment"
 
+    lateinit var myCountDownTimer: CountDownTimer
+
     //    private var param1: String? = null
-//    private var param2: String? = null
+    //    private var param2: String? = null
     private var btnFlag: Boolean = false
 
     private lateinit var myDatabase: AppRoomDB
@@ -101,8 +104,7 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
                     myDao.updateMyTime(myTime)
                 }
                 //设置一下开始计时
-                pickTime.visibility = View.INVISIBLE
-                showTime.visibility = View.VISIBLE
+                toggleDisplay(true)
 
                 setMyCountDownTimer(totalTime)
                 myCircle.setCountdownTime(totalTime * 1000)
@@ -125,8 +127,8 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
                     myDao.updateMyTime(myTime)
                 }
                 startBtn.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.startbutton_fill_24,null))
-                pickTime.visibility = View.VISIBLE
-                showTime.visibility = View.INVISIBLE
+
+                toggleDisplay(false)
 
             }
         }
@@ -140,6 +142,7 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
                 false
             }
 
+            (activity as MainActivity).binder.changeIsBlocking()
             //记得写业务逻辑
         }
 
@@ -160,14 +163,14 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
             setButtonAni(false)
             myCountDownTimer.cancel()
             myCircle.stopAnima()
-            showTime.visibility = View.INVISIBLE
-            pickTime.visibility = View.VISIBLE
+
+            toggleDisplay(false)
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        myCountDownTimer.cancel()
+//        myCountDownTimer.cancel()
     }
 
 //    companion object {
@@ -375,7 +378,7 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
                     (millisUntilFinished - h * (1000 * 60 * 60) - m * (1000 * 60)) / 1000 //单位秒L
                 //防止下拉的时候出错
                 if (hour != null && minute != null && second != null) {
-                    hour.text = h.toString()
+                    hour.text = "0$h"
                     if (m < 10) {
                         minute.text = "0$m"
                     } else {
@@ -418,23 +421,51 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
         }
         //如果之前是在计时状态
         if (conditionFlag == 1) {
+            if((activity as MainActivity).mBound&&(!(activity as MainActivity).binder.getBlock())){
+                btnFlag = true
+                pauseBtn.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.startbutton_fill_24,null))
+            }
             setButtonAni(true)
 
-            pickTime.visibility = View.INVISIBLE
-            showTime.visibility = View.VISIBLE
+            toggleDisplay(true)
+
             setMyCountDownTimer(totalTime - distance)
             myCircle.setCountdownTime((totalTime - distance) * 1000)
             myCircle.setAnimation(distance.toFloat() / totalTime.toFloat())
             myCircle.startCountDownTime(myCountDownTimer)
         } else if (conditionFlag == -1) {
             //之前关掉的时候是计时结束状态
-            pickTime.visibility = View.INVISIBLE
+            toggleDisplay(true)
             hour.text = "00"
             minute.text = "00"
             second.text = "00"
-            showTime.visibility = View.VISIBLE
+
             startBtn.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.coutdown_finished_fill_24,null))
             startBtn.isClickable = true
+        }
+    }
+
+    private fun toggleDisplay(bool:Boolean){
+        if(bool){
+            hourText.visibility = View.INVISIBLE
+            minText.visibility = View.INVISIBLE
+            hourpicker.visibility = View.INVISIBLE
+            minuteipcker.visibility = View.INVISIBLE
+            hour.visibility = View.VISIBLE
+            minute.visibility = View.VISIBLE
+            second.visibility = View.VISIBLE
+            divide1.visibility = View.VISIBLE
+            divide2.visibility = View.VISIBLE
+        }else{
+            hourText.visibility = View.VISIBLE
+            minText.visibility = View.VISIBLE
+            hourpicker.visibility = View.VISIBLE
+            minuteipcker.visibility = View.VISIBLE
+            hour.visibility = View.GONE
+            minute.visibility = View.GONE
+            second.visibility = View.GONE
+            divide1.visibility = View.GONE
+            divide2.visibility = View.GONE
         }
     }
 }
