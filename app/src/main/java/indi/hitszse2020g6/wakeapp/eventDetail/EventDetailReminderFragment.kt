@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.ItemTouchHelper
 import indi.hitszse2020g6.wakeapp.R
 import indi.hitszse2020g6.wakeapp.dummy.DummyContent
 
@@ -44,6 +45,7 @@ class EventDetailReminderFragment() : Fragment() {
                 adapter = MyReminderRecyclerViewAdapter(EventReminderList.ITEMS, activity).apply {
                     notifyDataSetChanged()
                 }
+                ItemTouchHelper(ReminderItemTouchHelperCB(adapter as MyReminderRecyclerViewAdapter)).attachToRecyclerView(this)
                 Log.d("Reminder", "adapter attached")
             }
         }

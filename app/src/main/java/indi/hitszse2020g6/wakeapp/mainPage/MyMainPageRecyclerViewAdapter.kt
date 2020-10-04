@@ -12,7 +12,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
-import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.core.content.ContextCompat
 import indi.hitszse2020g6.wakeapp.EventTableEntry
 import indi.hitszse2020g6.wakeapp.INTENT_AFFAIR_DETAIL
@@ -26,7 +25,7 @@ import java.util.*
 
 class MyMainPageRecyclerViewAdapter(
     private val values: List<EventTableEntry>
-) : RecyclerView.Adapter<MyMainPageRecyclerViewAdapter.ViewHolder>(), ItemTouchHelperAdapter {
+) : RecyclerView.Adapter<MyMainPageRecyclerViewAdapter.ViewHolder>(), MainPageItemTouchHelperAdapter {
 
     private fun toggleImageDrawable(btn: ImageButton, on: Boolean, onID: Int, offID: Int) {
         with(btn) {

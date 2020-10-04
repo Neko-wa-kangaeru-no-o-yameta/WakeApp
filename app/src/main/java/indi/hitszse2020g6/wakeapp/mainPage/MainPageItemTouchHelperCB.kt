@@ -3,7 +3,7 @@ package indi.hitszse2020g6.wakeapp.mainPage
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 
-interface ItemTouchHelperAdapter {
+interface MainPageItemTouchHelperAdapter {
     fun onItemMove(fromPosition: Int, toPosition: Int)
     fun onItemDismiss(position: Int) : Boolean
 }

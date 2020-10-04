@@ -26,7 +26,7 @@ import indi.hitszse2020g6.wakeapp.dummy.DummyContent.DummyItem
 class MyReminderRecyclerViewAdapter(
     private val values: List<Reminder>,
     private val context: FragmentActivity?,
-) : RecyclerView.Adapter<MyReminderRecyclerViewAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<MyReminderRecyclerViewAdapter.ViewHolder>(), ReminderItemTouchHelperAdapter {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -98,6 +98,12 @@ class MyReminderRecyclerViewAdapter(
     }
 
     override fun getItemCount(): Int = values.size
+
+    override fun onItemDismiss(position: Int): Boolean {
+        EventReminderList.ITEMS.removeAt(position)
+        notifyItemRemoved(position)
+        return true
+    }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val cardView: CardView = view.findViewById(R.id.eventDetail_reminderListItem)
