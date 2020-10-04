@@ -152,7 +152,9 @@ class AffairDetailActivity : AppCompatActivity() {
 
         findViewById<CardView>(R.id.affairDetail_stopTimeCard).apply{
             if(!isNewAffair) {
-                findViewById<TextView>(R.id.affairDetail_stopTimeText).text = "%d/%d/%d, %d:%d".format(year, month, date, hour, minute)
+                findViewById<TextView>(R.id.affairDetail_stopTimeText).text =  context.getString(
+                    R.string.eventList_stopTimeTVContent
+                ).format(month, date, hour, minute)
             }
             setOnClickListener {
                 DatePickerFragment().show(supportFragmentManager, "dataPicker")
@@ -207,7 +209,9 @@ class AffairDetailActivity : AppCompatActivity() {
             hour = setHourOfDay
             minute = setMinute
             Log.d("OnTimeSet", "$hour : $minute")
-            activity?.findViewById<TextView>(R.id.affairDetail_stopTimeText)?.text = "%d/%d/%d, %d:%d".format(year, month, date, hour, minute)
+            activity?.findViewById<TextView>(R.id.affairDetail_stopTimeText)?.text = requireContext().getString(
+                R.string.eventList_stopTimeTVContent
+            ).format(month, date, hour, minute)
         }
     }
 }

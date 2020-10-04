@@ -65,12 +65,21 @@ class MyMainPageRecyclerViewAdapter(
                 visibility = GONE
             } else {
                 val c = Calendar.getInstance().apply { timeInMillis = values[position].startTime*1000 }
-                text = "开始于%d月%d日 %d:%d".format(c.get(Calendar.MONTH) + 1, c.get(Calendar.DAY_OF_MONTH), c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE))
+                text = context.getString(R.string.eventList_startTimeTVContent).format(c.get(Calendar.MONTH) + 1, c.get(Calendar.DAY_OF_MONTH), c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE))
             }
         }
 
         val c = Calendar.getInstance().apply { timeInMillis = values[position].stopTime*1000 }
-        holder.cardView.findViewById<TextView>(R.id.eventDetail_stopTimeTV).text = "结束于%d月%d日 %d:%d".format(c.get(Calendar.MONTH) + 1, c.get(Calendar.DAY_OF_MONTH), c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE))
+        holder.cardView.findViewById<TextView>(R.id.eventDetail_stopTimeTV).apply {
+            text = context.getString(
+                R.string.eventList_stopTimeTVContent
+            ).format(
+                c.get(Calendar.MONTH) + 1,
+                c.get(Calendar.DAY_OF_MONTH),
+                c.get(Calendar.HOUR_OF_DAY),
+                c.get(Calendar.MINUTE)
+            )
+        }
 
         holder.cardView.findViewById<ImageButton>(R.id.eventList_noticeBtn).apply {
             toggleImageDrawable(this, values[position].notice, R.drawable.alarm_on_24, R.drawable.alarm_off_24)

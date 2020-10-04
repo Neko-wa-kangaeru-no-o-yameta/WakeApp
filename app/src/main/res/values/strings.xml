@@ -53,6 +53,6 @@
     <string name="eventList_toggleAlarm">Toggle alarm</string>
     <string name="eventList_toggleFocus">Toggle focus</string>
     <string name="eventList_toggleMute">Toggle Mute</string>
-    <string name="eventList_startTimeTVContent">开始于%d:%d</string>
-    <string name="eventList_stopTimeTVContent">结束于%d:%d</string>
+    <string name="eventList_startTimeTVContent">开始于%02d月%02d日 %02d:%02d</string>
+    <string name="eventList_stopTimeTVContent">结束于%02d月%02d日 %02d:%02d</string>
 </resources>

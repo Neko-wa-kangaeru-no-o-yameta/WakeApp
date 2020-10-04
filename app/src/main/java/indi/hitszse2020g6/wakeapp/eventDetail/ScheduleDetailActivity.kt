@@ -176,8 +176,9 @@ class ScheduleDetailActivity : AppCompatActivity() {
 
         findViewById<CardView>(R.id.scheduleDetail_startTimeCard).apply{
             if(!isNewSchedule) {
-                findViewById<TextView>(R.id.scheduleDetail_startTimeText).text = "%d/%d/%d, %d:%d".format(
-                    startTime.year,
+                findViewById<TextView>(R.id.scheduleDetail_startTimeText).text =  context.getString(
+                    R.string.eventList_startTimeTVContent
+                ).format(
                     startTime.month,
                     startTime.date,
                     startTime.hour,
@@ -191,8 +192,9 @@ class ScheduleDetailActivity : AppCompatActivity() {
 
         findViewById<CardView>(R.id.scheduleDetail_stopTimeCard).apply{
             if(!isNewSchedule) {
-                findViewById<TextView>(R.id.scheduleDetail_stopTimeText).text = "%d/%d/%d, %d:%d".format(
-                    stopTime.year,
+                findViewById<TextView>(R.id.scheduleDetail_stopTimeText).text =  context.getString(
+                    R.string.eventList_stopTimeTVContent
+                ).format(
                     stopTime.month,
                     stopTime.date,
                     stopTime.hour,
@@ -293,8 +295,9 @@ class ScheduleDetailActivity : AppCompatActivity() {
             if(isStartDate) {
                 startTime.hour = setHourOfDay
                 startTime.minute = setMinute
-                activity?.findViewById<TextView>(R.id.scheduleDetail_startTimeText)?.text = "%d/%d/%d, %d:%d".format(
-                    startTime.year,
+                activity?.findViewById<TextView>(R.id.scheduleDetail_startTimeText)?.text = requireContext().getString(
+                    R.string.eventList_stopTimeTVContent
+                ).format(
                     startTime.month,
                     startTime.date,
                     startTime.hour,
@@ -303,8 +306,9 @@ class ScheduleDetailActivity : AppCompatActivity() {
             } else {
                 stopTime.hour = setHourOfDay
                 stopTime.minute = setMinute
-                activity?.findViewById<TextView>(R.id.scheduleDetail_stopTimeText)?.text = "%d/%d/%d, %d:%d".format(
-                    stopTime.year,
+                activity?.findViewById<TextView>(R.id.scheduleDetail_stopTimeText)?.text = requireContext().getString(
+                    R.string.eventList_stopTimeTVContent
+                ).format(
                     stopTime.month,
                     stopTime.date,
                     stopTime.hour,
