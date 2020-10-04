@@ -8,4 +8,12 @@
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
+    <PreferenceCategory
+        app:title="Settings">
+        <Preference
+            app:key="whiteList"
+            app:title="设置白名单"
+            app:summary="选择在专注期间仍然可以使用的应用"/>
+    </PreferenceCategory>
+
 </PreferenceScreen>

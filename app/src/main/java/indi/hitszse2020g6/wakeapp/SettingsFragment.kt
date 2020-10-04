@@ -1,5 +1,6 @@
 package indi.hitszse2020g6.wakeapp
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -18,6 +19,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
             GlobalScope.launch(Dispatchers.IO) {
                 MainPageEventList.DAO.deleteAll()
             }
+            true
+        }
+
+        findPreference<Preference>("whiteList")?.setOnPreferenceClickListener{
+            startActivity(Intent(context,ChooseWhiteListActivity::class.java))
             true
         }
     }
