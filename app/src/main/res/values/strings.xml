@@ -55,4 +55,18 @@
     <string name="eventList_toggleMute">Toggle Mute</string>
     <string name="eventList_startTimeTVContent">开始于%02d月%02d日 %02d:%02d</string>
     <string name="eventList_stopTimeTVContent">结束于%02d月%02d日 %02d:%02d</string>
+    <string name="节次">节次</string>
+    <string name="第一大节">第一大节</string>
+    <string name="第二大节">第二大节</string>
+    <string name="第三大节">第三大节</string>
+    <string name="第四大节">第四大节</string>
+    <string name="第五大节">第五大节</string>
+    <string name="第六大节">第六大节</string>
+    <string name="Monday">星期一</string>
+    <string name="星期二">星期二</string>
+    <string name="星期三">星期三</string>
+    <string name="星期四">星期四</string>
+    <string name="星期五">星期五</string>
+    <string name="星期六">星期六</string>
+    <string name="星期日">星期日</string>
 </resources>

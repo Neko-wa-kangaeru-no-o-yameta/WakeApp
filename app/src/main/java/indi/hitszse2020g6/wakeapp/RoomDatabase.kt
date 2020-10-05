@@ -96,7 +96,21 @@ class GenRuleEntry (
     var uid                 : Long,             // unique id
 )
 
-@Database(entities = [EventTableEntry::class, GenRuleEntry::class,MyTimeEntry::class], version = 1)
+
+@Entity(tableName = "course_table")
+data class Course(
+    @ColumnInfo(name = "course_name") val courseName: String,
+    @ColumnInfo(name = "week") val week: Int,
+    @ColumnInfo(name = "day_of_week") val dayOfWeek: Int,
+    @ColumnInfo(name = "class_address") val address: String,
+    @ColumnInfo(name = "class_time") val time: Int
+) {
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "id")
+    var courseId: Long = 0
+}
+
+@Database(entities = [EventTableEntry::class, GenRuleEntry::class,MyTimeEntry::class,Course::class], version = 1)
 @TypeConverters(Converters::class)
 abstract class AppRoomDB: RoomDatabase() {
     abstract fun getDAO(): RoomDAO
@@ -115,7 +129,7 @@ abstract class AppRoomDB: RoomDatabase() {
                     context.applicationContext,
                     AppRoomDB::class.java,
                     "AppRoomDB"
-                ).build()
+                ).allowMainThreadQueries().build()
                 INSTANCE = instance
                 return instance
             }
@@ -127,22 +141,22 @@ abstract class AppRoomDB: RoomDatabase() {
 interface RoomDAO {
 
     @Query("SELECT * FROM EventTable ORDER BY priority ASC")
-    suspend fun getEvents(): List<EventTableEntry>
+    fun getEvents(): List<EventTableEntry>
 
     @Query("SELECT * FROM EventTable WHERE uid=:uid")
-    suspend fun getEvent(uid: Long): EventTableEntry
+    fun getEvent(uid: Long): EventTableEntry
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(re: EventTableEntry) : Long
+    fun insert(re: EventTableEntry) : Long
 
     @Query("DELETE FROM EventTable")
-    suspend fun deleteAll()
+    fun deleteAll()
 
     @Query("DELETE FROM EventTable WHERE uid=:uid")
-    suspend fun delete(uid: Long)
+    fun delete(uid: Long)
 
     @Update
-    suspend fun update(vararg re: EventTableEntry)
+    fun update(vararg re: EventTableEntry)
 
     @Query("SELECT * FROM timeTable WHERE id = 1")
     fun findFromTimeTable():List<MyTimeEntry>
@@ -152,5 +166,26 @@ interface RoomDAO {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertMyTime(mt:MyTimeEntry)
+
+    @Query("SELECT * FROM course_table")
+    fun getAll(): List<Course>
+
+    @Query("SELECT * FROM course_table WHERE course_name IN (:course_name)")
+    fun loadAllCourseNames(course_name: String): List<Course>
+
+    @Query("SELECT * FROM course_table WHERE week = :weekNo order by class_time, day_of_week")
+    fun findWeekCourse(weekNo: Int): List<Course>
+
+    @Query("SELECT MAX(CAST(week AS INT)) FROM course_table")
+    fun getMaxWeek(): Int
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert(vararg course: Course)
+
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    fun update(course: Course)
+
+    @Delete
+    fun delete(vararg course: Course)
 
 }

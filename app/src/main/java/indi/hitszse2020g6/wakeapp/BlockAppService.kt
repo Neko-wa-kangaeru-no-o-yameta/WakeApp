@@ -23,6 +23,8 @@ class BlockAppService : Service() {
     var isBlocking: Boolean = true
     private val binder: MyBinder = MyBinder()
     private var pendingReturn = false
+    private var myCountDownTimer:CountDownTimer? = null
+    var myCountTime:Long = 0
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d(TAG,"BlockAppService onStartCommannd $isBlocking")
@@ -112,8 +114,36 @@ class BlockAppService : Service() {
             isBlocking = !isBlocking
         }
         fun getBlock():Boolean = isBlocking
-        fun startCountDownTimer(){
-
+        fun startCoutnDownTimer(t:Long){
+            //后台通知前台开始计时并自己开始计时
+            Log.d(TAG,"ok")
+            myCountTime = t
+            val myIntent = Intent()
+            myIntent.putExtra("startTicking_data",t)
+            myIntent.setAction("startTicking")
+            sendBroadcast(myIntent)
+            if(myCountTime.toInt()!=0 && myCountDownTimer!=null){
+                //如果之前在计时
+                myCountDownTimer!!.cancel()
+            }
+            myCountDownTimer = object : CountDownTimer(t*1000,1000){
+                override fun onTick(millisUntilFinished: Long) {
+                    //Do nothing
+                    myCountTime--
+                }
+                override fun onFinish() {
+                    Log.d(TAG,"BACKGROUND TIMER FINISHED")
+                }
+            }.start()
+        }
+        fun stopCountDownTimer(){
+            myCountDownTimer!!.cancel()
+        }
+        fun changePage(t:Long){
+            val myIntent = Intent()
+            myIntent.putExtra("change_page_data",t)
+            myIntent.setAction("change_page")
+            sendBroadcast(myIntent)
         }
     }
 

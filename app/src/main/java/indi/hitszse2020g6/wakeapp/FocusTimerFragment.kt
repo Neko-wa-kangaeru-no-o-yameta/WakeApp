@@ -1,11 +1,12 @@
 package indi.hitszse2020g6.wakeapp
 
 
-import android.content.ComponentName
-import android.content.ServiceConnection
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.os.IBinder
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -23,43 +24,29 @@ import androidx.fragment.app.Fragment
 import androidx.room.Room
 import kotlinx.android.synthetic.main.fragment_focus_timer.*
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-//private const val ARG_PARAM1 = "param1"
-//private const val ARG_PARAM2 = "param2"
+
 const val REQUEST_CODE_OVERLAY = 101
 const val REQUEST_SYS_ALERT = 102
 
-///**
-// * A simple [Fragment] subclass.
-// * Use the [FocusTimerFragment.newInstance] factory method to
-// * create an instance of this fragment.
-// */
 class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
     NumberPicker.OnScrollListener, NumberPicker.Formatter {
 
     private val TAG: String = "FocusTimerFragment"
 
-    lateinit var myCountDownTimer: CountDownTimer
+    var myCountDownTimer: CountDownTimer? = null
 
-    //    private var param1: String? = null
-    //    private var param2: String? = null
+    var total_time: Long = 0
+    var condition_flag: Int = 0
+    var before_sys_time: Long = 0
+
     private var btnFlag: Boolean = false
 
     private lateinit var myDatabase: AppRoomDB
     private lateinit var myDao: RoomDAO
 
-    private var totalTime: Long = 0
-    private var conditionFlag: Int = 0
-    private var beforeSysTime: Long = 0
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        arguments?.let {
-//            param1 = it.getString(ARG_PARAM1)
-//            param2 = it.getString(ARG_PARAM2)
-//        }
+
         myDatabase =
             Room.databaseBuilder(requireContext(), AppRoomDB::class.java, "app_room_database")
                 .allowMainThreadQueries().build()
@@ -71,6 +58,7 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+
         return inflater.inflate(R.layout.fragment_focus_timer, container, false)
     }
 
@@ -83,42 +71,31 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
             .allowMainThreadQueries().build()
         myDao = myDatabase.getDAO()
 
+        registerReceiver()
+
         getPreviousCondition()
 
         startBtn.setOnClickListener {
-            if (conditionFlag == 0) {
-                conditionFlag = 1
+            if (condition_flag == 0) {
                 setButtonAni(true)
                 //获得设置的时间
-                totalTime = (hourpicker.value * 3600 + minuteipcker.value * 60).toLong()
-
-                val myTime = MyTimeEntry(
-                    1,
-                    totalTime,
-                    conditionFlag,
-                    System.currentTimeMillis()
-                )
-                if (myDao.findFromTimeTable().isEmpty()) {
-                    myDao.insertMyTime(myTime)
-                } else {
-                    myDao.updateMyTime(myTime)
-                }
-                //设置一下开始计时
-                toggleDisplay(true)
-
-                setMyCountDownTimer(totalTime)
-                myCircle.setCountdownTime(totalTime * 1000)
+                total_time = (hourpicker.value * 3600 + minuteipcker.value * 60).toLong()
+                //设置动画时长
+                myCircle.setCountdownTime(total_time * 1000)
                 myCircle.setAnimation(0f)
-                myCircle.startCountDownTime(myCountDownTimer)
-            } else if (conditionFlag == -1) {
+
+                if ((activity as MainActivity).mBound) {
+                    (activity as MainActivity).binder.startCoutnDownTimer(total_time)
+                }
+            } else if (condition_flag == -1) {
                 //往数据库里记一下这次的专注时间和专注次数
                 //记得写
 
-                conditionFlag = 0
+                condition_flag = 0
                 val myTime = MyTimeEntry(
                     1,
-                    totalTime,
-                    conditionFlag,
+                    total_time,
+                    condition_flag,
                     System.currentTimeMillis()
                 )
                 if (myDao.findFromTimeTable().isEmpty()) {
@@ -126,32 +103,46 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
                 } else {
                     myDao.updateMyTime(myTime)
                 }
-                startBtn.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.startbutton_fill_24,null))
-
+                startBtn.setImageDrawable(
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.startbutton_fill_24,
+                        null
+                    )
+                )
                 toggleDisplay(false)
-
             }
         }
 
         pauseBtn.setOnClickListener {
             btnFlag = if (!btnFlag) {
-                pauseBtn.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.startbutton_fill_24,null))
+                pauseBtn.setImageDrawable(
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.startbutton_fill_24,
+                        null
+                    )
+                )
                 true
             } else {
-                pauseBtn.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.pausebutton_fill_24,null))
+                pauseBtn.setImageDrawable(
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.pausebutton_fill_24,
+                        null
+                    )
+                )
                 false
             }
-
             (activity as MainActivity).binder.changeIsBlocking()
-            //记得写业务逻辑
         }
 
         cancelBtn.setOnClickListener {
-            conditionFlag = 0
+            condition_flag = 0
             val myTime = MyTimeEntry(
                 1,
-                totalTime,
-                conditionFlag,
+                total_time,
+                condition_flag,
                 System.currentTimeMillis()
             )
             if (myDao.findFromTimeTable().isEmpty()) {
@@ -159,39 +150,16 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
             } else {
                 myDao.updateMyTime(myTime)
             }
-
             setButtonAni(false)
-            myCountDownTimer.cancel()
+            myCountDownTimer?.cancel()
+            if ((activity as MainActivity).mBound) {
+                (activity as MainActivity).binder.stopCountDownTimer()
+            }
             myCircle.stopAnima()
-
             toggleDisplay(false)
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-//        myCountDownTimer.cancel()
-    }
-
-//    companion object {
-////        /**
-////         * Use this factory method to create a new instance of
-////         * this fragment using the provided parameters.
-////         *
-////         * @param param1 Parameter 1.
-////         * @param param2 Parameter 2.
-////         * @return A new instance of fragment FocusTimerFragment.
-////         */
-////        // TODO: Rename and change types and number of parameters
-////        @JvmStatic
-////        fun newInstance(param1: String, param2: String) =
-////            FocusTimerFragment().apply {
-////                arguments = Bundle().apply {
-////                    putString(ARG_PARAM1, param1)
-////                    putString(ARG_PARAM2, param2)
-////                }
-////            }
-//    }
 
     private fun initNumberPicker(hourPicker: NumberPicker, minutePicker: NumberPicker) {
         hourPicker.setFormatter(this)
@@ -219,31 +187,14 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
     }
 
     override fun onValueChange(picker: NumberPicker?, oldVal: Int, newVal: Int) {
-        Log.i(
-            TAG, "onValueChange: 原来的值 " + oldVal + "--新值: "
-                    + newVal
-        )
+
     }
 
     override fun onScrollStateChange(view: NumberPicker?, scrollState: Int) {
-        when (scrollState) {
-            NumberPicker.OnScrollListener.SCROLL_STATE_FLING -> Log.i(
-                TAG,
-                "onScrollStateChange: 后续滑动"
-            )
-            NumberPicker.OnScrollListener.SCROLL_STATE_IDLE -> Log.i(
-                TAG,
-                "onScrollStateChange: 不滑动"
-            )
-            NumberPicker.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL -> Log.i(
-                TAG,
-                "onScrollStateChange: 滑动中"
-            )
-        }
+
     }
 
     override fun format(value: Int): String {
-        Log.i(TAG, "format: value")
         var tmpStr = java.lang.String.valueOf(value)
         if (value < 10) {
             tmpStr = "0$tmpStr"
@@ -251,15 +202,15 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
         return tmpStr
     }
 
-    private fun setButtonAni(divide: Boolean) {
+    fun setButtonAni(divide: Boolean) {
         val startSpring: SpringForce
         val pauseSpring: SpringForce
         val cancelSpring: SpringForce
         val startAnima: SpringAnimation
         val pauseAnima: SpringAnimation
         val cancelAnima: SpringAnimation
-        val sAnimation:AlphaAnimation
-        val LrAnimation:AlphaAnimation
+        val sAnimation: AlphaAnimation
+        val LrAnimation: AlphaAnimation
         //分裂动画
         if (divide) {
             sAnimation = AlphaAnimation(1.0f, 0.0f)
@@ -272,18 +223,18 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
             cancelBtn.visibility = View.VISIBLE
             sAnimation.setAnimationListener(object : Animation.AnimationListener {
                 override fun onAnimationStart(animation: Animation?) {
-                    Log.d(TAG, "Animation starts")
+//                    Log.d(TAG, "Animation starts")
                 }
 
                 override fun onAnimationEnd(animation: Animation?) {
-                    Log.d(TAG, "Animation ends")
+//                    Log.d(TAG, "Animation ends")
                     //动画结束时左右两个按钮可点击
                     pauseBtn.isClickable = true
                     cancelBtn.isClickable = true
                 }
 
                 override fun onAnimationRepeat(animation: Animation?) {
-                    Log.d(TAG, "Animation repeats")
+//                    Log.d(TAG, "Animation repeats")
                 }
 
             })
@@ -327,11 +278,11 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
             LrAnimation.duration = 200
             LrAnimation.setAnimationListener(object : Animation.AnimationListener {
                 override fun onAnimationStart(animation: Animation?) {
-                    Log.d(TAG, "Animation starts")
+//                    Log.d(TAG, "Animation starts")
                 }
 
                 override fun onAnimationEnd(animation: Animation?) {
-                    Log.d(TAG, "Animation ends")
+//                    Log.d(TAG, "Animation ends")
                     //动画结束时左右两个按钮不可见，仅有开始按钮可见
                     startBtn.visibility = View.VISIBLE
                     pauseBtn.visibility = View.INVISIBLE
@@ -340,7 +291,7 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
                 }
 
                 override fun onAnimationRepeat(animation: Animation?) {
-                    Log.d(TAG, "Animation repeats")
+//                    Log.d(TAG, "Animation repeats")
                 }
 
             })
@@ -369,6 +320,29 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
     }
 
     private fun setMyCountDownTimer(setTime: Long) {
+        if(condition_flag == 0){
+            setButtonAni(true)
+            condition_flag = 1
+            total_time = setTime
+            Toast.makeText(context,total_time.toString(),Toast.LENGTH_SHORT).show()
+            val myTime = MyTimeEntry(
+                1,
+                total_time,
+                condition_flag,
+                System.currentTimeMillis()
+            )
+            if (myDao.findFromTimeTable().isEmpty()) {
+                myDao.insertMyTime(myTime)
+            } else {
+                myDao.updateMyTime(myTime)
+            }
+            myCircle.setCountdownTime(total_time * 1000)
+            myCircle.setAnimation(0f)
+            toggleDisplay(true)
+        }
+        if(myCountDownTimer!=null){
+            myCountDownTimer!!.cancel()
+        }
         myCountDownTimer = object : CountDownTimer((setTime) * 1000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 val h: Long = millisUntilFinished / (1000 * 60 * 60) //单位时
@@ -394,59 +368,71 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
 
             //计时结束的操作
             override fun onFinish() {
-                //计时结束
-                //可能要改
-
                 if (startBtn != null) {
                     startBtn.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.coutdown_finished_fill_24,null))
                     setButtonAni(false)
                     Toast.makeText(context, "计时结束", Toast.LENGTH_SHORT).show()
-                    conditionFlag = -1
+                    condition_flag = -1
                 }
             }
-        }
+        }.start()
     }
 
     private fun getPreviousCondition() {
         val tmp = myDao.findFromTimeTable()
         if (tmp.isNotEmpty()) {
-            totalTime = tmp[0].totalTime
-            conditionFlag = tmp[0].conditionFlag
-            beforeSysTime = tmp[0].beforeSysTime
+            total_time = tmp[0].totalTime
+            condition_flag = tmp[0].conditionFlag
+            before_sys_time = tmp[0].beforeSysTime
         }
-        val distance: Long = (System.currentTimeMillis() - beforeSysTime) / 1000
+        val distance: Long = (System.currentTimeMillis() - before_sys_time) / 1000
         //如果之前是计时状态但是计时已经结束
-        if (conditionFlag == 1 && distance >= totalTime) {
-            conditionFlag = -1
+        if (condition_flag == 1 && distance >= total_time) {
+            condition_flag = -1
         }
         //如果之前是在计时状态
-        if (conditionFlag == 1) {
-            if((activity as MainActivity).mBound&&(!(activity as MainActivity).binder.getBlock())){
+        if (condition_flag == 1) {
+            if ((activity as MainActivity).mBound && (!(activity as MainActivity).binder.getBlock())) {
                 btnFlag = true
-                pauseBtn.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.startbutton_fill_24,null))
+                pauseBtn.setImageDrawable(
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.startbutton_fill_24,
+                        null
+                    )
+                )
             }
             setButtonAni(true)
-
             toggleDisplay(true)
+            myCircle.setCountdownTime((total_time - distance) * 1000)
+            myCircle.setAnimation(distance.toFloat() / total_time.toFloat())
 
-            setMyCountDownTimer(totalTime - distance)
-            myCircle.setCountdownTime((totalTime - distance) * 1000)
-            myCircle.setAnimation(distance.toFloat() / totalTime.toFloat())
-            myCircle.startCountDownTime(myCountDownTimer)
-        } else if (conditionFlag == -1) {
+            if ((activity as MainActivity).mBound) {
+                (activity as MainActivity).binder.startCoutnDownTimer(total_time - distance)
+            }else{
+                Log.d(TAG,"oooops")
+            }
+
+        } else if (condition_flag == -1) {
             //之前关掉的时候是计时结束状态
             toggleDisplay(true)
             hour.text = "00"
             minute.text = "00"
             second.text = "00"
 
-            startBtn.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.coutdown_finished_fill_24,null))
+            startBtn.setImageDrawable(
+                ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.coutdown_finished_fill_24,
+                    null
+                )
+            )
             startBtn.isClickable = true
         }
     }
 
-    private fun toggleDisplay(bool:Boolean){
-        if(bool){
+    private fun toggleDisplay(bool: Boolean) {
+        if (bool) {
             hourText.visibility = View.INVISIBLE
             minText.visibility = View.INVISIBLE
             hourpicker.visibility = View.INVISIBLE
@@ -456,7 +442,7 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
             second.visibility = View.VISIBLE
             divide1.visibility = View.VISIBLE
             divide2.visibility = View.VISIBLE
-        }else{
+        } else {
             hourText.visibility = View.VISIBLE
             minText.visibility = View.VISIBLE
             hourpicker.visibility = View.VISIBLE
@@ -467,5 +453,20 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
             divide1.visibility = View.GONE
             divide2.visibility = View.GONE
         }
+    }
+
+    fun registerReceiver() {
+        val intentFilter = IntentFilter()
+        intentFilter.addAction("startTicking")
+        requireContext().registerReceiver(object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                val bundle = intent.extras
+                //后台通知前台开始计时
+                var t = bundle?.getLong("startTicking_data")
+                if (t != null) {
+                    setMyCountDownTimer(t)
+                }
+            }
+        }, intentFilter)
     }
 }
