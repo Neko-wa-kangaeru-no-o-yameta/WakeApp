@@ -130,7 +130,6 @@ class BlockAppService : Service() {
                 override fun onTick(millisUntilFinished: Long) {
                     //Do nothing
                     myCountTime--
-//                    Log.d(TAG,(millisUntilFinished/1000).toString())
                 }
                 override fun onFinish() {
                     Log.d(TAG,"BACKGROUND TIMER FINISHED")
@@ -139,6 +138,12 @@ class BlockAppService : Service() {
         }
         fun stopCountDownTimer(){
             myCountDownTimer!!.cancel()
+        }
+        fun changePage(t:Long){
+            val myIntent = Intent()
+            myIntent.putExtra("change_page_data",t)
+            myIntent.setAction("change_page")
+            sendBroadcast(myIntent)
         }
     }
 

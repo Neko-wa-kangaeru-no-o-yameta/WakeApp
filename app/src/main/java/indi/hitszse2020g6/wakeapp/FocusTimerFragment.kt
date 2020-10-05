@@ -77,25 +77,9 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
 
         startBtn.setOnClickListener {
             if (condition_flag == 0) {
-                condition_flag = 1
                 setButtonAni(true)
                 //获得设置的时间
                 total_time = (hourpicker.value * 3600 + minuteipcker.value * 60).toLong()
-
-                val myTime = MyTimeEntry(
-                    1,
-                    total_time,
-                    condition_flag,
-                    System.currentTimeMillis()
-                )
-                if (myDao.findFromTimeTable().isEmpty()) {
-                    myDao.insertMyTime(myTime)
-                } else {
-                    myDao.updateMyTime(myTime)
-                }
-                //设置一下开始计时
-                toggleDisplay(true)
-
                 //设置动画时长
                 myCircle.setCountdownTime(total_time * 1000)
                 myCircle.setAnimation(0f)
@@ -103,7 +87,6 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
                 if ((activity as MainActivity).mBound) {
                     (activity as MainActivity).binder.startCoutnDownTimer(total_time)
                 }
-//                myCircle.startCountDownTime(myCountDownTimer)
             } else if (condition_flag == -1) {
                 //往数据库里记一下这次的专注时间和专注次数
                 //记得写
@@ -175,10 +158,6 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
             myCircle.stopAnima()
             toggleDisplay(false)
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 
 
@@ -341,6 +320,26 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
     }
 
     private fun setMyCountDownTimer(setTime: Long) {
+        if(condition_flag == 0){
+            setButtonAni(true)
+            condition_flag = 1
+            total_time = setTime
+            Toast.makeText(context,total_time.toString(),Toast.LENGTH_SHORT).show()
+            val myTime = MyTimeEntry(
+                1,
+                total_time,
+                condition_flag,
+                System.currentTimeMillis()
+            )
+            if (myDao.findFromTimeTable().isEmpty()) {
+                myDao.insertMyTime(myTime)
+            } else {
+                myDao.updateMyTime(myTime)
+            }
+            myCircle.setCountdownTime(total_time * 1000)
+            myCircle.setAnimation(0f)
+            toggleDisplay(true)
+        }
         if(myCountDownTimer!=null){
             myCountDownTimer!!.cancel()
         }
@@ -369,9 +368,6 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
 
             //计时结束的操作
             override fun onFinish() {
-                //计时结束
-                //可能要改
-
                 if (startBtn != null) {
                     startBtn.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.coutdown_finished_fill_24,null))
                     setButtonAni(false)
@@ -396,7 +392,6 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
         }
         //如果之前是在计时状态
         if (condition_flag == 1) {
-            Log.d(TAG,"HERE")
             if ((activity as MainActivity).mBound && (!(activity as MainActivity).binder.getBlock())) {
                 btnFlag = true
                 pauseBtn.setImageDrawable(
@@ -413,10 +408,9 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
             myCircle.setAnimation(distance.toFloat() / total_time.toFloat())
 
             if ((activity as MainActivity).mBound) {
-                Log.d(TAG,"I")
                 (activity as MainActivity).binder.startCoutnDownTimer(total_time - distance)
             }else{
-                Log.d(TAG,"oooopS")
+                Log.d(TAG,"oooops")
             }
 
         } else if (condition_flag == -1) {
@@ -466,7 +460,6 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
         intentFilter.addAction("startTicking")
         requireContext().registerReceiver(object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
-                Log.d("Hello","Counting")
                 val bundle = intent.extras
                 //后台通知前台开始计时
                 var t = bundle?.getLong("startTicking_data")

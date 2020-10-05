@@ -9,9 +9,12 @@ import android.os.*
 import android.provider.Settings
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import kotlinx.android.synthetic.main.activity_main.*
+import java.sql.Time
+import java.util.*
 
 
 const val INTENT_AFFAIR_DETAIL = 1
@@ -29,6 +32,7 @@ class MainActivity : AppCompatActivity() {
             binder = service as BlockAppService.MyBinder
             blockAppService = binder.getService()
             mBound = true
+
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
@@ -39,6 +43,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        receiveBroadCast()
 
         bottomNavigationView.setOnNavigationItemSelectedListener { item ->
             Log.d("Main Activity", "onNavigationItemReselectedListener")
@@ -97,6 +103,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
             Log.d("BCKGRND", "can't draw overlay")
         }
+
     }
 
     override fun onResume() {
@@ -133,5 +140,30 @@ class MainActivity : AppCompatActivity() {
     private fun requestReadNetworkStats() {
         val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
         startActivity(intent)
+    }
+
+    fun receiveBroadCast(){
+        val intentFilter = IntentFilter()
+        intentFilter.addAction("change_page")
+        this.registerReceiver(object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                findNavController(R.id.mainNavFragment).navigate(R.id.action_global_focusFragment)
+                bottomNavigationView.selectedItemId = R.id.bottomNavFocusBtn
+                val bundle = intent.extras
+                //后台通知前台开始计时
+
+                var t = bundle?.getLong("change_page_data")
+                //等一会儿跳转过去再计时
+                Log.d("BEFORE_T",t.toString())
+                var handler = Handler(Looper.getMainLooper())
+                handler.postDelayed(object:Runnable{
+                    override fun run() {
+                        if (t != null) {
+                            binder.startCoutnDownTimer(t)
+                        }
+                    }
+                },500)
+            }
+        }, intentFilter)
     }
 }
