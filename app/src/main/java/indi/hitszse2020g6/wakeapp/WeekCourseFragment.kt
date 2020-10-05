@@ -83,6 +83,16 @@ class WeekCourseFragment : Fragment() {
                                 setTextColor(resources.getColor(R.color.design_default_color_on_primary,context.theme))
                             }
                             addView(textView)
+                            val textView2 = TextView(context)
+                            with(textView2){
+                                text = coursAddress
+                                Log.d("printAddress",text.toString())
+                                setSingleLine(true)
+                                setEllipsize(TextUtils.TruncateAt.valueOf("END"))
+                                setEms(1)
+                                setTextColor(resources.getColor(R.color.design_default_color_on_primary,context.theme))
+                            }
+                            addView(textView2)
                         }
                     }
                 }
