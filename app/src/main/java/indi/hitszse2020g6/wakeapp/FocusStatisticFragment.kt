@@ -12,15 +12,11 @@ import android.widget.TextView
 import com.db.williamchart.view.DonutChartView
 import com.db.williamchart.view.HorizontalBarChartView
 import kotlinx.android.synthetic.main.fragment_focus_statistic.*
+import kotlinx.serialization.descriptors.PrimitiveKind
 
 
 //@ExperimentalFeature
 class FocusStatisticFragment : Fragment() {
-
-    private var focusFrequency = 13
-    private var breakTimes = 14
-    private var focusTime = 147
-    private var donutTotal = 0f
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,14 +29,13 @@ class FocusStatisticFragment : Fragment() {
 
     @SuppressLint("Range")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        showStatistic()
-        lineChart.animation.duration = animationDuration
-        lineChart.animate(lineSet)
-        setDonutChart()
+        showStatistic(focusFrequency, breakTimes, focusTime)
+        setLineChart(lineSet)
+        setDonutChart(donutPairSet, donutColorSet)
     }
 
-
-    private fun showStatistic() {
+    //statistic
+    private fun showStatistic(focusFrequency:Int,breakTimes:Int,focusTime: Int) {
         requireView().findViewById<TextView>(R.id.focusFrequency1)!!.text =
             (focusFrequency / 10).toString()
         requireView().findViewById<TextView>(R.id.focusFrequency0)!!.apply {
@@ -62,41 +57,70 @@ class FocusStatisticFragment : Fragment() {
             text = (focusTime % 10).toString()
         }
     }
-
-
-    private fun setDonutTotal(): Float {
-        donutTotal = 0f
-        for (data in donutSet)
+    //lineChart
+    private fun setLineChart(Set:LinkedHashMap<String,Float>){
+        lineChart.animation.duration = animationDuration
+        lineChart.animate(Set)
+    }
+    //donutChart
+    private fun setDonutTotal(Set:List<Float>): Float {
+        var donutTotal = 0f
+        for (data in Set)
             donutTotal += data
-        return donutTotal// - donutSet[donutSet.size-1]
+        return donutTotal
     }
 
-
     @SuppressLint("CutPasteId")
-    private fun setDonutChart(){
+    private fun setDonutChart(Set: LinkedHashMap<String, Float>,ColorSet:IntArray){
         val legendCreator = requireView().findViewById<LinearLayout>(R.id.legendLayout)
         legendCreator.removeAllViews()
-        for (data in donutPairSet) {
-            val tempLegendData = linkedMapOf(" " to 0f, data.toPair().first to data.toPair().second)
+        val donutSet = Set.map { it.value }
+        var counter = 0
+
+        for (data in Set) {
+            val tempLegendData = linkedMapOf(" " to 0f, data.toPair().first to 10f)
             val legendItem = LayoutInflater.from(legendCreator.context)
                 .inflate((R.layout.focus_statistic_legend_item), legendCreator, false)
+            if(counter < Set.size-1)
+                legendItem.findViewById<HorizontalBarChartView>(R.id.horizontalBarChart).barsColor = ColorSet[ColorSet.size - counter-1]
+            else
+                legendItem.findViewById<HorizontalBarChartView>(R.id.horizontalBarChart).barsColor = ColorSet[0]
             legendItem.findViewById<HorizontalBarChartView>(R.id.horizontalBarChart).animation.duration = legendAnimationDuration
             legendItem.findViewById<HorizontalBarChartView>(R.id.horizontalBarChart).animate(tempLegendData)
             legendCreator.addView(legendItem)
+            counter++
         }
         val donutChartCreator = requireView().findViewById<LinearLayout>(R.id.donutChartLayout)
         val chartItem = LayoutInflater.from(donutChartCreator.context)
             .inflate((R.layout.focus_statistic_donutchart_item), donutChartCreator, false)
         chartItem.findViewById<DonutChartView>(R.id.donutChart).animation.duration = animationDuration
-        chartItem.findViewById<DonutChartView>(R.id.donutChart).donutColors = donutColorSet
-        chartItem.findViewById<DonutChartView>(R.id.donutChart).donutTotal = setDonutTotal()
+        chartItem.findViewById<DonutChartView>(R.id.donutChart).donutColors = ColorSet
+        chartItem.findViewById<DonutChartView>(R.id.donutChart).donutTotal = setDonutTotal(donutSet)
         chartItem.findViewById<DonutChartView>(R.id.donutChart).animate(donutSet)
         donutChartCreator.addView(chartItem)
     }
 
+
+
+
     companion object {
+        //constant variable
         private const val animationDuration = 1000L
         private const val legendAnimationDuration = 0L
+        private val donutColorSet = intArrayOf(
+            Color.parseColor("#70977F"),
+            Color.parseColor("#95B596"),
+            Color.parseColor("#EEEEDD"),
+            Color.parseColor("#E8D7FF"),
+            Color.parseColor("#CCCCFF"),
+            Color.parseColor("#AAAAFF"),
+            Color.parseColor("#8D8DEF")
+        )
+
+        //read from database
+        private var focusFrequency = 13
+        private var breakTimes = 14
+        private var focusTime = 147
         private val lineSet = linkedMapOf(
             "label1" to 5f,
             "label2" to 4.5f,
@@ -111,20 +135,15 @@ class FocusStatisticFragment : Fragment() {
             "label11" to 3f,
             "label12" to 4f
         )
-        private var donutSet = listOf(
-            200f,
-            120f,
-            80f
+        private var donutPairSet = linkedMapOf<String, Float>(
+            "A" to 100f,
+            "B" to 100f,
+            "C" to 200f,
+            "D" to 200f,
+            "E" to 300f,
+            "F" to 400f,
+            "G" to 500f
         )
-        var donutPairSet = linkedMapOf<String, Float>(
-            "A" to 200f,
-            "B" to 120f,
-            "C" to 80f
-        )
-        val donutColorSet = intArrayOf(
-            Color.parseColor("#8888CC"),
-            Color.parseColor("#CCCCFF"),
-            Color.parseColor("#AAAAFF")
-        )
+
     }
 }
