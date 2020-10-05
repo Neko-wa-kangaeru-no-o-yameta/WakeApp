@@ -186,10 +186,10 @@ class CountDownProgress: View {
         animator.end()
     }
 
-    fun startCountDownTime(myCountDownTimer: CountDownTimer){
-        //调用倒计时操作
-        myCountDownTimer.start()
-    }
+//    fun startCountDownTime(myCountDownTimer: CountDownTimer){
+//        //调用倒计时操作
+//        myCountDownTimer.start()
+//    }
 
     fun setCountdownTime(countdownTime: Long) {
         this.countdownTime = countdownTime

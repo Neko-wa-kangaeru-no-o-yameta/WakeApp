@@ -2,16 +2,10 @@ package indi.hitszse2020g6.wakeapp
 
 import android.Manifest
 import android.app.AppOpsManager
-import android.content.ComponentName
-import android.content.Context
-import android.content.Intent
-import android.content.ServiceConnection
+import android.content.*
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Build
-import android.os.Bundle
-import android.os.IBinder
-import android.os.Process
+import android.os.*
 import android.provider.Settings
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -73,15 +67,6 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
-        //获得启动该activity的intent对象
-        var myIntent:Intent = intent
-        if(myIntent.getIntExtra("RequestCode",-1) == REQUEST_OPEN_TIMER_FRG){
-//            findNavController(R.id.mainNavFragment).navigate(R.id.action_global_mainPageFragment)
-            Log.d("OOOOOOOOOOOOOOOOOPS","Hello")
-            findNavController(R.id.mainNavFragment).navigate(R.id.action_global_focusFragment)
-            bottomNavigationView.selectedItemId = R.id.bottomNavFocusBtn
-        }
-
         //获取应用列表权限
         hasPermissionToReadNetworkStats()
         //获取悬浮窗权限
@@ -111,6 +96,16 @@ class MainActivity : AppCompatActivity() {
                 Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName"))
             startActivity(intent)
             Log.d("BCKGRND", "can't draw overlay")
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        //获得启动该activity的intent对象
+        val myIntent: Intent = intent
+        if (myIntent.getIntExtra("RequestCode", -1) == REQUEST_OPEN_TIMER_FRG) {
+            findNavController(R.id.mainNavFragment).navigate(R.id.action_global_focusFragment)
+            bottomNavigationView.selectedItemId = R.id.bottomNavFocusBtn
         }
     }
 
