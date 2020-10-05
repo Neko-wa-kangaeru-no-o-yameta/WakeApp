@@ -10,16 +10,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.GridLayout
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
-import indi.hitszse2020g6.wakeapp.R
-import indi.hitszse2020g6.wakeapp.getPerWeekCourse
-import kotlinx.android.synthetic.main.fragment_week_course.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -55,7 +54,6 @@ class WeekCourseFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         view.findViewById<GridLayout>(R.id.GridLayout).apply {
             GlobalScope.launch(Dispatchers.IO){
                 val weekCourse = activity?.getPerWeekCourse(param1!!)!!
@@ -64,27 +62,73 @@ class WeekCourseFragment : Fragment() {
                         val couseName = ele.courseName
                         val courseTime = ele.time
                         val couseDayOfWeek = ele.dayOfWeek
-                        val coursAddress = ele.address
+                        val courseAddress = ele.address
                         val cardTag = "${couseDayOfWeek.toString()}${courseTime.toString()}"
-                        Log.d("cardTag",cardTag)
-                        var cardView = view.findViewWithTag<CardView>(cardTag)
+                        val linearTag = "layout${couseDayOfWeek.toString()}${courseTime.toString()}"
+                        Log.d("cardTag", cardTag)
+                        val cardView = view.findViewWithTag<CardView>(cardTag)
                         if(cardView  == null){
-                            Log.d("cardView","is empty")
+                            Log.d("cardView", "is empty")
                         }
-                        Log.d("cardView","cardView is getted")
-                        //TO DO 字体的调整问题
+                        Log.d("cardView", "cardView is getted")
+                        //TODO 字体的调整问题
+                        //TODO 在cardView中加入LinearLayout
                         with(cardView){
-                            setCardBackgroundColor(resources.getColor(R.color.colorPrimary,context.theme))
-                            val textView = TextView(context)
-                            Log.d("textView","textView is created")
-                            with(textView){
+                            //对于一个CardView，先设置其颜色
+                            setCardBackgroundColor(
+                                resources.getColor(
+                                    R.color.colorPrimary,
+                                    context.theme
+                                )
+                            )
+                            //然后对这个CardView，连接Linearlayout
+                            val layout = findViewWithTag<LinearLayout>(linearTag)
+//                            val layout = LinearLayout(context)
+//                            layout.setLayoutParams(
+//                                LinearLayout.LayoutParams(
+//                                    ViewGroup.LayoutParams.MATCH_PARENT,
+//                                    ViewGroup.LayoutParams.WRAP_CONTENT
+//                                )
+//                            )
+//                            layout.orientation = LinearLayout.HORIZONTAL // 所有组件垂直摆放
+//                            val textCourse = LinearLayout.LayoutParams(
+//                                ViewGroup.LayoutParams.WRAP_CONTENT,
+//                                ViewGroup.LayoutParams.WRAP_CONTENT
+//                            ) // 定义文本显示组件
+                            val textViewCourse = TextView(context)
+                            with(textViewCourse){
+                                Log.d("textViewCourse", "get in textViewCourse")
+
                                 text = couseName
-                                setSingleLine(true)
+                                Log.d("text", couseName)
+                                setLines(2)
+//                                layoutParams = textCourse
                                 setEllipsize(TextUtils.TruncateAt.valueOf("END"))
                                 setEms(1)
-                                setTextColor(resources.getColor(R.color.design_default_color_on_primary,context.theme))
+                                setTextColor(
+                                    resources.getColor(
+                                        R.color.design_default_color_on_primary,
+                                        context.theme
+                                    )
+                                )
                             }
-                            addView(textView)
+                            layout.addView(textViewCourse)
+                            val textViewCourseAddress = TextView(context)
+                            with(textViewCourseAddress){
+                                text = courseAddress
+                                Log.d("text", couseName)
+                                setLines(2)
+//                                layoutParams = textCourse
+                                setEllipsize(TextUtils.TruncateAt.valueOf("END"))
+                                setEms(1)
+                                setTextColor(
+                                    resources.getColor(
+                                        R.color.design_default_color_on_primary,
+                                        context.theme
+                                    )
+                                )
+                            }
+                            layout.addView(textViewCourseAddress)
                         }
                     }
                 }
