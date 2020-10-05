@@ -31,7 +31,7 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".BlockAppService" android:exported="false"></service>
+        <service android:name=".BackgroundService" android:exported="false"></service>
     </application>
 
 </manifest>

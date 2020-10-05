@@ -10,23 +10,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.os.Build
-import android.text.TextUtils
 import android.util.Log
-import android.widget.GridLayout
-import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.view.get
-import androidx.fragment.app.findFragment
-import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 
-import kotlinx.android.synthetic.*
-import kotlinx.android.synthetic.main.fragment_focus.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -182,7 +173,7 @@ class Schedule : Fragment() {
                                                     GlobalScope.launch(Dispatchers.IO){
                                                         context?.let {
                                                                 it1 -> AppRoomDB.getDataBase(it1).getDAO()
-                                                            .insert(course) }
+                                                            .insertEvent(course) }
                                                     }
 //                                                    Log.d("insertAppdatabase?", "ok")
                                                 }
@@ -199,7 +190,7 @@ class Schedule : Fragment() {
                                                 GlobalScope.launch(Dispatchers.IO){
                                                     context?.let {
                                                             it1 -> AppRoomDB.getDataBase(it1).getDAO()
-                                                        .insert(course) }
+                                                        .insertEvent(course) }
                                                 }
                                             }
                                         }

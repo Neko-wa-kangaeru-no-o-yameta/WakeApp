@@ -9,12 +9,9 @@ import android.os.*
 import android.provider.Settings
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import kotlinx.android.synthetic.main.activity_main.*
-import java.sql.Time
-import java.util.*
 
 
 const val INTENT_AFFAIR_DETAIL = 1
@@ -24,12 +21,12 @@ const val REQUEST_SETTING_EVENT = 3
 class MainActivity : AppCompatActivity() {
 
     var mBound = false
-    lateinit var blockAppService: BlockAppService
-    lateinit var binder: BlockAppService.MyBinder
+    lateinit var blockAppService: BackgroundService
+    lateinit var binder: BackgroundService.MyBinder
 
     private val connection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-            binder = service as BlockAppService.MyBinder
+            binder = service as BackgroundService.MyBinder
             blockAppService = binder.getService()
             mBound = true
 
@@ -91,7 +88,7 @@ class MainActivity : AppCompatActivity() {
         }
         //startService
         //在MainActivity onStart的时候开启一个service,这个service安排指定的任务在指定的演示后开始进行重复的固定速率的执行
-        Intent(this, BlockAppService::class.java).also { intent ->
+        Intent(this, BackgroundService::class.java).also { intent ->
             startService(intent)
             bindService(intent, connection, Context.BIND_AUTO_CREATE)
             Log.d("B Main Activity", "trying to bind")
@@ -159,7 +156,7 @@ class MainActivity : AppCompatActivity() {
                 handler.postDelayed(object:Runnable{
                     override fun run() {
                         if (t != null) {
-                            binder.startCoutnDownTimer(t)
+                            binder.startCountDownTimer(t)
                         }
                     }
                 },500)

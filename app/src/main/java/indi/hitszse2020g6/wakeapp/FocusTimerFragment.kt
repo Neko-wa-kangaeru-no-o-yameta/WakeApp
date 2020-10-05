@@ -85,7 +85,7 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
                 myCircle.setAnimation(0f)
 
                 if ((activity as MainActivity).mBound) {
-                    (activity as MainActivity).binder.startCoutnDownTimer(total_time)
+                    (activity as MainActivity).binder.startCountDownTimer(total_time)
                 }
             } else if (condition_flag == -1) {
                 //往数据库里记一下这次的专注时间和专注次数
@@ -408,7 +408,7 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
             myCircle.setAnimation(distance.toFloat() / total_time.toFloat())
 
             if ((activity as MainActivity).mBound) {
-                (activity as MainActivity).binder.startCoutnDownTimer(total_time - distance)
+                (activity as MainActivity).binder.startCountDownTimer(total_time - distance)
             }else{
                 Log.d(TAG,"oooops")
             }

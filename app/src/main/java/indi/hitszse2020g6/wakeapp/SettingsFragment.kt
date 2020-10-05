@@ -17,7 +17,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         findPreference<Preference>("clear_event_table")?.setOnPreferenceClickListener {
             MainPageEventList.eventList.clear()
             GlobalScope.launch(Dispatchers.IO) {
-                MainPageEventList.DAO.deleteAll()
+                MainPageEventList.DAO.deleteAllEvents()
             }
             true
         }
