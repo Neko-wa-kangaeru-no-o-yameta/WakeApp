@@ -64,7 +64,6 @@ class WeekCourseFragment : Fragment() {
                         val couseDayOfWeek = ele.dayOfWeek
                         val courseAddress = ele.address
                         val cardTag = "${couseDayOfWeek.toString()}${courseTime.toString()}"
-                        val linearTag = "layout${couseDayOfWeek.toString()}${courseTime.toString()}"
                         Log.d("cardTag", cardTag)
                         val cardView = view.findViewWithTag<CardView>(cardTag)
                         if(cardView  == null){
@@ -81,20 +80,19 @@ class WeekCourseFragment : Fragment() {
                                     context.theme
                                 )
                             )
-                            //然后对这个CardView，连接Linearlayout
-                            val layout = findViewWithTag<LinearLayout>(linearTag)
-//                            val layout = LinearLayout(context)
-//                            layout.setLayoutParams(
-//                                LinearLayout.LayoutParams(
-//                                    ViewGroup.LayoutParams.MATCH_PARENT,
-//                                    ViewGroup.LayoutParams.WRAP_CONTENT
-//                                )
-//                            )
-//                            layout.orientation = LinearLayout.HORIZONTAL // 所有组件垂直摆放
-//                            val textCourse = LinearLayout.LayoutParams(
-//                                ViewGroup.LayoutParams.WRAP_CONTENT,
-//                                ViewGroup.LayoutParams.WRAP_CONTENT
-//                            ) // 定义文本显示组件
+                            //然后对这个CardView，创建Linearlayout
+                            val layout = LinearLayout(context)
+                            layout.setLayoutParams(
+                                LinearLayout.LayoutParams(
+                                    ViewGroup.LayoutParams.MATCH_PARENT,
+                                    ViewGroup.LayoutParams.MATCH_PARENT
+                                )
+                            )
+                            layout.orientation = LinearLayout.VERTICAL // 所有组件垂直摆放
+                            val textCourse = LinearLayout.LayoutParams(
+                                ViewGroup.LayoutParams.MATCH_PARENT,
+                                ViewGroup.LayoutParams.WRAP_CONTENT
+                            ) // 定义文本显示组件
                             val textViewCourse = TextView(context)
                             with(textViewCourse){
                                 Log.d("textViewCourse", "get in textViewCourse")
@@ -102,7 +100,7 @@ class WeekCourseFragment : Fragment() {
                                 text = couseName
                                 Log.d("text", couseName)
                                 setLines(2)
-//                                layoutParams = textCourse
+                                layoutParams = textCourse
                                 setEllipsize(TextUtils.TruncateAt.valueOf("END"))
                                 setEms(1)
                                 setTextColor(
@@ -116,9 +114,8 @@ class WeekCourseFragment : Fragment() {
                             val textViewCourseAddress = TextView(context)
                             with(textViewCourseAddress){
                                 text = courseAddress
-                                Log.d("text", couseName)
                                 setLines(2)
-//                                layoutParams = textCourse
+                                layoutParams = textCourse
                                 setEllipsize(TextUtils.TruncateAt.valueOf("END"))
                                 setEms(1)
                                 setTextColor(
@@ -129,7 +126,9 @@ class WeekCourseFragment : Fragment() {
                                 )
                             }
                             layout.addView(textViewCourseAddress)
+                            this.addView(layout)
                         }
+
                     }
                 }
             }
