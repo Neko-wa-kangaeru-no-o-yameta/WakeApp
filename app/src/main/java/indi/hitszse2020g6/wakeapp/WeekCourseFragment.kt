@@ -71,10 +71,12 @@ class WeekCourseFragment : Fragment() {
                         if(cardView  == null){
                             Log.d("cardView","is empty")
                         }
+                        Log.d("cardView","cardView is getted")
                         //TO DO 字体的调整问题
                         with(cardView){
                             setCardBackgroundColor(resources.getColor(R.color.colorPrimary,context.theme))
                             val textView = TextView(context)
+                            Log.d("textView","textView is created")
                             with(textView){
                                 text = couseName
                                 setSingleLine(true)
@@ -83,16 +85,6 @@ class WeekCourseFragment : Fragment() {
                                 setTextColor(resources.getColor(R.color.design_default_color_on_primary,context.theme))
                             }
                             addView(textView)
-                            val textView2 = TextView(context)
-                            with(textView2){
-                                text = coursAddress
-                                Log.d("printAddress",text.toString())
-                                setSingleLine(true)
-                                setEllipsize(TextUtils.TruncateAt.valueOf("END"))
-                                setEms(1)
-                                setTextColor(resources.getColor(R.color.design_default_color_on_primary,context.theme))
-                            }
-                            addView(textView2)
                         }
                     }
                 }

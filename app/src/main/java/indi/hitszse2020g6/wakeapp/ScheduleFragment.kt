@@ -10,6 +10,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.text.TextUtils
 import android.util.Log
 import android.widget.GridLayout
@@ -20,6 +22,7 @@ import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.get
+import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.findFragment
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -121,103 +124,112 @@ class Schedule : Fragment() {
         if (data == null || resultCode == AppCompatActivity.RESULT_CANCELED) {
             return
         } else {
-            val uri = data.data
-            uri?.let {
-                val file = FileInputStream(
-                    activity?.contentResolver?.openFileDescriptor(
-                        uri,
-                        "r"
-                    )!!.fileDescriptor
-                )
-                val sheet = XSSFWorkbook(file).getSheetAt(0)
-                for (row in 0 until 9) {
-                    for (col in 0 until 8) {
-                        val cell = sheet.getRow(row).getCell(col)
+            GlobalScope.launch(Dispatchers.IO) {
+                val uri = data.data
+                uri?.let {
+                    val file = FileInputStream(
+                        activity?.contentResolver?.openFileDescriptor(
+                            uri,
+                            "r"
+                        )!!.fileDescriptor
+                    )
+                    val sheet = XSSFWorkbook(file).getSheetAt(0)
+                    for (row in 0 until 9) {
+                        for (col in 0 until 8) {
+                            val cell = sheet.getRow(row).getCell(col)
 
-                        if (cell != null) {
-                            val coursetext = cell.toString()
-//                            Log.d("coursetext", coursetext)
-                            if (!(weekdays.matches(coursetext) || courseTime.matches(coursetext))) {
-                                //是课程
-                                var coursecontent = coursetext
-                                coursecontent = coursecontent.replace("\n", "")//将换行删除
-                                val courseList = courseRegex.findAll(coursecontent)//将其解析
-                                courseList.forEach { f ->
-                                    val m = f.value
-                                    //提取每个课程每个元素
-                                    var element = m.split("][", "[", "]")
-                                    //将其分为课程名字，课程老师，课程所在的时间以及课程地址四个部分
-                                    //因为有一些课程没有老师，统一将老师舍去
-                                    val courseName = element[0]
-                                    val courseWeek = element[2]
-                                    val courseAddress = element[3]
-//                                        Log.d("courseName", courseName)
-//                                        Log.d("courseWeek", courseWeek.toString())
-//                                        Log.d("courseAdress2", courseAdress)
+                            if (cell != null) {
+                                val coursetext = cell.toString()
+                                //                            Log.d("coursetext", coursetext)
+                                if (!(weekdays.matches(coursetext) || courseTime.matches(coursetext))) {
+                                    //是课程
+                                    var coursecontent = coursetext
+                                    coursecontent = coursecontent.replace("\n", "")//将换行删除
+                                    val courseList = courseRegex.findAll(coursecontent)//将其解析
+                                    courseList.forEach { f ->
+                                        val m = f.value
+                                        //提取每个课程每个元素
+                                        var element = m.split("][", "[", "]")
+                                        //将其分为课程名字，课程老师，课程所在的时间以及课程地址四个部分
+                                        //因为有一些课程没有老师，统一将老师舍去
+                                        val courseName = element[0]
+                                        val courseWeek = element[2]
+                                        val courseAddress = element[3]
+                                        //                                        Log.d("courseName", courseName)
+                                        //                                        Log.d("courseWeek", courseWeek.toString())
+                                        //                                        Log.d("courseAdress2", courseAdress)
 
-                                    //将数字部分提取出来,比如1-3，4-6，3，9-14周，则提取出1-3,4-6,3,9-14
-                                    val weekList =
-                                        Regex("[0-9]*-[0-9]*|[0-9]*").findAll(courseWeek)
-                                    weekList.forEach { t ->
-                                        if (t.value != "") {
-//                                            println("week list:" + t.value)
-                                            //对每个星期段进行分析
-                                            element = t.value.split("-")
-                                            if (element.size != 1) {
-                                                //是一个星期段
-                                                val start = element.first().toInt()
-                                                val end = element.last().toInt()
-                                                Log.d("start", start.toString())
-                                                Log.d("end", end.toString())
-                                                for (week in start..end) {
+                                        //将数字部分提取出来,比如1-3，4-6，3，9-14周，则提取出1-3,4-6,3,9-14
+                                        val weekList =
+                                            Regex("[0-9]*-[0-9]*|[0-9]*").findAll(courseWeek)
+                                        weekList.forEach { t ->
+                                            if (t.value != "") {
+                                                //                                            println("week list:" + t.value)
+                                                //对每个星期段进行分析
+                                                element = t.value.split("-")
+                                                if (element.size != 1) {
+                                                    //是一个星期段
+                                                    val start = element.first().toInt()
+                                                    val end = element.last().toInt()
+                                                    Log.d("start", start.toString())
+                                                    Log.d("end", end.toString())
+                                                    for (week in start..end) {
 
+                                                        val course = Course(
+                                                            courseName,
+                                                            week,
+                                                            col,
+                                                            courseAddress,
+                                                            (row - 2)
+                                                        )
+                                                        //                                                    Log.d("insertCourse", course.toString())
+                                                        GlobalScope.launch(Dispatchers.IO) {
+                                                            context?.let { it1 ->
+                                                                AppRoomDB.getDataBase(it1).getDAO()
+                                                                    .insert(course)
+                                                            }
+                                                        }
+                                                        //                                                    Log.d("insertAppdatabase?", "ok")
+                                                    }
+                                                } else {
+                                                    //是单个星期
                                                     val course = Course(
                                                         courseName,
-                                                        week,
+                                                        element.first().toInt(),
                                                         col,
                                                         courseAddress,
                                                         (row - 2)
                                                     )
-//                                                    Log.d("insertCourse", course.toString())
-                                                    GlobalScope.launch(Dispatchers.IO){
-                                                        context?.let {
-                                                                it1 -> AppRoomDB.getDataBase(it1).getDAO()
-                                                            .insert(course) }
+                                                    //                                                Log.d("insertCourse", course.toString())
+                                                    context?.let { it1 ->
+                                                        AppRoomDB.getDataBase(it1).getDAO()
+                                                            .insert(course)
                                                     }
-//                                                    Log.d("insertAppdatabase?", "ok")
-                                                }
-                                            } else {
-                                                //是单个星期
-                                                val course = Course(
-                                                    courseName,
-                                                    element.first().toInt(),
-                                                    col,
-                                                    courseAddress,
-                                                    (row - 2)
-                                                )
-//                                                Log.d("insertCourse", course.toString())
-                                                GlobalScope.launch(Dispatchers.IO){
-                                                    context?.let {
-                                                            it1 -> AppRoomDB.getDataBase(it1).getDAO()
-                                                        .insert(course) }
                                                 }
                                             }
                                         }
                                     }
                                 }
                             }
+                            //                        d("$r $c", cell?.toString() ?: "")
                         }
-//                        d("$r $c", cell?.toString() ?: "")
+                    }
+                    file.close()
+                    Handler(Looper.getMainLooper()).post {
+                        val courseFragment = CourseFragment.newInstance()
+                        childFragmentManager.beginTransaction()
+                            .replace(R.id.fragment2, courseFragment)
+                            .commit()
                     }
                 }
-                file.close()
             }
         }
-        val courseFragment = CourseFragment()
 
-        childFragmentManager.beginTransaction()
-            .replace(R.id.fragment2, courseFragment)
-            .commit()
+//        val courseFragment = CourseFragment.newInstance()
+//        childFragmentManager.beginTransaction()
+//            .replace(R.id.fragment2, courseFragment)
+//            .commit()
+        //Log.d("sche", "replaced")
     }
     companion object {
         /**

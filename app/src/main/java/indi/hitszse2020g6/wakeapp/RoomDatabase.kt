@@ -167,6 +167,7 @@ interface RoomDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertMyTime(mt:MyTimeEntry)
 
+    //SceduleTable
     @Query("SELECT * FROM course_table")
     fun getAll(): List<Course>
 
@@ -178,6 +179,9 @@ interface RoomDAO {
 
     @Query("SELECT MAX(CAST(week AS INT)) FROM course_table")
     fun getMaxWeek(): Int
+
+    @Query("DELETE FROM course_table")
+    fun deleteAllCourse()
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(vararg course: Course)
