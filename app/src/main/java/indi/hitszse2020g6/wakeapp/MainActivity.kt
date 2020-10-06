@@ -43,7 +43,8 @@ class MainActivity : AppCompatActivity() {
 
             when(intent.action) {
                 ACTION_START_FOCUS_TIME-> {
-                    binder.startCountDownTimer(intent.getLongExtra(PARAM_START_FOCUS_TIME, 0))
+                    binder.startCoutnDownTimer(intent.getLongExtra(PARAM_START_FOCUS_TIME, 0),"自定义专注")
+//                    binder.startCountDownTimer(intent.getLongExtra(PARAM_START_FOCUS_TIME, 0))
                 }
             }
         }

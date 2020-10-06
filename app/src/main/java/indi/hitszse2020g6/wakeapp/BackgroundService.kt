@@ -200,10 +200,6 @@ class BackgroundService : Service() {
             defaultWhiteList = defWL
         }
 
-        fun changePage(t:Long){
-            val myIntent = Intent()
-            myIntent.putExtra("change_page_data",t)
-            myIntent.action = "change_page"
         fun changePage(startTime:Long,endTime:Long,focusTitle:String){
             var t = endTime-startTime
             val myIntent = Intent()
