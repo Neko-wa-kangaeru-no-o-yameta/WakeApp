@@ -98,6 +98,7 @@ data class Course(
     @ColumnInfo(name = "week") val week: Int,
     @ColumnInfo(name = "day_of_week") val dayOfWeek: Int,
     @ColumnInfo(name = "class_address") val address: String,
+//    var detail              : List<Detail>,     // detail, Serialized Json
     @ColumnInfo(name = "class_time") val time: Int,
     @ColumnInfo(name = "course_color") val color: Int?
 ) {

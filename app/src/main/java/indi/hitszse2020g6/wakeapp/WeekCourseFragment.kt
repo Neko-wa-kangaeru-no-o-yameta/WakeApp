@@ -130,7 +130,6 @@ class WeekCourseFragment : Fragment() {
                             layout.addView(textViewCourseAddress)
                             this.addView(layout)
                         }
-
                     }
                 }
             }

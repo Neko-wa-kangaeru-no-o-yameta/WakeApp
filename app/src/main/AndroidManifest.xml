@@ -36,6 +36,9 @@
             android:name=".BackgroundService"
             android:exported="false" />
 
+        <receiver android:name=".AlarmReceiver"/>
+        <receiver android:name=".FocusReceiver"/>
+
     </application>
 
 </manifest>
