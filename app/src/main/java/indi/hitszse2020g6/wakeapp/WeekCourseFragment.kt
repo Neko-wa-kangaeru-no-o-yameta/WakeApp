@@ -63,6 +63,7 @@ class WeekCourseFragment : Fragment() {
                         val courseTime = ele.time
                         val couseDayOfWeek = ele.dayOfWeek
                         val courseAddress = ele.address
+                        var courseColor = ele.color
                         val cardTag = "${couseDayOfWeek.toString()}${courseTime.toString()}"
                         Log.d("cardTag", cardTag)
                         val cardView = view.findViewWithTag<CardView>(cardTag)
@@ -74,12 +75,13 @@ class WeekCourseFragment : Fragment() {
                         //TODO 在cardView中加入LinearLayout
                         with(cardView){
                             //对于一个CardView，先设置其颜色
-                            setCardBackgroundColor(
-                                resources.getColor(
-                                    R.color.colorPrimary,
-                                    context.theme
-                                )
-                            )
+                            if (courseColor != null) {
+                                setCardBackgroundColor(courseColor)
+                            }else{
+                                setCardBackgroundColor(
+                                    resources.getColor(
+                                        R.color.colorPrimary,context.theme))
+                            }
                             //然后对这个CardView，创建Linearlayout
                             val layout = LinearLayout(context)
                             layout.setLayoutParams(
@@ -114,7 +116,7 @@ class WeekCourseFragment : Fragment() {
                             val textViewCourseAddress = TextView(context)
                             with(textViewCourseAddress){
                                 text = courseAddress
-                                setLines(2)
+                                setLines(1)
                                 layoutParams = textCourse
                                 setEllipsize(TextUtils.TruncateAt.valueOf("END"))
                                 setEms(1)
