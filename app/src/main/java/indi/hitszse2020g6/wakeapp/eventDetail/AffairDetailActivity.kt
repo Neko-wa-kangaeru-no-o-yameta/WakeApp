@@ -19,20 +19,19 @@ import java.util.*
 
 const val UNIQUE_ID_TO_AFFAIR_DETAIL = "indi.hitszse2020g6.wakeapp.UNIQUE_ID_FOR_MAIN_TO_AFFAIR_DETAIL"
 
-class AffairDetailActivity : AppCompatActivity() {
+class AffairDetailActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
     private var isNewAffair = true
     private lateinit var entryToEdit: EventTableEntry
 
-    companion object{
-        private var c: Calendar = Calendar.getInstance()
-        var year    : Int = c.get(Calendar.YEAR)
-        var month   : Int = c.get(Calendar.MONTH)
-        var date    : Int = c.get(Calendar.DAY_OF_MONTH)
-        var hour    : Int = c.get(Calendar.HOUR_OF_DAY)
-        var minute  : Int = c.get(Calendar.MINUTE)
-        var alarm   : Boolean = true
-    }
+    private var c: Calendar = Calendar.getInstance()
+    var year    : Int = c.get(Calendar.YEAR)
+    var month   : Int = c.get(Calendar.MONTH)
+    var date    : Int = c.get(Calendar.DAY_OF_MONTH)
+    var hour    : Int = c.get(Calendar.HOUR_OF_DAY)
+    var minute  : Int = c.get(Calendar.MINUTE)
+    var alarm   : Boolean = true
+
 
     private fun toggleImageDrawable(btn: ImageButton, on: Boolean, onID: Int, offID: Int) {
         with(btn) {
@@ -192,33 +191,20 @@ class AffairDetailActivity : AppCompatActivity() {
         view.setImageDrawable(ContextCompat.getDrawable(applicationContext, R.drawable.add_circle_outline_24))
     }
 
-    class DatePickerFragment: DialogFragment(), DatePickerDialog.OnDateSetListener {
-        override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-            return DatePickerDialog(activity as Context,this, year, month, date)
-        }
-
-        override fun onDateSet(view: DatePicker?, setYear: Int, setMonth: Int, setDayOfMonth: Int) {
-            year = setYear
-            month = setMonth + 1
-            date = setDayOfMonth
-            Log.d("OnTimeSet", "$year : $month : $date ")
-            activity?.supportFragmentManager?.let { TimePickerFragment().show(it, "timePicker") }
-        }
+    override fun onDateSet(view: DatePicker?, setYear: Int, setMonth: Int, setDayOfMonth: Int) {
+        year = setYear
+        month = setMonth + 1
+        date = setDayOfMonth
+        Log.d("OnTimeSet", "$year : $month : $date ")
+        supportFragmentManager.let { TimePickerFragment().show(it, "timePicker") }
     }
 
-
-    class TimePickerFragment: DialogFragment(), TimePickerDialog.OnTimeSetListener {
-        override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-            return TimePickerDialog(activity, this, hour, minute, true)
-        }
-
-        override fun onTimeSet(view: TimePicker?, setHourOfDay: Int, setMinute: Int) {
-            hour = setHourOfDay
-            minute = setMinute
-            Log.d("OnTimeSet", "$hour : $minute")
-            activity?.findViewById<TextView>(R.id.affairDetail_stopTimeText)?.text = requireContext().getString(
-                R.string.eventList_stopTimeTVContent
-            ).format(month, date, hour, minute)
-        }
+    override fun onTimeSet(view: TimePicker?, setHourOfDay: Int, setMinute: Int) {
+        hour = setHourOfDay
+        minute = setMinute
+        Log.d("OnTimeSet", "$hour : $minute")
+        findViewById<TextView>(R.id.affairDetail_stopTimeText).text = getString(
+            R.string.eventList_stopTimeTVContent
+        ).format(month, date, hour, minute)
     }
 }

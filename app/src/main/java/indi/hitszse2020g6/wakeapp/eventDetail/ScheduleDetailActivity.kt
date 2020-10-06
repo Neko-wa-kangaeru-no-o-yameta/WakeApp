@@ -39,10 +39,12 @@ class MyTime {
     }
 }
 
-class ScheduleDetailActivity : AppCompatActivity() {
+class ScheduleDetailActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
     private var isNewSchedule = true
     private lateinit var entryToEdit: EventTableEntry
+
+    var settingStartTime = true
 
     companion object{
         var startTime = MyTime()
@@ -186,7 +188,8 @@ class ScheduleDetailActivity : AppCompatActivity() {
                 )
             }
             setOnClickListener {
-                DatePickerFragment(isStartDate = true).show(supportFragmentManager, "DatePicker start")
+                settingStartTime=true
+                DatePickerFragment().show(supportFragmentManager, "DatePicker start")
             }
         }
 
@@ -202,7 +205,8 @@ class ScheduleDetailActivity : AppCompatActivity() {
                 )
             }
             setOnClickListener {
-                DatePickerFragment(isStartDate = false).show(supportFragmentManager, "DatePicker stop")
+                settingStartTime=false
+                DatePickerFragment().show(supportFragmentManager, "DatePicker stop")
             }
         }
 
@@ -244,78 +248,44 @@ class ScheduleDetailActivity : AppCompatActivity() {
         }
     }
 
-
-    class DatePickerFragment(private val isStartDate: Boolean): DialogFragment(), DatePickerDialog.OnDateSetListener {
-        override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-            return if(isStartDate) {
-                DatePickerDialog(
-                    activity as Context,
-                    this,
-                    startTime.year,
-                    startTime.month,
-                    startTime.date
-                )
-            } else {
-                DatePickerDialog(
-                    activity as Context,
-                    this,
-                    stopTime.year,
-                    stopTime.month,
-                    stopTime.date
-                )
-            }
+    override fun onDateSet(view: DatePicker?, setYear: Int, setMonth: Int, setDayOfMonth: Int) {
+        if(settingStartTime) {
+            startTime.year = setYear
+            startTime.month = setMonth
+            startTime.date = setDayOfMonth
+        } else {
+            stopTime.year = setYear
+            stopTime.month = setMonth
+            stopTime.date = setDayOfMonth
         }
-
-        override fun onDateSet(view: DatePicker?, setYear: Int, setMonth: Int, setDayOfMonth: Int) {
-            if(isStartDate) {
-                startTime.year = setYear
-                startTime.month = setMonth
-                startTime.date = setDayOfMonth
-            } else {
-                stopTime.year = setYear
-                stopTime.month = setMonth
-                stopTime.date = setDayOfMonth
-            }
-            Log.d("OnTimeSet", "$setYear : ${setMonth+1} : $setDayOfMonth ")
-            activity?.supportFragmentManager?.let { TimePickerFragment(isStartDate).show(it, "timePicker") }
-        }
+        Log.d("OnTimeSet", "$setYear : ${setMonth+1} : $setDayOfMonth ")
+        supportFragmentManager.let { TimePickerFragment().show(it, "timePicker") }
     }
 
-
-    class TimePickerFragment(private val isStartDate: Boolean): DialogFragment(), TimePickerDialog.OnTimeSetListener {
-        override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-            return if(isStartDate) {
-                TimePickerDialog(activity, this, startTime.hour, startTime.minute, true)
-            } else {
-                TimePickerDialog(activity, this, stopTime.hour, stopTime.minute, true)
-            }
+    override fun onTimeSet(view: TimePicker?, setHourOfDay: Int, setMinute: Int) {
+        if(settingStartTime) {
+            startTime.hour = setHourOfDay
+            startTime.minute = setMinute
+            findViewById<TextView>(R.id.scheduleDetail_startTimeText)?.text = getString(
+                R.string.eventList_stopTimeTVContent
+            ).format(
+                startTime.month + 1,
+                startTime.date,
+                startTime.hour,
+                startTime.minute
+            )
+        } else {
+            stopTime.hour = setHourOfDay
+            stopTime.minute = setMinute
+            findViewById<TextView>(R.id.scheduleDetail_stopTimeText)?.text = getString(
+                R.string.eventList_stopTimeTVContent
+            ).format(
+                stopTime.month + 1,
+                stopTime.date,
+                stopTime.hour,
+                stopTime.minute
+            )
         }
-
-        override fun onTimeSet(view: TimePicker?, setHourOfDay: Int, setMinute: Int) {
-            if(isStartDate) {
-                startTime.hour = setHourOfDay
-                startTime.minute = setMinute
-                activity?.findViewById<TextView>(R.id.scheduleDetail_startTimeText)?.text = requireContext().getString(
-                    R.string.eventList_stopTimeTVContent
-                ).format(
-                    startTime.month + 1,
-                    startTime.date,
-                    startTime.hour,
-                    startTime.minute
-                )
-            } else {
-                stopTime.hour = setHourOfDay
-                stopTime.minute = setMinute
-                activity?.findViewById<TextView>(R.id.scheduleDetail_stopTimeText)?.text = requireContext().getString(
-                    R.string.eventList_stopTimeTVContent
-                ).format(
-                    stopTime.month + 1,
-                    stopTime.date,
-                    stopTime.hour,
-                    stopTime.minute
-                )
-            }
-            Log.d("OnTimeSet", "$setHourOfDay : $setMinute")
-        }
+        Log.d("OnTimeSet", "$setHourOfDay : $setMinute")
     }
 }
