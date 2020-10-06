@@ -45,7 +45,7 @@ private const val ARG_PARAM2 = "param2"
 
 const val INTENT_ID_GET_FILE = 1
 const val INTENT_GRANT_PERMISSION = 2
-
+const val INTENT_ADD_COURSE = 3
 class Schedule : Fragment() {
 
     // TODO: Rename and change types of parameters
@@ -108,7 +108,7 @@ class Schedule : Fragment() {
                         true
                     }
                     R.id.scheduleFragment_speedDialNewCourseAdded ->{
-
+                        startActivityForResult(Intent(activity,CourseAddActivity::class.java),INTENT_ADD_COURSE)
                         close()
                         true
                     }
