@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Schedule">
+    tools:context=".schedule.Schedule">
 
     <!-- TODO: Update blank fragment layout -->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -12,17 +12,15 @@
         android:layout_height="match_parent"
         tools:context=".workers.MainActivity">
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/floatingActionButton"
+        <com.leinardi.android.speeddial.SpeedDialView
+            android:id="@+id/addCourseBotton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
-            android:clickable="true"
-            android:focusable="true"
+            android:padding="12dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@drawable/add_fill_24" />
+            app:sdMainFabClosedSrc="@drawable/add_fill_24"
+            app:sdOverlayLayout="@id/mainPage_overlay"/>
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragment2"

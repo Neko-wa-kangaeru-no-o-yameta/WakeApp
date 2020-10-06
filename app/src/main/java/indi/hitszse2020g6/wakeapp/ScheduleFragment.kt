@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.leinardi.android.speeddial.SpeedDialView
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 
 import kotlinx.coroutines.Dispatchers
@@ -90,16 +91,43 @@ class Schedule : Fragment() {
                 )
             }
         }
-        view.findViewById<FloatingActionButton>(R.id.floatingActionButton).setOnClickListener {
-            val chooseFile = Intent(Intent.ACTION_GET_CONTENT).apply {
-                addCategory(Intent.CATEGORY_OPENABLE)
-                type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        view.findViewById<SpeedDialView>(R.id.addCourseBotton).apply {
+            inflate(R.menu.schedule_fragment_speed_dial_menu)
+            setOnActionSelectedListener {actionItems->
+                when(actionItems.id){
+                    R.id.scheduleFragment_speedDialNewExcel ->{
+                        val chooseFile = Intent(Intent.ACTION_GET_CONTENT).apply {
+                            addCategory(Intent.CATEGORY_OPENABLE)
+                            type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                        }
+                        startActivityForResult(
+                            chooseFile,
+                            INTENT_ID_GET_FILE
+                        )
+                        close()
+                        true
+                    }
+                    R.id.scheduleFragment_speedDialNewCourseAdded ->{
+
+                        close()
+                        true
+                    }
+                    else ->{
+                        false
+                    }
+                }
             }
-            startActivityForResult(
-                chooseFile,
-                INTENT_ID_GET_FILE
-            )
         }
+//        view.findViewById<FloatingActionButton>(R.id.floatingActionButton).setOnClickListener {
+//            val chooseFile = Intent(Intent.ACTION_GET_CONTENT).apply {
+//                addCategory(Intent.CATEGORY_OPENABLE)
+//                type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+//            }
+//            startActivityForResult(
+//                chooseFile,
+//                INTENT_ID_GET_FILE
+//            )
+//        }
     }
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -24,6 +24,7 @@
     <string name="tab_text_1">Tab 1</string>
     <string name="tab_text_2">Tab 2</string>
     <string name="eventDetail_titleText">修改事件</string>
+    <string name="addCourseDetail_titleText">新建课程信息</string>
     <string name="cancel">Cancel</string>
     <string name="confirm">Confirm</string>
     <string name="eventDetail_hint_addReminder">Add reminder</string>
@@ -33,12 +34,15 @@
     <string name="scheduleDetail_noStartTimeHint">点击修改开始时间</string>
     <string name="eventDetail_noStopTimeHint">点击修改结束时间</string>
     <string name="eventDetail_eventTitleInputField">事件标题</string>
+    <string name="courseDetail_courseNameInputField">课程名称</string>
     <string name="eventDetail_timeTitleText">时间信息</string>
     <string name="scheduleDetail_mute">Mute</string>
     <string name="scheduleDetail_focus">Focus</string>
     <string name="eventDetail_alarm">Alarm</string>
     <string name="mainPage_speedDialNewAffairTitle">新建事务</string>
     <string name="mainPage_speedDialNewScheduleTitle">新建日程</string>
+    <string name="scheduleFragment_speedDialNewExcelTitle">导入课程表</string>
+    <string name="scheduleFragment_speedDialNewCourseAddedTitle">新建课程</string>
     <string name="default_event_title">默认事件标题</string>
     <string name="eventDetail_deleteDetail">Delete Detail</string>
     <string name="eventDetail_detailList_content">备注内容</string>
@@ -69,4 +73,10 @@
     <string name="星期五">星期五</string>
     <string name="星期六">星期六</string>
     <string name="星期日">星期日</string>
+    <string name="title_activity_add_course_detail">AddCourseDetailActivity</string>
+    <!--
+    This string is used for square devices and overridden by hello_world in
+    values-round/strings.xml for round devices.
+    -->
+    <string name="hello_world">Hello Square World!</string>
 </resources>
