@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import indi.hitszse2020g6.wakeapp.mainPage.MainPageEventList
+import indi.hitszse2020g6.wakeapp.mainPage.PARAM_START_FOCUS_FROM_BACKGROUND
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -45,13 +46,14 @@ class MainActivity : AppCompatActivity() {
 
             when(intent.action) {
                 ACTION_START_FOCUS_TIME-> {
-                    binder.startCoutnDownTimer(intent.getLongExtra(PARAM_START_FOCUS_TIME, 0),"自定义专注")
+                    binder.startCountDownTimer(intent.getLongExtra(PARAM_START_FOCUS_TIME, 0),"自定义专注")
 //                    binder.startCountDownTimer(intent.getLongExtra(PARAM_START_FOCUS_TIME, 0))
                 }
             }
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
+            Log.d("MainActivity","disconnected")
             mBound = false
         }
     }
@@ -90,9 +92,18 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        when(intent.action) {
-            ACTION_START_FOCUS_TIME-> {
-                Log.d("MainActivity", "Load alarm request @ ${System.currentTimeMillis()}")
+        val startFocusUid = intent.getLongExtra(PARAM_START_FOCUS_FROM_BACKGROUND, -1)
+        if(startFocusUid != -1L) {
+            GlobalScope.launch(Dispatchers.IO) {
+                val entry = MainPageEventList.DAO.getEvent(startFocusUid)
+                Handler(Looper.getMainLooper()).postDelayed({
+                    Log.d("MainActivity", "Starting Timer...")
+                    binder.setUseCustomWhiteList(entry.hasCustomWhiteList)
+                    binder.setCustomWhiteList(entry.customWhiteList)
+                    binder.setIsBlocking(true)
+                    binder.changePage(entry.startTime, entry.stopTime, entry.title)
+//                    binder.startCoutnDownTimer()
+                }, 500)
             }
         }
     }
@@ -121,7 +132,7 @@ class MainActivity : AppCompatActivity() {
         //在MainActivity onStart的时候开启一个service,这个service安排指定的任务在指定的演示后开始进行重复的固定速率的执行
         Intent(this, BackgroundService::class.java).also { intent ->
             startService(intent)
-            bindService(intent, connection, Context.BIND_AUTO_CREATE)
+//            bindService(intent, connection, Context.BIND_AUTO_CREATE)
             Log.d("B Main Activity", "trying to bind")
         }
 
@@ -144,6 +155,16 @@ class MainActivity : AppCompatActivity() {
             bottomNavigationView.selectedItemId = R.id.bottomNavFocusBtn
             jumped = true
         }
+
+        Intent(this, BackgroundService::class.java).also { intent ->
+            bindService(intent, connection, Context.BIND_AUTO_CREATE)
+            Log.d("B Main Activity", "trying to bind")
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        unbindService(connection)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -170,11 +191,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun receiveBroadCast(){
-        Log.d("MainActivity", "Received intent from background service")
         val intentFilter = IntentFilter()
         intentFilter.addAction("change_page")
         this.registerReceiver(object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
+                Log.d("MainActivity", "Received intent from background service")
                 findNavController(R.id.mainNavFragment).navigate(R.id.action_global_focusFragment)
                 bottomNavigationView.selectedItemId = R.id.bottomNavFocusBtn
                 val bundle = intent.extras
@@ -188,7 +209,7 @@ class MainActivity : AppCompatActivity() {
                 handler.postDelayed(object:Runnable{
                     override fun run() {
                         if (t != null&& title!=null) {
-                            binder.startCoutnDownTimer(t,title)
+                            binder.startCountDownTimer(t,title)
                         }
                     }
                 },500)
@@ -201,9 +222,11 @@ class FocusReceiver: BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         Log.d("Receiver", "received")
         Toast.makeText(context, "receiver received!", Toast.LENGTH_SHORT).show()
+        Log.d("Receiver", "uid: ${intent?.getLongExtra(PARAM_START_FOCUS_FROM_BACKGROUND, -1)}")
         context!!.startActivity(Intent(context, MainActivity::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             putExtra("RequestCode", REQUEST_OPEN_TIMER_FRG)
+            putExtra(PARAM_START_FOCUS_FROM_BACKGROUND, intent?.getLongExtra(PARAM_START_FOCUS_FROM_BACKGROUND, -1))
         })
     }
 }

@@ -108,11 +108,11 @@ class ScheduleDetailActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLi
 
         findViewById<ImageButton>(R.id.scheduleDetail_confirm).setOnClickListener {
             val stop = Calendar.getInstance().apply {
-                set(stopTime.year, stopTime.month, stopTime.date, stopTime.hour, stopTime.minute)
+                set(stopTime.year, stopTime.month, stopTime.date, stopTime.hour, stopTime.minute, 0)
             }
             
             val start = Calendar.getInstance().apply {
-                set(startTime.year, startTime.month, startTime.date, startTime.hour, startTime.minute)
+                set(startTime.year, startTime.month, startTime.date, startTime.hour, startTime.minute, 0)
             }
 
             if(isNewSchedule) {

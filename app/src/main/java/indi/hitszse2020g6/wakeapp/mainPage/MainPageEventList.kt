@@ -15,6 +15,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
+const val PARAM_START_FOCUS_FROM_BACKGROUND = "indi.hitszse2020g6.wakeapp.PARAM_START_FOCUS_FROM_BACKGROUND"
+
 object MainPageEventList {
     lateinit var eventList: MutableList<EventTableEntry>
     lateinit var DAO:RoomDAO
@@ -124,9 +126,9 @@ object MainPageEventList {
             entry.uid = DAO.insertEvent(entry)
 
             Handler(Looper.getMainLooper()).post{
-                configureAlarm(entry, 0)
+                configureAlarm(entry, FLAG_UPDATE_CURRENT)
                 Log.d("Alarm", "trying to set focus...")
-                configureFocus(entry, 0)
+                configureFocus(entry, FLAG_UPDATE_CURRENT)
             }
         }
     }
@@ -182,10 +184,11 @@ object MainPageEventList {
         val minReminderTime = entry.reminder.map { if(it.time < currentTimeInSecond) Long.MAX_VALUE else it.time*1000 }.maxOrNull()
         if(minReminderTime != null) {
             val intentToReceiver = Intent(context, AlarmReceiver::class.java).let{
-                PendingIntent.getBroadcast(context, alarmHash(entry.uid), it, 0)
+                it.putExtra(PARAM_START_FOCUS_FROM_BACKGROUND, entry.uid)
+                PendingIntent.getBroadcast(context, alarmHash(entry.uid), it, flag)
             }
             val intentToActivity = Intent(context, MainActivity::class.java).let {
-                PendingIntent.getActivity(context, alarmHash(entry.uid), it, 0)
+                PendingIntent.getActivity(context, alarmHash(entry.uid), it, flag)
             }
             val alarmInfo = AlarmManager.AlarmClockInfo(minReminderTime, intentToActivity)
             alarmManager.setAlarmClock(alarmInfo, intentToReceiver)
@@ -196,6 +199,7 @@ object MainPageEventList {
 
     fun deleteAlarm(entry: EventTableEntry) {
         Intent(context, AlarmReceiver::class.java).let{
+            it.putExtra(PARAM_START_FOCUS_FROM_BACKGROUND, entry.uid)
             PendingIntent.getBroadcast(context, alarmHash(entry.uid), it, 0)
         }?.let{
             alarmManager.cancel(it)
@@ -205,10 +209,11 @@ object MainPageEventList {
     fun configureFocus(entry: EventTableEntry, flag: Int) {
         if(entry.startTime*1000 > System.currentTimeMillis() && entry.focus) {
             val intentToReceiver = Intent(context, FocusReceiver::class.java).let{
-                PendingIntent.getBroadcast(context, alarmHash(entry.uid), it, 0)
+                it.putExtra(PARAM_START_FOCUS_FROM_BACKGROUND, entry.uid)
+                PendingIntent.getBroadcast(context, focusHash(entry.uid), it, flag)
             }
             val intentToActivity = Intent(context, MainActivity::class.java).let {
-                PendingIntent.getActivity(context, alarmHash(entry.uid), it, 0)
+                PendingIntent.getActivity(context, focusHash(entry.uid), it, flag)
             }
             val alarmInfo = AlarmManager.AlarmClockInfo(entry.startTime*1000, intentToActivity)
             alarmManager.setAlarmClock(alarmInfo, intentToReceiver)
@@ -220,17 +225,18 @@ object MainPageEventList {
 
     fun deleteFocus(entry: EventTableEntry) {
         Intent(context, FocusReceiver::class.java).let{
-            PendingIntent.getBroadcast(context, alarmHash(entry.uid), it, 0)
+            it.putExtra(PARAM_START_FOCUS_FROM_BACKGROUND, entry.uid)
+            PendingIntent.getBroadcast(context, focusHash(entry.uid), it, 0)
         }?.let{
             alarmManager.cancel(it)
         }
     }
 
     fun alarmHash(uid: Long): Int {
-        return abs(uid.toInt())
+        return uid.toInt()
     }
 
     fun focusHash(uid: Long): Int {
-        return abs((Int.MAX_VALUE - uid).toInt())
+        return uid.toInt()
     }
 }
