@@ -192,12 +192,12 @@ interface RoomDAO {
     fun InsertCourseColorIntoTable(course_color:Int,course_name: String)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertEvent(vararg course: Course)
+    fun insertCourse(vararg course: Course)
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    fun updateEvent(course: Course)
+    fun updateCourse(course: Course)
 
     @Delete
-    fun deleteEvent(vararg course: Course)
+    fun deleteCourse(vararg course: Course)
 
 }
