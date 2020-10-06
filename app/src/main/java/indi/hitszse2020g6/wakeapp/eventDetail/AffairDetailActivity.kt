@@ -88,7 +88,7 @@ class AffairDetailActivity : AppCompatActivity(), DatePickerDialog.OnDateSetList
             }
 
             val stopTime = Calendar.getInstance()
-            stopTime.set(year, month, date, hour, minute)
+            stopTime.set(year, month, date, hour, minute, 0)
 
 //            val descHolder = findViewById<RecyclerView>(R.id.eventDetail_descriptionListContainer)
 //            for(i in 0 until EventDetailList.ITEMS.size) {

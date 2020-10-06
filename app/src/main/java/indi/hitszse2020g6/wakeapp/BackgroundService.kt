@@ -55,7 +55,6 @@ val forceWhiteList: List<String> = arrayListOf(
 
 class BackgroundService : Service() {
     private val TAG:String = "BlockApp Service"
-    var isBlocking: Boolean = false
     private val binder: MyBinder = MyBinder()
     private var pendingReturn = false
     private var myCountDownTimer:CountDownTimer? = null
@@ -64,6 +63,11 @@ class BackgroundService : Service() {
     var useCustomWhiteList:Boolean = false
     var customWhiteList:List<String> = ArrayList()
     var defaultWhiteList:List<String> = ArrayList()
+
+    var isBlocking: Boolean = false
+    var startBlocking: Long = -1
+    var stopBlocking: Long = -1
+    var focusTitle: String = ""
 
     var isMuting: Boolean = false
 
@@ -103,7 +107,7 @@ class BackgroundService : Service() {
                         Log.d("BCKGRND", topPackageName)
                         if (!pendingReturn) {
                             Handler(Looper.getMainLooper()).post { drawOverlay() }
-                            Log.d("BCKGRND", "Trying to return...??!!")
+                            Log.d("BCKGRND", "Trying to return...")
                             val i = Intent(this@BackgroundService, MainActivity::class.java)
                             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
@@ -154,13 +158,14 @@ class BackgroundService : Service() {
     inner class MyBinder : Binder() {
         fun getService() : BackgroundService = this@BackgroundService
 
-        fun changeIsBlocking(){
+        fun setIsBlocking(block: Boolean){
             Log.d("BlockAppService","isBlocking changed")
-            isBlocking = !isBlocking
+            isBlocking = block
         }
 
         fun getBlock():Boolean = isBlocking
-        fun startCoutnDownTimer(t:Long,focusTitle:String){
+
+        fun startCountDownTimer(t:Long, focusTitle:String){
             //后台通知前台开始计时并自己开始计时
             Log.d(TAG,"ok")
             myCountTime = t
@@ -200,14 +205,23 @@ class BackgroundService : Service() {
             defaultWhiteList = defWL
         }
 
-        fun changePage(startTime:Long,endTime:Long,focusTitle:String){
+        fun getFocusTitle() = focusTitle
+
+        fun changePage(startTime:Long,endTime:Long, title: String){
             var t = endTime-startTime
             val myIntent = Intent()
+            startBlocking = startTime
+            stopBlocking = endTime
+            focusTitle = title
             myIntent.putExtra("change_page_data",t)
-            myIntent.putExtra("change_page_title",focusTitle)
-            myIntent.setAction("change_page")
+            myIntent.putExtra("change_page_title",title)
+            myIntent.action = "change_page"
             sendBroadcast(myIntent)
         }
+
+        fun getStartTime(): Long = startBlocking
+
+        fun getStopTime(): Long = stopBlocking
     }
 
 }
