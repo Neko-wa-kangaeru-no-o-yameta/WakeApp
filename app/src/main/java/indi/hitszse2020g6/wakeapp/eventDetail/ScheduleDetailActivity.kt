@@ -106,11 +106,11 @@ class ScheduleDetailActivity : AppCompatActivity() {
 
         findViewById<ImageButton>(R.id.scheduleDetail_confirm).setOnClickListener {
             val stop = Calendar.getInstance().apply {
-                set(stopTime.year, stopTime.month-1, stopTime.date, stopTime.hour, stopTime.minute)
+                set(stopTime.year, stopTime.month, stopTime.date, stopTime.hour, stopTime.minute)
             }
             
             val start = Calendar.getInstance().apply {
-                set(startTime.year, startTime.month-1, startTime.date, startTime.hour, startTime.minute)
+                set(startTime.year, startTime.month, startTime.date, startTime.hour, startTime.minute)
             }
 
             if(isNewSchedule) {
@@ -269,11 +269,11 @@ class ScheduleDetailActivity : AppCompatActivity() {
         override fun onDateSet(view: DatePicker?, setYear: Int, setMonth: Int, setDayOfMonth: Int) {
             if(isStartDate) {
                 startTime.year = setYear
-                startTime.month = setMonth + 1
+                startTime.month = setMonth
                 startTime.date = setDayOfMonth
             } else {
                 stopTime.year = setYear
-                stopTime.month = setMonth + 1
+                stopTime.month = setMonth
                 stopTime.date = setDayOfMonth
             }
             Log.d("OnTimeSet", "$setYear : ${setMonth+1} : $setDayOfMonth ")
@@ -298,7 +298,7 @@ class ScheduleDetailActivity : AppCompatActivity() {
                 activity?.findViewById<TextView>(R.id.scheduleDetail_startTimeText)?.text = requireContext().getString(
                     R.string.eventList_stopTimeTVContent
                 ).format(
-                    startTime.month,
+                    startTime.month + 1,
                     startTime.date,
                     startTime.hour,
                     startTime.minute
@@ -309,7 +309,7 @@ class ScheduleDetailActivity : AppCompatActivity() {
                 activity?.findViewById<TextView>(R.id.scheduleDetail_stopTimeText)?.text = requireContext().getString(
                     R.string.eventList_stopTimeTVContent
                 ).format(
-                    stopTime.month,
+                    stopTime.month + 1,
                     stopTime.date,
                     stopTime.hour,
                     stopTime.minute
