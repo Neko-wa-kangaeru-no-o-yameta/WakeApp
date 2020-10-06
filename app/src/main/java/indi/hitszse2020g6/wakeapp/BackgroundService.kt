@@ -1,5 +1,6 @@
 package indi.hitszse2020g6.wakeapp
 
+import android.app.PendingIntent
 import android.app.Service
 import android.app.usage.UsageStats
 import android.app.usage.UsageStatsManager
@@ -12,13 +13,47 @@ import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.WindowManager
-import androidx.annotation.RequiresApi
+import androidx.core.content.res.ResourcesCompat
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.concurrent.schedule
 
 const val REQUEST_OPEN_TIMER_FRG:Int = 109
 
-class BlockAppService : Service() {
+val forceWhiteList: List<String> = arrayListOf(
+    "android",
+    "com.android.bluetooth",
+    "com.android.contacts",
+    "com.android.keychain",
+    "com.android.keyguard",
+    "com.android.launcher",
+    "com.android.nfc",
+    "com.android.phone",
+    "com.android.providers.downloads",
+    "com.android.settings",
+    "com.android.systemui",
+    "com.android.vending",
+    "com.google.android.apps.enterprise.dmagent",
+    "com.google.android.deskclock",
+    "com.google.android.dialer",
+    "com.google.android.gms",
+    "com.google.android.googlequicksearchbox",
+    "com.google.android.gsf",
+    "com.google.android.gsf.login",
+    "com.google.android.inputmethod.latin",
+    "com.google.android.nfcprovision",
+    "com.google.android.setupwizard",
+    "com.samsung.android.contacts",
+    "com.samsung.android.phone",
+    "com.google.android.permissioncontroller",
+    "indi.hitszse2020g6.wakeapp",
+    "",
+    "com.google.android.apps.nexuslauncher",
+    "com.miui.home",
+    // ADD YOUR LAUNCHER HERE!!!
+)
+
+class BackgroundService : Service() {
     private val TAG:String = "BlockApp Service"
     var isBlocking: Boolean = true
     private val binder: MyBinder = MyBinder()
@@ -26,11 +61,16 @@ class BlockAppService : Service() {
     private var myCountDownTimer:CountDownTimer? = null
     var myCountTime:Long = 0
 
+    var useCustomWhiteList:Boolean = false
+    var customWhiteList:List<String> = ArrayList()
+    var defaultWhiteList:List<String> = ArrayList()
+
+    var isMuting: Boolean = false
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d(TAG,"BlockAppService onStartCommannd $isBlocking")
         Timer().scheduleAtFixedRate(
             object : TimerTask() {
-                @RequiresApi(Build.VERSION_CODES.Q)
                 override fun run() {
                     var topPackageName = ""
                     val mUsageStatsManager =
@@ -54,16 +94,21 @@ class BlockAppService : Service() {
                             topPackageName = mySortedMap[mySortedMap.lastKey()]!!.packageName
                         }
                     }
-//                    Log.d("BCKGRND", topPackageName)
-                    if ((topPackageName == "com.android.chrome" || topPackageName == "com.zhihu.android") && isBlocking) {
+                    var needToBlock = true
+                    val finalWhiteList = listOf<String>(*forceWhiteList.toTypedArray(), *if(useCustomWhiteList) {customWhiteList.toTypedArray()} else {defaultWhiteList.toTypedArray()})
+                    for(wlPackageName in finalWhiteList) {
+                        if(topPackageName == wlPackageName) needToBlock = false
+                    }
+                    if (needToBlock && isBlocking) {
+                        Log.d("BCKGRND", topPackageName)
                         if (!pendingReturn) {
                             Handler(Looper.getMainLooper()).post { drawOverlay() }
-                            Log.d("BCKGRND", "Trying to return...")
-                            val i = Intent(this@BlockAppService, MainActivity::class.java)
+                            Log.d("BCKGRND", "Trying to return...??!!")
+                            val i = Intent(this@BackgroundService, MainActivity::class.java)
                             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
                             i.putExtra("RequestCode", REQUEST_OPEN_TIMER_FRG)
-                            this@BlockAppService.startActivity(i)
+                            this@BackgroundService.startActivity(i)
                             pendingReturn = true
                         }
                     }
@@ -81,7 +126,6 @@ class BlockAppService : Service() {
         return binder
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun drawOverlay() {
         val windowManager = (applicationContext.getSystemService(Context.WINDOW_SERVICE) as WindowManager)
         if (!Settings.canDrawOverlays(this)) {
@@ -108,19 +152,22 @@ class BlockAppService : Service() {
     }
 
     inner class MyBinder : Binder() {
-        fun getService() : BlockAppService = this@BlockAppService
+        fun getService() : BackgroundService = this@BackgroundService
+
         fun changeIsBlocking(){
             Log.d("BlockAppService","isBlocking changed")
             isBlocking = !isBlocking
         }
+
         fun getBlock():Boolean = isBlocking
-        fun startCoutnDownTimer(t:Long){
+
+        fun startCountDownTimer(t:Long){
             //后台通知前台开始计时并自己开始计时
             Log.d(TAG,"ok")
             myCountTime = t
             val myIntent = Intent()
             myIntent.putExtra("startTicking_data",t)
-            myIntent.setAction("startTicking")
+            myIntent.action = "startTicking"
             sendBroadcast(myIntent)
             if(myCountTime.toInt()!=0 && myCountDownTimer!=null){
                 //如果之前在计时
@@ -136,13 +183,27 @@ class BlockAppService : Service() {
                 }
             }.start()
         }
+
         fun stopCountDownTimer(){
             myCountDownTimer!!.cancel()
         }
+
+        fun setCustomWhiteList(cusWL: List<String>) {
+            customWhiteList = cusWL
+        }
+
+        fun setUseCustomWhiteList(useCusWL : Boolean) {
+            useCustomWhiteList = useCusWL
+        }
+
+        fun setDefaultWhiteList(defWL: List<String>) {
+            defaultWhiteList = defWL
+        }
+
         fun changePage(t:Long){
             val myIntent = Intent()
             myIntent.putExtra("change_page_data",t)
-            myIntent.setAction("change_page")
+            myIntent.action = "change_page"
             sendBroadcast(myIntent)
         }
     }

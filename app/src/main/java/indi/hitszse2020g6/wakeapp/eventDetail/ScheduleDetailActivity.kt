@@ -106,11 +106,11 @@ class ScheduleDetailActivity : AppCompatActivity() {
 
         findViewById<ImageButton>(R.id.scheduleDetail_confirm).setOnClickListener {
             val stop = Calendar.getInstance().apply {
-                set(stopTime.year, stopTime.month, stopTime.date, stopTime.hour, stopTime.minute)
+                set(stopTime.year, stopTime.month-1, stopTime.date, stopTime.hour, stopTime.minute)
             }
             
             val start = Calendar.getInstance().apply {
-                set(startTime.year, startTime.month, startTime.date, startTime.hour, startTime.minute)
+                set(startTime.year, startTime.month-1, startTime.date, startTime.hour, startTime.minute)
             }
 
             if(isNewSchedule) {

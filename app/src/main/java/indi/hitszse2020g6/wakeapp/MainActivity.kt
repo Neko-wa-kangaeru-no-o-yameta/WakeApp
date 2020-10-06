@@ -1,6 +1,7 @@
 package indi.hitszse2020g6.wakeapp
 
 import android.Manifest
+import android.app.AlarmManager
 import android.app.AppOpsManager
 import android.content.*
 import android.content.pm.PackageManager
@@ -9,30 +10,41 @@ import android.os.*
 import android.provider.Settings
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
+import indi.hitszse2020g6.wakeapp.mainPage.MainPageEventList
 import kotlinx.android.synthetic.main.activity_main.*
-import java.sql.Time
-import java.util.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 
 const val INTENT_AFFAIR_DETAIL = 1
 const val INTENT_SCHEDULE_DETAIL = 2
 const val REQUEST_SETTING_EVENT = 3
+const val REQUEST_ALARM = 4
+
+const val PARAM_START_FOCUS_TIME = "indi.hitszse2020g6.wakeapp.paramStartFocus"
+const val ACTION_START_FOCUS_TIME = "indi.hitszse2020g6.wakeapp.actionStartFocus"
+const val ACTION_START_ALARM = "indi.hitszse2020g6.wakeapp.actionStartAlarm"
 
 class MainActivity : AppCompatActivity() {
 
     var mBound = false
-    lateinit var blockAppService: BlockAppService
-    lateinit var binder: BlockAppService.MyBinder
+    lateinit var blockAppService: BackgroundService
+    lateinit var binder: BackgroundService.MyBinder
 
     private val connection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-            binder = service as BlockAppService.MyBinder
+            binder = service as BackgroundService.MyBinder
             blockAppService = binder.getService()
             mBound = true
 
+            when(intent.action) {
+                ACTION_START_FOCUS_TIME-> {
+                    binder.startCountDownTimer(intent.getLongExtra(PARAM_START_FOCUS_TIME, 0))
+                }
+            }
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
@@ -43,6 +55,11 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        MainPageEventList.DAO = AppRoomDB.getDataBase(this).getDAO()
+        MainPageEventList.getEventListFromDB()
+        MainPageEventList.context = this
+        MainPageEventList.alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
         receiveBroadCast()
 
@@ -68,6 +85,12 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
+
+        when(intent.action) {
+            ACTION_START_FOCUS_TIME-> {
+                Log.d("MainActivity", "Load alarm request @ ${System.currentTimeMillis()}")
+            }
+        }
     }
 
     override fun onStart() {
@@ -91,7 +114,7 @@ class MainActivity : AppCompatActivity() {
         }
         //startService
         //在MainActivity onStart的时候开启一个service,这个service安排指定的任务在指定的演示后开始进行重复的固定速率的执行
-        Intent(this, BlockAppService::class.java).also { intent ->
+        Intent(this, BackgroundService::class.java).also { intent ->
             startService(intent)
             bindService(intent, connection, Context.BIND_AUTO_CREATE)
             Log.d("B Main Activity", "trying to bind")
@@ -103,7 +126,6 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
             Log.d("BCKGRND", "can't draw overlay")
         }
-
     }
 
     override fun onResume() {
@@ -121,9 +143,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun hasPermissionToReadNetworkStats(): Boolean {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return true
-        }
         val appOps = getSystemService(APP_OPS_SERVICE) as AppOpsManager
         val mode = appOps.checkOpNoThrow(
             AppOpsManager.OPSTR_GET_USAGE_STATS,
@@ -143,6 +162,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun receiveBroadCast(){
+        Log.d("MainActivity", "Received intent from background service")
         val intentFilter = IntentFilter()
         intentFilter.addAction("change_page")
         this.registerReceiver(object : BroadcastReceiver() {
@@ -152,14 +172,14 @@ class MainActivity : AppCompatActivity() {
                 val bundle = intent.extras
                 //后台通知前台开始计时
 
-                var t = bundle?.getLong("change_page_data")
+                val t = bundle?.getLong("change_page_data")
                 //等一会儿跳转过去再计时
                 Log.d("BEFORE_T",t.toString())
-                var handler = Handler(Looper.getMainLooper())
+                val handler = Handler(Looper.getMainLooper())
                 handler.postDelayed(object:Runnable{
                     override fun run() {
                         if (t != null) {
-                            binder.startCoutnDownTimer(t)
+                            binder.startCountDownTimer(t)
                         }
                     }
                 },500)

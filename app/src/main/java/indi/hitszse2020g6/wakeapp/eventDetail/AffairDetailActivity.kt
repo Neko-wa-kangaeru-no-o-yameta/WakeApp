@@ -81,6 +81,13 @@ class AffairDetailActivity : AppCompatActivity() {
         }
 
         findViewById<ImageButton>(R.id.affairDetail_confirm).setOnClickListener {
+
+            val title= findViewById<EditText>(R.id.affairDetail_eventTitle).text.toString()
+            if(title == ""){
+                Toast.makeText(this, "标题尚未设置", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             val stopTime = Calendar.getInstance()
             stopTime.set(year, month, date, hour, minute)
 
@@ -99,7 +106,7 @@ class AffairDetailActivity : AppCompatActivity() {
 
             if(isNewAffair) {
                 MainPageEventList.addAffair(
-                    title       = findViewById<EditText>(R.id.affairDetail_eventTitle).text.toString(),
+                    title       = title,
                     detail      = EventDetailList.ITEMS.toList(),
                     reminder    = EventReminderList.ITEMS.toList(),
                     stopTime    = stopTime.timeInMillis / 1000,
@@ -108,7 +115,7 @@ class AffairDetailActivity : AppCompatActivity() {
                     ruleId      = -1
                 )
             } else {
-                entryToEdit.title       = findViewById<EditText>(R.id.affairDetail_eventTitle).text.toString()
+                entryToEdit.title       = title
                 entryToEdit.detail      = EventDetailList.ITEMS.toList()
                 entryToEdit.reminder    = EventReminderList.ITEMS.toList()
                 entryToEdit.stopTime    = stopTime.timeInMillis / 1000

@@ -27,11 +27,11 @@ class ChooseWhiteListActivity : AppCompatActivity() {
     private fun longTimeMethod(){
         //Dispatchers 指定协程运行在Android的哪个线程里
         GlobalScope.launch(Dispatchers.IO){
-            var appList = ArrayList<AppInfo>()
-            var packages = packageManager.getInstalledPackages(0)
-            for(i in 0..(packages.size-1)){
-                var packageInfo = packages.get(i)
-                var tmpInfo = AppInfo()
+            val appList = ArrayList<AppInfo>()
+            val packages = packageManager.getInstalledPackages(0)
+            for(i in 0 until packages.size){
+                val packageInfo = packages.get(i)
+                val tmpInfo = AppInfo()
                 tmpInfo.appName = packageInfo.applicationInfo.loadLabel(packageManager).toString()
                 tmpInfo.appIcon = packageInfo.applicationInfo.loadIcon(packageManager)
                 //非系统应用
@@ -41,19 +41,15 @@ class ChooseWhiteListActivity : AppCompatActivity() {
             }
             //切换线程更新UI
             withContext(Dispatchers.Main){
-                val insertPoint = findViewById(R.id.linearContainer) as ViewGroup
+                val insertPoint = findViewById<ViewGroup>(R.id.linearContainer)
                 for(item in appList){
                     val vi = applicationContext.getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater
                     val v: View = vi.inflate(R.layout.my_app_item_layout, null)
-                    if(v == null){
-                        Log.d("ShowAppActivity", "ooops")
-                    }else{
-                        v.textView.text = item.appName
-                        v.imageView.setImageDrawable(item.appIcon)
-                        //动态生成ID
-                        v.id = View.generateViewId()
-                        insertPoint.addView(v)
-                    }
+                    v.textView.text = item.appName
+                    v.imageView.setImageDrawable(item.appIcon)
+                    //动态生成ID
+                    v.id = View.generateViewId()
+                    insertPoint.addView(v)
                 }
                 show_message.visibility = View.GONE
                 Log.d("GGG","FINISHED")

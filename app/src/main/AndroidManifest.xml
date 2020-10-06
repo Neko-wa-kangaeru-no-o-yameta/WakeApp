@@ -2,8 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="indi.hitszse2020g6.wakeapp">
+
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.ACTION_MANAGE_OVERLAY_PERMISSION" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.ACTION_USAGE_ACCESS_SETTINGS" />
@@ -20,18 +21,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ChooseWhiteListActivity"></activity>
+        <activity android:name=".AlarmActivity"></activity>
+        <activity android:name=".ChooseWhiteListActivity" />
         <activity android:name=".eventDetail.AffairDetailActivity" />
         <activity android:name=".eventDetail.ScheduleDetailActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <service android:name=".BlockAppService" android:exported="false"></service>
+        <service
+            android:name=".BackgroundService"
+            android:exported="false" />
+
     </application>
 
 </manifest>

@@ -146,17 +146,23 @@ interface RoomDAO {
     @Query("SELECT * FROM EventTable WHERE uid=:uid")
     fun getEvent(uid: Long): EventTableEntry
 
+    @Query("SELECT * FROM EventTable WHERE isAffair=1")
+    fun getAffairs(): List<EventTableEntry>
+
+    @Query("SELECT * FROM EventTable WHERE isAffair=0")
+    fun getSchedule(): List<EventTableEntry>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(re: EventTableEntry) : Long
+    fun insertEvent(re: EventTableEntry) : Long
 
     @Query("DELETE FROM EventTable")
-    fun deleteAll()
+    fun deleteAllEvents()
 
     @Query("DELETE FROM EventTable WHERE uid=:uid")
-    fun delete(uid: Long)
+    fun deleteEvent(uid: Long)
 
     @Update
-    fun update(vararg re: EventTableEntry)
+    fun updateEvent(vararg re: EventTableEntry)
 
     @Query("SELECT * FROM timeTable WHERE id = 1")
     fun findFromTimeTable():List<MyTimeEntry>
@@ -180,12 +186,12 @@ interface RoomDAO {
     fun getMaxWeek(): Int
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(vararg course: Course)
+    fun insertEvent(vararg course: Course)
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    fun update(course: Course)
+    fun updateEvent(course: Course)
 
     @Delete
-    fun delete(vararg course: Course)
+    fun deleteEvent(vararg course: Course)
 
 }
