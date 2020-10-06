@@ -55,7 +55,7 @@ val forceWhiteList: List<String> = arrayListOf(
 
 class BackgroundService : Service() {
     private val TAG:String = "BlockApp Service"
-    var isBlocking: Boolean = true
+    var isBlocking: Boolean = false
     private val binder: MyBinder = MyBinder()
     private var pendingReturn = false
     private var myCountDownTimer:CountDownTimer? = null

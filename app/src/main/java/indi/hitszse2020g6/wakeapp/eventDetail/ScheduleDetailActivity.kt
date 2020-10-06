@@ -267,7 +267,7 @@ class ScheduleDetailActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLi
             startTime.hour = setHourOfDay
             startTime.minute = setMinute
             findViewById<TextView>(R.id.scheduleDetail_startTimeText)?.text = getString(
-                R.string.eventList_stopTimeTVContent
+                R.string.eventList_startTimeTVContent
             ).format(
                 startTime.month + 1,
                 startTime.date,
