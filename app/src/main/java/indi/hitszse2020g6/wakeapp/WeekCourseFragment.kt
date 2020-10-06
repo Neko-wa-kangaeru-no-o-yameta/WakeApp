@@ -103,7 +103,7 @@ class WeekCourseFragment : Fragment() {
 
                                 text = couseName
                                 Log.d("text", couseName)
-                                setLines(2)
+                                setLines(3)
                                 layoutParams = textCourse
                                 setEllipsize(TextUtils.TruncateAt.valueOf("END"))
                                 setEms(1)
@@ -118,7 +118,7 @@ class WeekCourseFragment : Fragment() {
                             val textViewCourseAddress = TextView(context)
                             with(textViewCourseAddress){
                                 text = courseAddress
-                                setLines(1)
+                                setLines(2)
                                 layoutParams = textCourse
                                 setEllipsize(TextUtils.TruncateAt.valueOf("END"))
                                 setEms(1)
