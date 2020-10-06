@@ -76,6 +76,7 @@ class MyFocusEntry(
     var totalFocusTime      :Long,              //the total time of each focus
     var focusDate           :Long,              //System.currentTimeMillis(),can be changed into date
     var focusTitle          :String,            //the title of foucs
+    var isCanceled          :Boolean            //true->cancel  false->not cancel
 )
 
 @Entity(tableName = "EventTable")

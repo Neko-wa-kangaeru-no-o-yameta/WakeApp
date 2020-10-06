@@ -140,6 +140,20 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
         }
 
         cancelBtn.setOnClickListener {
+
+            val mt = MyFocusEntry(
+                uid = System.currentTimeMillis(),
+                totalFocusTime = total_time,
+                focusDate = System.currentTimeMillis(),
+                set_focus_title,
+                true
+            )
+            myDao.addFocusData(mt)
+            var items = myDao.findFocusData(System.currentTimeMillis()-100000000)
+            for(item in items){
+                Log.d("${item.focusDate}","${item.totalFocusTime} ${item.focusTitle}")
+            }
+
             condition_flag = 0
             val myTime = MyTimeEntry(
                 1,
@@ -382,7 +396,8 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
                         uid = System.currentTimeMillis(),
                         totalFocusTime = total_time,
                         focusDate = System.currentTimeMillis(),
-                        set_focus_title
+                        set_focus_title,
+                        false
                     )
                     myDao.addFocusData(mt)
                     var items = myDao.findFocusData(System.currentTimeMillis()-100000000)
