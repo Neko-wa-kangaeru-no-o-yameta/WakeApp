@@ -36,9 +36,6 @@ class MainPageFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        MainPageEventList.DAO = AppRoomDB.getDataBase(requireContext()).getDAO()
-        MainPageEventList.getEventListFromDB()
         Log.d("MainPageFragment", "Attaching adapter")
 
         arguments?.let {

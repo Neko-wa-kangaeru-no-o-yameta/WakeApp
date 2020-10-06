@@ -1,14 +1,25 @@
 package indi.hitszse2020g6.wakeapp.mainPage
 
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_NO_CREATE
+import android.app.PendingIntent.FLAG_UPDATE_CURRENT
+import android.content.Context
+import android.content.Intent
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import indi.hitszse2020g6.wakeapp.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlin.math.abs
 
 object MainPageEventList {
     lateinit var eventList: MutableList<EventTableEntry>
     lateinit var DAO:RoomDAO
+    lateinit var context: Context
+    lateinit var alarmManager: AlarmManager
     var initComplete = false
 
     fun getEventListFromDB() {
@@ -46,10 +57,16 @@ object MainPageEventList {
             ruleId      = ruleId,
             classId     = -1
         )
+
         eventList.add(entry)        // uid should catch up in milliseconds
 
         GlobalScope.launch(Dispatchers.IO) {
+
             entry.uid = DAO.insertEvent(entry)
+
+            Handler(Looper.getMainLooper()).post{
+                configureAlarm(entry, 0)
+            }
         }
     }
 
@@ -58,6 +75,11 @@ object MainPageEventList {
     ) {
         eventList.replaceAll {
             if(it.uid == entry.uid) entry else it
+        }
+
+        configureAlarm(entry, FLAG_UPDATE_CURRENT)
+        if(!entry.isAffair){
+            configureFocus(entry, FLAG_UPDATE_CURRENT)
         }
     }
 
@@ -100,6 +122,12 @@ object MainPageEventList {
 
         GlobalScope.launch(Dispatchers.IO) {
             entry.uid = DAO.insertEvent(entry)
+
+            Handler(Looper.getMainLooper()).post{
+                configureAlarm(entry, 0)
+                Log.d("Alarm", "trying to set focus...")
+                configureFocus(entry, 0)
+            }
         }
     }
 
@@ -140,11 +168,81 @@ object MainPageEventList {
     }
 
     fun removeEvent(position: Int) {
-        Log.d("MainPageEventList", "Removing $position")
+        configureAlarm(eventList[position], FLAG_NO_CREATE)
         val uid = eventList[position].uid   // no reference
         GlobalScope.launch(Dispatchers.IO) {
             DAO.deleteEvent(uid)
         }
         eventList.removeAt(position)
+
+    }
+
+    fun configureAlarm(entry: EventTableEntry, flag: Int) {
+        val currentTimeInSecond = System.currentTimeMillis()/1000 + 1
+        val minReminderTime = entry.reminder.map { if(it.time < currentTimeInSecond) Long.MAX_VALUE else it.time*1000 }.maxOrNull()
+        if(minReminderTime != null) {
+            val intent = Intent(context, AlarmActivity::class.java).let {
+                it.action = ACTION_START_ALARM
+                PendingIntent.getActivity(context, alarmHash(entry.uid), it, flag)   // update Intent
+            }
+            alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                minReminderTime,
+                intent
+            )
+        } else {
+            deleteAlarm(entry)
+        }
+    }
+
+    fun deleteAlarm(entry: EventTableEntry) {
+        val pendingIntent = PendingIntent.getActivity(
+            context,
+            alarmHash(entry.uid),
+            Intent(context, AlarmActivity::class.java).apply {
+                action = ACTION_START_ALARM
+            },
+            FLAG_NO_CREATE
+        )
+        pendingIntent?.let{alarmManager.cancel(it)}
+    }
+
+    fun configureFocus(entry: EventTableEntry, flag: Int) {
+        if(entry.startTime*1000 > System.currentTimeMillis() && entry.focus) {
+            val intent = Intent(context, MainActivity::class.java).let {
+                it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                it.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                it.action = ACTION_START_FOCUS_TIME
+                it.putExtra(PARAM_START_FOCUS_TIME, (entry.stopTime - entry.startTime) * 1000)
+                PendingIntent.getActivity(context, focusHash(entry.uid), it, flag)   // update Intent
+            }
+            alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                entry.startTime*1000,
+                intent
+            )
+            Log.d("Alarm", "set focus at ${entry.startTime*1000}, current ${System.currentTimeMillis()}")
+        } else {
+            deleteFocus(entry)
+        }
+    }
+
+    fun deleteFocus(entry: EventTableEntry) {
+        val intent = Intent(context, MainActivity::class.java).let {
+            it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            it.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            it.action = ACTION_START_FOCUS_TIME
+            it.putExtra(PARAM_START_FOCUS_TIME, (entry.stopTime - entry.startTime) * 1000)
+            PendingIntent.getActivity(context, focusHash(entry.uid), it, FLAG_NO_CREATE)
+        }
+        intent?.let{alarmManager.cancel(it)}
+    }
+
+    fun alarmHash(uid: Long): Int {
+        return abs(uid.toInt())
+    }
+
+    fun focusHash(uid: Long): Int {
+        return abs((Int.MAX_VALUE - uid).toInt())
     }
 }

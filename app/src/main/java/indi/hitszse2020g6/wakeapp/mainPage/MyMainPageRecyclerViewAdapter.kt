@@ -1,5 +1,8 @@
 package indi.hitszse2020g6.wakeapp.mainPage
 
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
@@ -13,10 +16,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
-import indi.hitszse2020g6.wakeapp.EventTableEntry
-import indi.hitszse2020g6.wakeapp.INTENT_AFFAIR_DETAIL
-import indi.hitszse2020g6.wakeapp.INTENT_SCHEDULE_DETAIL
-import indi.hitszse2020g6.wakeapp.R
+import indi.hitszse2020g6.wakeapp.*
 import indi.hitszse2020g6.wakeapp.eventDetail.AffairDetailActivity
 import indi.hitszse2020g6.wakeapp.eventDetail.ScheduleDetailActivity
 import indi.hitszse2020g6.wakeapp.eventDetail.UNIQUE_ID_TO_AFFAIR_DETAIL

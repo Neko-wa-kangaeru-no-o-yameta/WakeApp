@@ -13,6 +13,7 @@ import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.WindowManager
+import androidx.core.content.res.ResourcesCompat
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.concurrent.schedule
@@ -44,6 +45,9 @@ val forceWhiteList: List<String> = arrayListOf(
     "com.google.android.setupwizard",
     "com.samsung.android.contacts",
     "com.samsung.android.phone",
+    "com.google.android.permissioncontroller",
+    "indi.hitszse2020g6.wakeapp",
+    "",
     "com.google.android.apps.nexuslauncher",
     "com.miui.home",
     // ADD YOUR LAUNCHER HERE!!!
@@ -61,7 +65,7 @@ class BackgroundService : Service() {
     var customWhiteList:List<String> = ArrayList()
     var defaultWhiteList:List<String> = ArrayList()
 
-    val pendingAlarms: MutableList<PendingIntent> = ArrayList()
+    var isMuting: Boolean = false
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d(TAG,"BlockAppService onStartCommannd $isBlocking")
@@ -90,16 +94,16 @@ class BackgroundService : Service() {
                             topPackageName = mySortedMap[mySortedMap.lastKey()]!!.packageName
                         }
                     }
-//                    Log.d("BCKGRND", topPackageName)
                     var needToBlock = true
                     val finalWhiteList = listOf<String>(*forceWhiteList.toTypedArray(), *if(useCustomWhiteList) {customWhiteList.toTypedArray()} else {defaultWhiteList.toTypedArray()})
                     for(wlPackageName in finalWhiteList) {
                         if(topPackageName == wlPackageName) needToBlock = false
                     }
                     if (needToBlock && isBlocking) {
+                        Log.d("BCKGRND", topPackageName)
                         if (!pendingReturn) {
                             Handler(Looper.getMainLooper()).post { drawOverlay() }
-                            Log.d("BCKGRND", "Trying to return...")
+                            Log.d("BCKGRND", "Trying to return...??!!")
                             val i = Intent(this@BackgroundService, MainActivity::class.java)
                             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
@@ -112,12 +116,6 @@ class BackgroundService : Service() {
             },
             1000, 1000
         )
-
-        Timer().scheduleAtFixedRate(object: TimerTask() {
-            override fun run() {
-                TODO("Not yet implemented")
-            }
-        }, 5000, 5000)
 
         return START_STICKY
     }
