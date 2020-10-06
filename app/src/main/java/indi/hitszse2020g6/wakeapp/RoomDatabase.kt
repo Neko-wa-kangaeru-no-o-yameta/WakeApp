@@ -102,7 +102,7 @@ data class Course(
     @ColumnInfo(name = "course_color") var color: Int?
 ) {
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "id")
+    @ColumnInfo(name = "course_id")
     var courseId: Long = 0
 }
 
@@ -164,6 +164,9 @@ interface RoomDAO {
     fun insertMyTime(mt:MyTimeEntry)
 
     //SceduleTable
+    @Query("SELECT * FROM course_table WHERE course_id = (:courseId)")
+    fun getCourseWithId(courseId:Long) :List<Course>
+
     @Query("SELECT * FROM course_table")
     fun getAll(): List<Course>
 
@@ -184,6 +187,9 @@ interface RoomDAO {
 
     @Query("UPDATE course_table SET course_color = (:course_color) WHERE course_name = (:course_name)")
     fun InsertCourseColorIntoTable(course_color:Int,course_name: String)
+
+    @Query("UPDATE course_table SET course_name = (:course_name),class_address = (:course_address) WHERE course_id = (:course_id)")
+    fun updateCourseDetails(course_name:String,course_address:String,course_id:Long)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(vararg course: Course)

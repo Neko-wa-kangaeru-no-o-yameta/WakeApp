@@ -143,6 +143,7 @@ class Schedule : Fragment() {
 //        val mainHolder = findViewById<GridLayout>(R.id.content_holder)
 //        val context = mainHolder.context
         if(requestCode == INTENT_ADD_COURSE){
+
             //直接更新
             GlobalScope.launch(Dispatchers.IO){
                 requireActivity().setPerCourseColor()

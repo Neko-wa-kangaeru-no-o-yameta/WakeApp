@@ -85,10 +85,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:autofillHints="地点信息"
-                android:ems="10"
+                android:ems="8"
                 android:hint="@string/courseDetail_courseNameInputField"
                 android:inputType="text"
-                android:textSize="12sp"
+                android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/addCourseDetail_courseName" />
 

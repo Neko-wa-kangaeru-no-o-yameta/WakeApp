@@ -14,6 +14,7 @@ import android.widget.GridLayout
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import kotlinx.coroutines.Dispatchers
@@ -68,6 +69,7 @@ class WeekCourseFragment : Fragment() {
                         val cardTag = "${couseDayOfWeek.toString()}${courseTime.toString()}"
                         Log.d("cardTag", cardTag)
                         val cardView = view.findViewWithTag<CardView>(cardTag)
+
                         if(cardView  == null){
                             Log.d("cardView", "is empty")
                         }
@@ -134,9 +136,11 @@ class WeekCourseFragment : Fragment() {
                             val height = this.height
                             Log.d("height",height.toString())
                             this.setOnClickListener{
-                                startActivityForResult(Intent(activity,CourseAddActivity::class.java),INTENT_ADD_COURSE)
+                                val courseId = ele.courseId
+                                val intent = Intent(this@WeekCourseFragment.context,CourseAddActivity::class.java)
+                                intent.putExtra(UNIQUE_COURSE_DETAIL,courseId)
+                                startActivityForResult(intent,INTENT_ADD_COURSE)
                             }
-
                         }
 
                     }
@@ -145,6 +149,15 @@ class WeekCourseFragment : Fragment() {
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        Log.d("get in","get in")
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == INTENT_ADD_COURSE){
+            //直接更新
+            Log.d("get in2","get in")
+
+        }
+    }
     companion object {
         /**
          * Use this factory method to create a new instance of
