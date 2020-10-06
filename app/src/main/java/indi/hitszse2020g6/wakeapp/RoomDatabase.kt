@@ -65,7 +65,17 @@ class MyTimeEntry(
     ////////////////////////////////////////////////////////////////////////////////////////////////
     var totalTime           :Long,              //The total time of the last count setting
     var conditionFlag       :Int,               //1->counting,-1->counting over,0->waiting
-    var beforeSysTime       :Long               //System time when timing starts
+    var beforeSysTime       :Long,               //System time when timing starts
+    var before_title        :String             //the title of the focus
+)
+
+@Entity(tableName = "focusTable")
+class MyFocusEntry(
+    @PrimaryKey(autoGenerate = true)val uid                 : Long,
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    var totalFocusTime      :Long,              //the total time of each focus
+    var focusDate           :Long,              //System.currentTimeMillis(),can be changed into date
+    var focusTitle          :String,            //the title of foucs
 )
 
 @Entity(tableName = "EventTable")
@@ -110,7 +120,7 @@ data class Course(
     var courseId: Long = 0
 }
 
-@Database(entities = [EventTableEntry::class, GenRuleEntry::class,MyTimeEntry::class,Course::class], version = 1)
+@Database(entities = [EventTableEntry::class, GenRuleEntry::class,MyTimeEntry::class,Course::class,MyFocusEntry::class], version = 1)
 @TypeConverters(Converters::class)
 abstract class AppRoomDB: RoomDatabase() {
     abstract fun getDAO(): RoomDAO
@@ -187,5 +197,11 @@ interface RoomDAO {
 
     @Delete
     fun delete(vararg course: Course)
+
+    @Query("SELECT * FROM focusTable WHERE focusDate>=:d ORDER BY focusDate ASC")
+    fun findFocusData(d:Long):List<MyFocusEntry>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun addFocusData(mf:MyFocusEntry)
 
 }

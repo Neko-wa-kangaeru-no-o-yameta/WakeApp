@@ -114,12 +114,13 @@ class BlockAppService : Service() {
             isBlocking = !isBlocking
         }
         fun getBlock():Boolean = isBlocking
-        fun startCoutnDownTimer(t:Long){
+        fun startCoutnDownTimer(t:Long,focusTitle:String){
             //后台通知前台开始计时并自己开始计时
             Log.d(TAG,"ok")
             myCountTime = t
             val myIntent = Intent()
             myIntent.putExtra("startTicking_data",t)
+            myIntent.putExtra("startTicking_title",focusTitle)
             myIntent.setAction("startTicking")
             sendBroadcast(myIntent)
             if(myCountTime.toInt()!=0 && myCountDownTimer!=null){
@@ -139,9 +140,11 @@ class BlockAppService : Service() {
         fun stopCountDownTimer(){
             myCountDownTimer!!.cancel()
         }
-        fun changePage(t:Long){
+        fun changePage(startTime:Long,endTime:Long,focusTitle:String){
+            var t = endTime-startTime
             val myIntent = Intent()
             myIntent.putExtra("change_page_data",t)
+            myIntent.putExtra("change_page_title",focusTitle)
             myIntent.setAction("change_page")
             sendBroadcast(myIntent)
         }

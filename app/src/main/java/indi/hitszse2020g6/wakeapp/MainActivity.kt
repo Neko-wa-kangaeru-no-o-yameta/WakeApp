@@ -32,6 +32,7 @@ class MainActivity : AppCompatActivity() {
             binder = service as BlockAppService.MyBinder
             blockAppService = binder.getService()
             mBound = true
+            Log.d("MainActivity","Connected")
 
         }
 
@@ -72,6 +73,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+        Log.d("MainActivity","Onstart")
 
         //获取应用列表权限
         hasPermissionToReadNetworkStats()
@@ -107,7 +109,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onResume() {
+        Log.d("MainActivity","OnResume")
         super.onResume()
+
         //获得启动该activity的intent对象
         val myIntent: Intent = intent
         if (myIntent.getIntExtra("RequestCode", -1) == REQUEST_OPEN_TIMER_FRG) {
@@ -153,13 +157,14 @@ class MainActivity : AppCompatActivity() {
                 //后台通知前台开始计时
 
                 var t = bundle?.getLong("change_page_data")
+                var title: String? = bundle?.getString("change_page_title")
                 //等一会儿跳转过去再计时
                 Log.d("BEFORE_T",t.toString())
                 var handler = Handler(Looper.getMainLooper())
                 handler.postDelayed(object:Runnable{
                     override fun run() {
-                        if (t != null) {
-                            binder.startCoutnDownTimer(t)
+                        if (t != null&& title!=null) {
+                            binder.startCoutnDownTimer(t,title)
                         }
                     }
                 },500)
