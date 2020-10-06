@@ -108,7 +108,7 @@ class Schedule : Fragment() {
                         true
                     }
                     R.id.scheduleFragment_speedDialNewCourseAdded ->{
-                        startActivityForResult(Intent(activity,CourseAddActivity::class.java),INTENT_ADD_COURSE)
+                        startActivityForResult(Intent(activity,CourseAddActivity::class.java),`INTENT_ADD_COURSE`)
                         close()
                         true
                     }
@@ -131,6 +131,9 @@ class Schedule : Fragment() {
     }
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        Log.d("resultCode",resultCode.toString())
+        Log.d("requestCode",requestCode.toString())
+        Log.d("data",data.toString())
         //从SD卡中返回结果 进行解析
         super.onActivityResult(requestCode, resultCode, data)
         val weekdays = Regex("星期.")
@@ -139,7 +142,19 @@ class Schedule : Fragment() {
         Log.d("get in", "On resultActivity")
 //        val mainHolder = findViewById<GridLayout>(R.id.content_holder)
 //        val context = mainHolder.context
-        if (data == null || resultCode == AppCompatActivity.RESULT_CANCELED) {
+        if(requestCode == INTENT_ADD_COURSE){
+            //直接更新
+            GlobalScope.launch(Dispatchers.IO){
+                requireActivity().setPerCourseColor()
+                Handler(Looper.getMainLooper()).post {
+                    val courseFragment = CourseFragment.newInstance()
+                    childFragmentManager.beginTransaction()
+                        .replace(R.id.fragment2, courseFragment)
+                        .commit()
+                }
+            }
+
+        } else if (data == null || resultCode == AppCompatActivity.RESULT_CANCELED) {
             return
         } else {
             GlobalScope.launch(Dispatchers.IO) {

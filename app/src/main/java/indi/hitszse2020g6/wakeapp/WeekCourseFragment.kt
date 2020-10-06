@@ -1,5 +1,6 @@
 package indi.hitszse2020g6.wakeapp
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -75,6 +76,7 @@ class WeekCourseFragment : Fragment() {
                         //TODO 在cardView中加入LinearLayout
                         with(cardView){
                             //对于一个CardView，先设置其颜色
+
                             if (courseColor != null) {
                                 setCardBackgroundColor(courseColor)
                             }else{
@@ -87,7 +89,7 @@ class WeekCourseFragment : Fragment() {
                             layout.setLayoutParams(
                                 LinearLayout.LayoutParams(
                                     ViewGroup.LayoutParams.MATCH_PARENT,
-                                    ViewGroup.LayoutParams.MATCH_PARENT
+                                    ViewGroup.LayoutParams.WRAP_CONTENT
                                 )
                             )
                             layout.orientation = LinearLayout.VERTICAL // 所有组件垂直摆放
@@ -129,6 +131,12 @@ class WeekCourseFragment : Fragment() {
                             }
                             layout.addView(textViewCourseAddress)
                             this.addView(layout)
+                            val height = this.height
+                            Log.d("height",height.toString())
+                            this.setOnClickListener{
+                                startActivityForResult(Intent(activity,CourseAddActivity::class.java),INTENT_ADD_COURSE)
+                            }
+
                         }
 
                     }

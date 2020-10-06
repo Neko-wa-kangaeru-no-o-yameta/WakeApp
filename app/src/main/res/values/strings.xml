@@ -36,6 +36,7 @@
     <string name="eventDetail_eventTitleInputField">事件标题</string>
     <string name="courseDetail_courseNameInputField">课程名称</string>
     <string name="eventDetail_timeTitleText">时间信息</string>
+    <string name="courseDetail_AddressTitleText">地点信息</string>
     <string name="scheduleDetail_mute">Mute</string>
     <string name="scheduleDetail_focus">Focus</string>
     <string name="eventDetail_alarm">Alarm</string>

@@ -94,12 +94,12 @@ class GenRuleEntry (
 
 @Entity(tableName = "course_table")
 data class Course(
-    @ColumnInfo(name = "course_name") val courseName: String,
-    @ColumnInfo(name = "week") val week: Int,
-    @ColumnInfo(name = "day_of_week") val dayOfWeek: Int,
-    @ColumnInfo(name = "class_address") val address: String,
-    @ColumnInfo(name = "class_time") val time: Int,
-    @ColumnInfo(name = "course_color") val color: Int?
+    @ColumnInfo(name = "course_name") var courseName: String,
+    @ColumnInfo(name = "week") var week: Int,
+    @ColumnInfo(name = "day_of_week") var dayOfWeek: Int,
+    @ColumnInfo(name = "class_address") var address: String,
+    @ColumnInfo(name = "class_time") var time: Int,
+    @ColumnInfo(name = "course_color") var color: Int?
 ) {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
