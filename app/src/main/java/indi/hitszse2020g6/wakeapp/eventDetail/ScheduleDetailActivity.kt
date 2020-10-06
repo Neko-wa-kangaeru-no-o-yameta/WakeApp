@@ -272,9 +272,9 @@ class ScheduleDetailActivity : AppCompatActivity() {
                 startTime.month = setMonth + 1
                 startTime.date = setDayOfMonth
             } else {
-                startTime.year = setYear
-                startTime.month = setMonth + 1
-                startTime.date = setDayOfMonth
+                stopTime.year = setYear
+                stopTime.month = setMonth + 1
+                stopTime.date = setDayOfMonth
             }
             Log.d("OnTimeSet", "$setYear : ${setMonth+1} : $setDayOfMonth ")
             activity?.supportFragmentManager?.let { TimePickerFragment(isStartDate).show(it, "timePicker") }

@@ -9,6 +9,7 @@ import android.net.Uri
 import android.os.*
 import android.provider.Settings
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
@@ -33,6 +34,7 @@ class MainActivity : AppCompatActivity() {
     var mBound = false
     lateinit var blockAppService: BackgroundService
     lateinit var binder: BackgroundService.MyBinder
+    var jumped = false
 
     private val connection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
@@ -137,9 +139,10 @@ class MainActivity : AppCompatActivity() {
 
         //获得启动该activity的intent对象
         val myIntent: Intent = intent
-        if (myIntent.getIntExtra("RequestCode", -1) == REQUEST_OPEN_TIMER_FRG) {
+        if (myIntent.getIntExtra("RequestCode", -1) == REQUEST_OPEN_TIMER_FRG && !jumped) {
             findNavController(R.id.mainNavFragment).navigate(R.id.action_global_focusFragment)
             bottomNavigationView.selectedItemId = R.id.bottomNavFocusBtn
+            jumped = true
         }
     }
 
@@ -191,5 +194,27 @@ class MainActivity : AppCompatActivity() {
                 },500)
             }
         }, intentFilter)
+    }
+}
+
+class FocusReceiver: BroadcastReceiver() {
+    override fun onReceive(context: Context?, intent: Intent?) {
+        Log.d("Receiver", "received")
+        Toast.makeText(context, "receiver received!", Toast.LENGTH_SHORT).show()
+        context!!.startActivity(Intent(context, MainActivity::class.java).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            putExtra("RequestCode", REQUEST_OPEN_TIMER_FRG)
+        })
+    }
+}
+
+class AlarmReceiver: BroadcastReceiver() {
+    override fun onReceive(context: Context?, intent: Intent?) {
+        Log.d("Receiver", "received")
+        Toast.makeText(context, "receiver received!", Toast.LENGTH_SHORT).show()
+        context!!.startActivity(Intent(context, AlarmActivity::class.java).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            putExtra("RequestCode", REQUEST_OPEN_TIMER_FRG)
+        })
     }
 }

@@ -181,46 +181,37 @@ object MainPageEventList {
         val currentTimeInSecond = System.currentTimeMillis()/1000 + 1
         val minReminderTime = entry.reminder.map { if(it.time < currentTimeInSecond) Long.MAX_VALUE else it.time*1000 }.maxOrNull()
         if(minReminderTime != null) {
-            val intent = Intent(context, AlarmActivity::class.java).let {
-                it.action = ACTION_START_ALARM
-                PendingIntent.getActivity(context, alarmHash(entry.uid), it, flag)   // update Intent
+            val intentToReceiver = Intent(context, AlarmReceiver::class.java).let{
+                PendingIntent.getBroadcast(context, alarmHash(entry.uid), it, 0)
             }
-            alarmManager.setExactAndAllowWhileIdle(
-                AlarmManager.RTC_WAKEUP,
-                minReminderTime,
-                intent
-            )
+            val intentToActivity = Intent(context, MainActivity::class.java).let {
+                PendingIntent.getActivity(context, alarmHash(entry.uid), it, 0)
+            }
+            val alarmInfo = AlarmManager.AlarmClockInfo(minReminderTime, intentToActivity)
+            alarmManager.setAlarmClock(alarmInfo, intentToReceiver)
         } else {
             deleteAlarm(entry)
         }
     }
 
     fun deleteAlarm(entry: EventTableEntry) {
-        val pendingIntent = PendingIntent.getActivity(
-            context,
-            alarmHash(entry.uid),
-            Intent(context, AlarmActivity::class.java).apply {
-                action = ACTION_START_ALARM
-            },
-            FLAG_NO_CREATE
-        )
-        pendingIntent?.let{alarmManager.cancel(it)}
+        Intent(context, AlarmReceiver::class.java).let{
+            PendingIntent.getBroadcast(context, alarmHash(entry.uid), it, 0)
+        }?.let{
+            alarmManager.cancel(it)
+        }
     }
 
     fun configureFocus(entry: EventTableEntry, flag: Int) {
         if(entry.startTime*1000 > System.currentTimeMillis() && entry.focus) {
-            val intent = Intent(context, MainActivity::class.java).let {
-                it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                it.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                it.action = ACTION_START_FOCUS_TIME
-                it.putExtra(PARAM_START_FOCUS_TIME, (entry.stopTime - entry.startTime) * 1000)
-                PendingIntent.getActivity(context, focusHash(entry.uid), it, flag)   // update Intent
+            val intentToReceiver = Intent(context, FocusReceiver::class.java).let{
+                PendingIntent.getBroadcast(context, alarmHash(entry.uid), it, 0)
             }
-            alarmManager.setExactAndAllowWhileIdle(
-                AlarmManager.RTC_WAKEUP,
-                entry.startTime*1000,
-                intent
-            )
+            val intentToActivity = Intent(context, MainActivity::class.java).let {
+                PendingIntent.getActivity(context, alarmHash(entry.uid), it, 0)
+            }
+            val alarmInfo = AlarmManager.AlarmClockInfo(entry.startTime*1000, intentToActivity)
+            alarmManager.setAlarmClock(alarmInfo, intentToReceiver)
             Log.d("Alarm", "set focus at ${entry.startTime*1000}, current ${System.currentTimeMillis()}")
         } else {
             deleteFocus(entry)
@@ -228,14 +219,11 @@ object MainPageEventList {
     }
 
     fun deleteFocus(entry: EventTableEntry) {
-        val intent = Intent(context, MainActivity::class.java).let {
-            it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            it.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            it.action = ACTION_START_FOCUS_TIME
-            it.putExtra(PARAM_START_FOCUS_TIME, (entry.stopTime - entry.startTime) * 1000)
-            PendingIntent.getActivity(context, focusHash(entry.uid), it, FLAG_NO_CREATE)
+        Intent(context, FocusReceiver::class.java).let{
+            PendingIntent.getBroadcast(context, alarmHash(entry.uid), it, 0)
+        }?.let{
+            alarmManager.cancel(it)
         }
-        intent?.let{alarmManager.cancel(it)}
     }
 
     fun alarmHash(uid: Long): Int {
