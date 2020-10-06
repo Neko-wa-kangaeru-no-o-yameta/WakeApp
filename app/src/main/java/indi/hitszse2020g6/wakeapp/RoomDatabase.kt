@@ -1,16 +1,11 @@
 package indi.hitszse2020g6.wakeapp
 
 import android.content.Context
-import android.icu.util.TimeZone
-import androidx.lifecycle.LiveData
 import androidx.room.*
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.util.*
 
 @Serializable
 data class Detail (
@@ -103,7 +98,8 @@ data class Course(
     @ColumnInfo(name = "week") val week: Int,
     @ColumnInfo(name = "day_of_week") val dayOfWeek: Int,
     @ColumnInfo(name = "class_address") val address: String,
-    @ColumnInfo(name = "class_time") val time: Int
+    @ColumnInfo(name = "class_time") val time: Int,
+    @ColumnInfo(name = "course_color") val color: Int?
 ) {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
@@ -173,6 +169,7 @@ interface RoomDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertMyTime(mt:MyTimeEntry)
 
+    //SceduleTable
     @Query("SELECT * FROM course_table")
     fun getAll(): List<Course>
 
@@ -184,6 +181,15 @@ interface RoomDAO {
 
     @Query("SELECT MAX(CAST(week AS INT)) FROM course_table")
     fun getMaxWeek(): Int
+
+    @Query("SELECT DISTINCT course_name FROM course_table")
+    fun getAllCourse(): List<String>
+
+    @Query("DELETE FROM course_table")
+    fun deleteAllCourse()
+
+    @Query("UPDATE course_table SET course_color = (:course_color) WHERE course_name = (:course_name)")
+    fun InsertCourseColorIntoTable(course_color:Int,course_name: String)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertEvent(vararg course: Course)

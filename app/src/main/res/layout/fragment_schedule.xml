@@ -24,7 +24,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/add_fill_24" />
 
-        <fragment
+        <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragment2"
             android:name="indi.hitszse2020g6.wakeapp.CourseFragment"
             android:layout_width="0dp"
