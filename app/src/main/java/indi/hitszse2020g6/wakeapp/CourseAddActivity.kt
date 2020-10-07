@@ -141,6 +141,9 @@ class CourseAddActivity : AppCompatActivity() {
                     )
                 }
             }
+            setOnClickListener {
+
+            }
         }
 
 
