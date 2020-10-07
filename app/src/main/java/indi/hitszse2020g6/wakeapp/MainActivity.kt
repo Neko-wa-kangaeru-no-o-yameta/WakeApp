@@ -155,7 +155,7 @@ class MainActivity : AppCompatActivity() {
             Log.d("B Main Activity", "trying to bind")
 
             //连上的时候说一声
-            var myIntent = Intent()
+            val myIntent = Intent()
             myIntent.setAction("Connnecting")
             myIntent.putExtra("connect",true)
             sendBroadcast(myIntent)
@@ -190,7 +190,7 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    fun receiveBroadCast(){
+    private fun receiveBroadCast(){
         val intentFilter = IntentFilter()
         intentFilter.addAction("switchToFocusFragment")
         this.registerReceiver(object : BroadcastReceiver() {

@@ -167,30 +167,6 @@ class BackgroundService : Service() {
 
         fun getBlock():Boolean = isBlocking
 
-//        fun startCountDownTimer(t:Long, focusTitle:String){
-//            //后台通知前台开始计时并自己开始计时
-//            Log.d(TAG,"ok")
-//            myCountTime = t
-//            val myIntent = Intent()
-//            myIntent.putExtra("startTicking_data",t)
-//            myIntent.putExtra("startTicking_title",focusTitle)
-//            myIntent.setAction("startTicking")
-//            sendBroadcast(myIntent)
-//            if(myCountTime.toInt()!=0 && myCountDownTimer!=null){
-//                //如果之前在计时
-//                myCountDownTimer!!.cancel()
-//            }
-//            myCountDownTimer = object : CountDownTimer(t*1000,1000){
-//                override fun onTick(millisUntilFinished: Long) {
-//                    //Do nothing
-//                    myCountTime--
-//                }
-//                override fun onFinish() {
-//                    Log.d(TAG,"BACKGROUND TIMER FINISHED")
-//                }
-//            }.start()
-//        }
-
         fun stopCountDownTimer(){
             myCountTime = 0
             myCountDownTimer!!.cancel()
