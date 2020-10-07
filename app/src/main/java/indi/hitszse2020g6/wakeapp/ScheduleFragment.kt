@@ -17,7 +17,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.leinardi.android.speeddial.SpeedDialView
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 
 import kotlinx.coroutines.Dispatchers
@@ -44,7 +44,7 @@ private const val ARG_PARAM2 = "param2"
 
 const val INTENT_ID_GET_FILE = 1
 const val INTENT_GRANT_PERMISSION = 2
-
+const val INTENT_ADD_COURSE = 3
 class Schedule : Fragment() {
 
     // TODO: Rename and change types of parameters
@@ -90,19 +90,49 @@ class Schedule : Fragment() {
                 )
             }
         }
-        view.findViewById<FloatingActionButton>(R.id.floatingActionButton).setOnClickListener {
-            val chooseFile = Intent(Intent.ACTION_GET_CONTENT).apply {
-                addCategory(Intent.CATEGORY_OPENABLE)
-                type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        view.findViewById<SpeedDialView>(R.id.addCourseBotton).apply {
+            inflate(R.menu.schedule_fragment_speed_dial_menu)
+            setOnActionSelectedListener {actionItems->
+                when(actionItems.id){
+                    R.id.scheduleFragment_speedDialNewExcel ->{
+                        val chooseFile = Intent(Intent.ACTION_GET_CONTENT).apply {
+                            addCategory(Intent.CATEGORY_OPENABLE)
+                            type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                        }
+                        startActivityForResult(
+                            chooseFile,
+                            INTENT_ID_GET_FILE
+                        )
+                        close()
+                        true
+                    }
+                    R.id.scheduleFragment_speedDialNewCourseAdded ->{
+                        startActivityForResult(Intent(activity,CourseAddActivity::class.java),`INTENT_ADD_COURSE`)
+                        close()
+                        true
+                    }
+                    else ->{
+                        false
+                    }
+                }
             }
-            startActivityForResult(
-                chooseFile,
-                INTENT_ID_GET_FILE
-            )
         }
+//        view.findViewById<FloatingActionButton>(R.id.floatingActionButton).setOnClickListener {
+//            val chooseFile = Intent(Intent.ACTION_GET_CONTENT).apply {
+//                addCategory(Intent.CATEGORY_OPENABLE)
+//                type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+//            }
+//            startActivityForResult(
+//                chooseFile,
+//                INTENT_ID_GET_FILE
+//            )
+//        }
     }
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        Log.d("resultCode",resultCode.toString())
+        Log.d("requestCode",requestCode.toString())
+        Log.d("data",data.toString())
         //从SD卡中返回结果 进行解析
         super.onActivityResult(requestCode, resultCode, data)
         val weekdays = Regex("星期.")
@@ -111,7 +141,20 @@ class Schedule : Fragment() {
         Log.d("get in", "On resultActivity")
 //        val mainHolder = findViewById<GridLayout>(R.id.content_holder)
 //        val context = mainHolder.context
-        if (data == null || resultCode == AppCompatActivity.RESULT_CANCELED) {
+        if(requestCode == INTENT_ADD_COURSE){
+
+            //直接更新
+            GlobalScope.launch(Dispatchers.IO){
+                requireActivity().setPerCourseColor()
+                Handler(Looper.getMainLooper()).post {
+                    val courseFragment = CourseFragment.newInstance()
+                    childFragmentManager.beginTransaction()
+                        .replace(R.id.fragment2, courseFragment)
+                        .commit()
+                }
+            }
+
+        } else if (data == null || resultCode == AppCompatActivity.RESULT_CANCELED) {
             return
         } else {
             GlobalScope.launch(Dispatchers.IO) {
@@ -150,6 +193,9 @@ class Schedule : Fragment() {
                                             val courseName = element[0]
                                             val courseWeek = element[2]
                                             val courseAddress = element[3]
+                                            val courseNotice = true
+                                            val courseFocus = true
+                                            val courseMute = true
                                             //将数字部分提取出来,比如1-3，4-6，3，9-14周，则提取出1-3,4-6,3,9-14
                                             val weekList =
                                                 Regex("[0-9]*-[0-9]*|[0-9]*").findAll(courseWeek)
@@ -161,17 +207,20 @@ class Schedule : Fragment() {
                                                         //是一个星期段
                                                         val start = element.first().toInt()
                                                         val end = element.last().toInt()
+
                                                         Log.d("start", start.toString())
                                                         Log.d("end", end.toString())
                                                         for (week in start..end) {
-
                                                             val course = Course(
                                                                 courseName,
                                                                 week,
                                                                 col,
                                                                 courseAddress,
                                                                 (row - 2),
-                                                                null
+                                                                null,
+                                                                courseNotice,
+                                                                courseFocus,
+                                                                courseMute
                                                             )
                                                             GlobalScope.launch(Dispatchers.IO) {
                                                                 context?.let { it1 ->
@@ -188,7 +237,10 @@ class Schedule : Fragment() {
                                                             col,
                                                             courseAddress,
                                                             (row - 2),
-                                                            null
+                                                            null,
+                                                            courseNotice,
+                                                            courseFocus,
+                                                            courseMute
                                                         )
                                                         context?.let { it1 ->
                                                             AppRoomDB.getDataBase(it1).getDAO()

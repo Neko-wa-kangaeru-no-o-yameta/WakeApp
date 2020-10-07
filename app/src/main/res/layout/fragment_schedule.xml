@@ -12,17 +12,7 @@
         android:layout_height="match_parent"
         tools:context=".workers.MainActivity">
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/floatingActionButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
-            android:clickable="true"
-            android:focusable="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@drawable/add_fill_24" />
+
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragment2"
@@ -33,6 +23,16 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <com.leinardi.android.speeddial.SpeedDialView
+            android:id="@+id/addCourseBotton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:sdMainFabClosedSrc="@drawable/add_fill_24"
+            app:sdOverlayLayout="@id/mainPage_overlay"/>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

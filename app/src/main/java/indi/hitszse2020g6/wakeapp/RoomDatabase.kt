@@ -105,16 +105,18 @@ class GenRuleEntry (
 
 @Entity(tableName = "course_table")
 data class Course(
-    @ColumnInfo(name = "course_name") val courseName: String,
-    @ColumnInfo(name = "week") val week: Int,
-    @ColumnInfo(name = "day_of_week") val dayOfWeek: Int,
-    @ColumnInfo(name = "class_address") val address: String,
-//    var detail              : List<Detail>,     // detail, Serialized Json
-    @ColumnInfo(name = "class_time") val time: Int,
-    @ColumnInfo(name = "course_color") val color: Int?
+    @ColumnInfo(name = "course_name") var courseName: String,
+    @ColumnInfo(name = "week") var week: Int,
+    @ColumnInfo(name = "day_of_week") var dayOfWeek: Int,
+    @ColumnInfo(name = "class_address") var address: String,
+    @ColumnInfo(name = "class_time") var time: Int,
+    @ColumnInfo(name = "course_color") var color: Int?,
+    @ColumnInfo(name = "course_notice") var notice: Boolean,
+    @ColumnInfo(name = "course_focus") var focus: Boolean,
+    @ColumnInfo(name = "course_mute") var mute: Boolean
 ) {
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "id")
+    @ColumnInfo(name = "course_id")
     var courseId: Long = 0
 }
 
@@ -182,6 +184,9 @@ interface RoomDAO {
     fun insertMyTime(mt:MyTimeEntry)
 
     //SceduleTable
+    @Query("SELECT * FROM course_table WHERE course_id = (:courseId)")
+    fun getCourseWithId(courseId:Long) :List<Course>
+
     @Query("SELECT * FROM course_table")
     fun getAll(): List<Course>
 
@@ -202,6 +207,9 @@ interface RoomDAO {
 
     @Query("UPDATE course_table SET course_color = (:course_color) WHERE course_name = (:course_name)")
     fun InsertCourseColorIntoTable(course_color:Int,course_name: String)
+
+    @Query("UPDATE course_table SET course_name = (:course_name),class_address = (:course_address),course_notice = :alarm,course_focus = :focus ,course_mute = :mute WHERE course_id = (:course_id)")
+    fun updateCourseDetails(course_name:String,course_address:String,alarm:Boolean,focus:Boolean,mute:Boolean,course_id:Long)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertCourse(vararg course: Course)
