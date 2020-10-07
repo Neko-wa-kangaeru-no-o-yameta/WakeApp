@@ -185,7 +185,8 @@ class CountDownProgress: View {
 
     fun stopAnima(){
         Toast.makeText(context,"Anima End",Toast.LENGTH_SHORT).show()
-        animator.end()
+//        this.clearAnimation()
+        animator.cancel()
         invalidate()
     }
 

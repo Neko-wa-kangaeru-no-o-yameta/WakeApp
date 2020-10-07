@@ -85,11 +85,13 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
                 setButtonAni(true)
                 //获得设置的时间
                 total_time = (hourpicker.value * 3600 + minuteipcker.value * 60).toLong()
-                //设置动画时长
-                myCircle.setCountdownTime(total_time * 1000)
-                myCircle.setAnimation(0f)
+                if(total_time>0){
+                    //设置动画时长
+                    myCircle.setCountdownTime(total_time * 1000)
+                    myCircle.setAnimation(0f)
 
-                setMyCountDownTimer(total_time)
+                    setMyCountDownTimer(total_time)
+                }
             } else if (condition_flag == -1) {
 
                 (activity as MainActivity).binder?.setIsBlocking(false)
@@ -115,6 +117,9 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
                     )
                 )
                 toggleDisplay(false)
+                hour.text = "00"
+                minute.text = "00"
+                second.text = "00"
             }
         }
 
@@ -143,7 +148,6 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
         }
 
         cancelBtn.setOnClickListener {
-            (activity as MainActivity).binder?.setIsStored(false)
             val mt = MyFocusEntry(
                 uid = System.currentTimeMillis(),
                 totalFocusTime = total_time,
@@ -171,13 +175,12 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
             }
             setButtonAni(false)
             myCountDownTimer?.cancel()
-            if ((activity as MainActivity).mBound) {
-                (activity as MainActivity).binder?.stopCountDownTimer()
-            }
+            (activity as MainActivity).binder?.setIsStored(false)
+            (activity as MainActivity).binder?.stopCountDownTimer()
             myCircle.setAnimation(1f)
             myCircle.setCountdownTime(0)
-//            myCircle.stopAnima()
             toggleDisplay(false)
+
         }
 
         getPreviousCondition()
