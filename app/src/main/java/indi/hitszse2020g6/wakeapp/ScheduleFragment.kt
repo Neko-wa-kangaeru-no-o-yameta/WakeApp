@@ -225,7 +225,7 @@ class Schedule : Fragment() {
                                                             GlobalScope.launch(Dispatchers.IO) {
                                                                 context?.let { it1 ->
                                                                     AppRoomDB.getDataBase(it1).getDAO()
-                                                                        .insert(course)
+                                                                        .insertCourse(course)
                                                                 }
                                                             }
                                                         }
@@ -244,7 +244,7 @@ class Schedule : Fragment() {
                                                         )
                                                         context?.let { it1 ->
                                                             AppRoomDB.getDataBase(it1).getDAO()
-                                                                .insert(course)
+                                                                .insertCourse(course)
                                                         }
                                                     }
                                                 }

@@ -70,7 +70,7 @@ class CourseAddActivity : AppCompatActivity() {
                     detail.alarm, detail.focus, detail.mute
                 )
                 Log.d("courseName", courseName)
-                AppRoomDB.getDataBase(this).getDAO().insert(course)
+                AppRoomDB.getDataBase(this).getDAO().insertCourse(course)
                 val data = Intent()
                 setResult(RESULT_ADD_NEW_COURSE,data)
                 finish()

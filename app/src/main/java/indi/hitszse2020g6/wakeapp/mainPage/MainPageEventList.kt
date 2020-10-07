@@ -1,14 +1,10 @@
 package indi.hitszse2020g6.wakeapp.mainPage
 
 import android.util.Log
-import android.widget.EditText
 import indi.hitszse2020g6.wakeapp.*
-import indi.hitszse2020g6.wakeapp.eventDetail.EventDetailList
-import indi.hitszse2020g6.wakeapp.eventDetail.EventReminderList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.text.FieldPosition
 
 object MainPageEventList {
     lateinit var eventList: MutableList<EventTableEntry>
@@ -53,7 +49,7 @@ object MainPageEventList {
         eventList.add(entry)        // uid should catch up in milliseconds
 
         GlobalScope.launch(Dispatchers.IO) {
-            entry.uid = DAO.insert(entry)
+            entry.uid = DAO.insertCourse(entry)
         }
     }
 
@@ -103,7 +99,7 @@ object MainPageEventList {
         eventList.add(entry)        // uid should catch up in milliseconds
 
         GlobalScope.launch(Dispatchers.IO) {
-            entry.uid = DAO.insert(entry)
+            entry.uid = DAO.insertCourse(entry)
         }
     }
 

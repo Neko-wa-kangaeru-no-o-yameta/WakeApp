@@ -146,7 +146,7 @@ interface RoomDAO {
     fun getEvent(uid: Long): EventTableEntry
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(re: EventTableEntry) : Long
+    fun insertCourse(re: EventTableEntry) : Long
 
     @Query("DELETE FROM EventTable")
     fun deleteAll()
@@ -195,7 +195,7 @@ interface RoomDAO {
     fun updateCourseDetails(course_name:String,course_address:String,alarm:Boolean,focus:Boolean,mute:Boolean,course_id:Long)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(vararg course: Course)
+    fun insertCourse(vararg course: Course)
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     fun update(course: Course)
