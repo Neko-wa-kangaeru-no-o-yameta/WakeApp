@@ -34,22 +34,16 @@ class MainActivity : AppCompatActivity() {
 
     var mBound = false
     lateinit var blockAppService: BackgroundService
-    lateinit var binder: BackgroundService.MyBinder
+    var binder: BackgroundService.MyBinder? = null
     var jumped = false
 
     private val connection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             binder = service as BackgroundService.MyBinder
-            blockAppService = binder.getService()
+            blockAppService = binder!!.getService()
             mBound = true
             Log.d("MainActivity","Connected")
 
-            when(intent.action) {
-                ACTION_START_FOCUS_TIME-> {
-                    binder.startCountDownTimer(intent.getLongExtra(PARAM_START_FOCUS_TIME, 0),"自定义专注")
-//                    binder.startCountDownTimer(intent.getLongExtra(PARAM_START_FOCUS_TIME, 0))
-                }
-            }
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
@@ -98,10 +92,10 @@ class MainActivity : AppCompatActivity() {
                 val entry = MainPageEventList.DAO.getEvent(startFocusUid)
                 Handler(Looper.getMainLooper()).postDelayed({
                     Log.d("MainActivity", "Starting Timer...")
-                    binder.setUseCustomWhiteList(entry.hasCustomWhiteList)
-                    binder.setCustomWhiteList(entry.customWhiteList)
-                    binder.setIsBlocking(true)
-                    binder.changePage(entry.startTime, entry.stopTime, entry.title)
+                    binder?.setUseCustomWhiteList(entry.hasCustomWhiteList)
+                    binder?.setCustomWhiteList(entry.customWhiteList)
+                    binder?.setIsBlocking(true)
+                    binder?.startTimer(entry.startTime, entry.stopTime, entry.title)
 //                    binder.startCoutnDownTimer()
                 }, 500)
             }
@@ -198,27 +192,12 @@ class MainActivity : AppCompatActivity() {
 
     fun receiveBroadCast(){
         val intentFilter = IntentFilter()
-        intentFilter.addAction("change_page")
+        intentFilter.addAction("switchToFocusFragment")
         this.registerReceiver(object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 Log.d("MainActivity", "Received intent from background service")
                 findNavController(R.id.mainNavFragment).navigate(R.id.action_global_focusFragment)
                 bottomNavigationView.selectedItemId = R.id.bottomNavFocusBtn
-                val bundle = intent.extras
-                //后台通知前台开始计时
-
-                var t = bundle?.getLong("change_page_data")
-                var title: String? = bundle?.getString("change_page_title")
-                //等一会儿跳转过去再计时
-                Log.d("BEFORE_T",t.toString())
-                val handler = Handler(Looper.getMainLooper())
-                handler.postDelayed(object:Runnable{
-                    override fun run() {
-                        if (t != null&& title!=null) {
-                            binder.startCountDownTimer(t,title)
-                        }
-                    }
-                },500)
             }
         }, intentFilter)
     }

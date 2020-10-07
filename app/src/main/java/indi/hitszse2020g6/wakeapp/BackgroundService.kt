@@ -64,6 +64,7 @@ class BackgroundService : Service() {
     var customWhiteList:List<String> = ArrayList()
     var defaultWhiteList:List<String> = ArrayList()
 
+    var isStored:Boolean = false
     var isBlocking: Boolean = false
     var startBlocking: Long = -1
     var stopBlocking: Long = -1
@@ -166,29 +167,29 @@ class BackgroundService : Service() {
 
         fun getBlock():Boolean = isBlocking
 
-        fun startCountDownTimer(t:Long, focusTitle:String){
-            //后台通知前台开始计时并自己开始计时
-            Log.d(TAG,"ok")
-            myCountTime = t
-            val myIntent = Intent()
-            myIntent.putExtra("startTicking_data",t)
-            myIntent.putExtra("startTicking_title",focusTitle)
-            myIntent.setAction("startTicking")
-            sendBroadcast(myIntent)
-            if(myCountTime.toInt()!=0 && myCountDownTimer!=null){
-                //如果之前在计时
-                myCountDownTimer!!.cancel()
-            }
-            myCountDownTimer = object : CountDownTimer(t*1000,1000){
-                override fun onTick(millisUntilFinished: Long) {
-                    //Do nothing
-                    myCountTime--
-                }
-                override fun onFinish() {
-                    Log.d(TAG,"BACKGROUND TIMER FINISHED")
-                }
-            }.start()
-        }
+//        fun startCountDownTimer(t:Long, focusTitle:String){
+//            //后台通知前台开始计时并自己开始计时
+//            Log.d(TAG,"ok")
+//            myCountTime = t
+//            val myIntent = Intent()
+//            myIntent.putExtra("startTicking_data",t)
+//            myIntent.putExtra("startTicking_title",focusTitle)
+//            myIntent.setAction("startTicking")
+//            sendBroadcast(myIntent)
+//            if(myCountTime.toInt()!=0 && myCountDownTimer!=null){
+//                //如果之前在计时
+//                myCountDownTimer!!.cancel()
+//            }
+//            myCountDownTimer = object : CountDownTimer(t*1000,1000){
+//                override fun onTick(millisUntilFinished: Long) {
+//                    //Do nothing
+//                    myCountTime--
+//                }
+//                override fun onFinish() {
+//                    Log.d(TAG,"BACKGROUND TIMER FINISHED")
+//                }
+//            }.start()
+//        }
 
         fun stopCountDownTimer(){
             myCountTime = 0
@@ -209,16 +210,32 @@ class BackgroundService : Service() {
 
         fun getFocusTitle() = focusTitle
 
-        fun changePage(startTime:Long,endTime:Long, title: String){
-            var t = endTime-startTime
-            val myIntent = Intent()
-            startBlocking = startTime
-            stopBlocking = endTime
-            focusTitle = title
-            myIntent.putExtra("change_page_data",t)
-            myIntent.putExtra("change_page_title",title)
-            myIntent.action = "change_page"
+        fun startTimer(startTime:Long,endTime:Long, title: String){
+            var totalTime = endTime - startTime
+            startMyCountDownTimer(totalTime,title)
+            //发送BroadCast通知切换页面
+            var myIntent = Intent()
+            myIntent.action = "switchToFocusFragment"
             sendBroadcast(myIntent)
+        }
+
+        fun startMyCountDownTimer(totalTime:Long,title:String){
+            myCountTime = totalTime
+            focusTitle = title
+            //开始计时
+            if(myCountTime.toInt()!=0 && myCountDownTimer!=null){
+                //如果之前在计时
+                myCountDownTimer!!.cancel()
+            }
+            myCountDownTimer = object : CountDownTimer(totalTime*1000,1000){
+                override fun onTick(millisUntilFinished: Long) {
+                    //Do nothing
+                    myCountTime--
+                }
+                override fun onFinish() {
+                    Log.d(TAG,"BACKGROUND TIMER FINISHED")
+                }
+            }.start()
         }
 
         fun getStartTime(): Long = startBlocking
@@ -226,6 +243,12 @@ class BackgroundService : Service() {
         fun getStopTime(): Long = stopBlocking
 
         fun getConditon():Long = myCountTime
+
+        fun setIsStored(b:Boolean){
+            isStored = b
+        }
+
+        fun getIsStored():Boolean = isStored
     }
 
 }
