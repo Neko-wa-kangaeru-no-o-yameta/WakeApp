@@ -159,6 +159,12 @@ class MainActivity : AppCompatActivity() {
         Intent(this, BackgroundService::class.java).also { intent ->
             bindService(intent, connection, Context.BIND_AUTO_CREATE)
             Log.d("B Main Activity", "trying to bind")
+
+            //连上的时候说一声
+            var myIntent = Intent()
+            myIntent.setAction("Connnecting")
+            myIntent.putExtra("connect",true)
+            sendBroadcast(myIntent)
         }
     }
 

@@ -98,6 +98,7 @@ class BackgroundService : Service() {
                             topPackageName = mySortedMap[mySortedMap.lastKey()]!!.packageName
                         }
                     }
+//                    Log.d("BCKGRND", topPackageName)
                     var needToBlock = true
                     val finalWhiteList = listOf<String>(*forceWhiteList.toTypedArray(), *if(useCustomWhiteList) {customWhiteList.toTypedArray()} else {defaultWhiteList.toTypedArray()})
                     for(wlPackageName in finalWhiteList) {
@@ -190,6 +191,7 @@ class BackgroundService : Service() {
         }
 
         fun stopCountDownTimer(){
+            myCountTime = 0
             myCountDownTimer!!.cancel()
         }
 
@@ -222,6 +224,8 @@ class BackgroundService : Service() {
         fun getStartTime(): Long = startBlocking
 
         fun getStopTime(): Long = stopBlocking
+
+        fun getConditon():Long = myCountTime
     }
 
 }

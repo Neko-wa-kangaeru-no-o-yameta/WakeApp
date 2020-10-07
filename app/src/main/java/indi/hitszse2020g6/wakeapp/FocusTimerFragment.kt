@@ -20,6 +20,7 @@ import android.widget.NumberPicker
 import android.widget.TimePicker
 import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.os.HandlerExecutor
 import androidx.dynamicanimation.animation.SpringAnimation
 import androidx.dynamicanimation.animation.SpringForce
 import androidx.fragment.app.Fragment
@@ -43,11 +44,11 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
     var total_time: Long = 0
     var condition_flag: Int = 0
     var before_sys_time: Long = 0
-    var set_focus_title:String = "用户自定义专注"
+    var set_focus_title: String = "用户自定义专注"
 
     private var btnFlag: Boolean = false
 
-//    private lateinit var myDatabase: AppRoomDB
+    //    private lateinit var myDatabase: AppRoomDB
     private lateinit var myDao: RoomDAO
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,10 +81,11 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
 
         registerReceiver()
 
-        getPreviousCondition()
-
         startBtn.setOnClickListener {
             if (condition_flag == 0) {
+
+                (activity as MainActivity).binder.setIsBlocking(true)
+
                 setButtonAni(true)
                 //获得设置的时间
                 total_time = (hourpicker.value * 3600 + minuteipcker.value * 60).toLong()
@@ -92,11 +94,14 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
                 myCircle.setAnimation(0f)
 
                 if ((activity as MainActivity).mBound) {
-                    (activity as MainActivity).binder.startCountDownTimer(total_time,set_focus_title)
+                    (activity as MainActivity).binder.startCountDownTimer(
+                        total_time,
+                        set_focus_title
+                    )
                 }
             } else if (condition_flag == -1) {
-                //往数据库里记一下这次的专注时间和专注次数
-                //记得写
+
+                (activity as MainActivity).binder.setIsBlocking(false)
 
                 condition_flag = 0
                 val myTime = MyTimeEntry(
@@ -156,9 +161,9 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
                 true
             )
             myDao.addFocusData(mt)
-            var items = myDao.findFocusData(System.currentTimeMillis()-100000000)
-            for(item in items){
-                Log.d("${item.focusDate}","${item.totalFocusTime} ${item.focusTitle}")
+            var items = myDao.findFocusData(System.currentTimeMillis() - 100000000)
+            for (item in items) {
+                Log.d("${item.focusDate}", "${item.totalFocusTime} ${item.focusTitle}")
             }
 
             condition_flag = 0
@@ -183,7 +188,13 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
             toggleDisplay(false)
         }
 
-        syncWithBackground()
+        if((activity as MainActivity).mBound){
+            getPreviousCondition()
+        }
+//        getPreviousCondition()
+
+
+//        syncWithBackground()
 //        Handler(Looper.getMainLooper()).postDelayed({syncWithBackground()}, 500)
     }
 
@@ -197,7 +208,7 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
             total_time = (binder.getStopTime() - binder.getStartTime())     // s
             set_focus_title = binder.getFocusTitle()
 
-            val distance = System.currentTimeMillis()/1000 - binder.getStartTime()  // s
+            val distance = System.currentTimeMillis() / 1000 - binder.getStartTime()  // s
             btnFlag = true
             // not set before, for pauseBtn is still visible
             pauseBtn.setImageDrawable(
@@ -210,6 +221,9 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
             setButtonAni(true)
             toggleDisplay(true)
             myCircle.setCountdownTime((total_time - distance) * 1000)        // unit: ms
+            Log.d(TAG,distance.toFloat().toString())
+            Log.d(TAG,total_time.toFloat().toString())//0
+            Log.d(TAG,(distance.toFloat() / total_time.toFloat()).toString())//Infinity
             myCircle.setAnimation(distance.toFloat() / total_time.toFloat())
         }
     }
@@ -373,11 +387,11 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
     }
 
     private fun setMyCountDownTimer(setTime: Long) {
-        if(condition_flag == 0){
+        if (condition_flag == 0) {
             setButtonAni(true)
             condition_flag = 1
             total_time = setTime
-            Toast.makeText(context,total_time.toString(),Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, total_time.toString(), Toast.LENGTH_SHORT).show()
             val myTime = MyTimeEntry(
                 1,
                 total_time,
@@ -394,7 +408,7 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
             myCircle.setAnimation(0f)
             toggleDisplay(true)
         }
-        if(myCountDownTimer!=null){
+        if (myCountDownTimer != null) {
             myCountDownTimer!!.cancel()
         }
         myCountDownTimer = object : CountDownTimer((setTime) * 1000, 1000) {
@@ -423,10 +437,21 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
             //计时结束的操作
             override fun onFinish() {
                 if (startBtn != null) {
-                    startBtn.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.coutdown_finished_fill_24,null))
+                    startBtn.setImageDrawable(
+                        ResourcesCompat.getDrawable(
+                            resources,
+                            R.drawable.coutdown_finished_fill_24,
+                            null
+                        )
+                    )
                     setButtonAni(false)
                     Toast.makeText(context, "计时结束", Toast.LENGTH_SHORT).show()
                     condition_flag = -1
+
+                    //service的也要停
+                    if ((activity as MainActivity).mBound) {
+                        (activity as MainActivity).binder.stopCountDownTimer()
+                    }
 
                     val mt = MyFocusEntry(
                         uid = System.currentTimeMillis(),
@@ -436,9 +461,9 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
                         false
                     )
                     myDao.addFocusData(mt)
-                    var items = myDao.findFocusData(System.currentTimeMillis()-100000000)
-                    for(item in items){
-                        Log.d("${item.focusDate}","${item.totalFocusTime} ${item.focusTitle}")
+                    var items = myDao.findFocusData(System.currentTimeMillis() - 100000000)
+                    for (item in items) {
+                        Log.d("${item.focusDate}", "${item.totalFocusTime} ${item.focusTitle}")
                     }
                 }
             }
@@ -446,6 +471,7 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
     }
 
     private fun getPreviousCondition() {
+        Log.d(TAG,"getPreviousConditon")
         val tmp = myDao.findFromTimeTable()
         if (tmp.isNotEmpty()) {
             total_time = tmp[0].totalTime
@@ -453,14 +479,19 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
             before_sys_time = tmp[0].beforeSysTime
             set_focus_title = tmp[0].before_title
         }
-        val distance: Long = (System.currentTimeMillis() - before_sys_time) / 1000      // before_sys_time is in ms, distance is in s???
+
+        val distance: Long =
+            (System.currentTimeMillis() - before_sys_time) / 1000      // before_sys_time is in ms, distance is in s???
         //如果之前是计时状态但是计时已经结束
         if (condition_flag == 1 && distance >= total_time) {
             condition_flag = -1
         }
         //如果之前是在计时状态
+        Log.d(TAG,condition_flag.toString())
+        Log.d(TAG, (activity as MainActivity?)?.mBound.toString())
+        Log.d(TAG, (activity as MainActivity?)?.binder?.getBlock().toString())
         if (condition_flag == 1) {
-            if ((activity as MainActivity).mBound && (!(activity as MainActivity).binder.getBlock())) {
+            if ((activity as MainActivity).mBound&& (!(activity as MainActivity).binder.getBlock())) {
                 btnFlag = true
                 pauseBtn.setImageDrawable(
                     ResourcesCompat.getDrawable(
@@ -476,9 +507,12 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
             myCircle.setAnimation(distance.toFloat() / total_time.toFloat())
 
             if ((activity as MainActivity).mBound) {
-                (activity as MainActivity).binder.startCountDownTimer(total_time - distance,set_focus_title)
-            }else{
-                Log.d(TAG,"oooops")
+                (activity as MainActivity).binder.startCountDownTimer(
+                    total_time - distance,
+                    set_focus_title
+                )
+            } else {
+                Log.d(TAG, "oooops")
             }
 
         } else if (condition_flag == -1) {
@@ -538,5 +572,19 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
                 }
             }
         }, intentFilter)
+
+        val connectionFilter = IntentFilter()
+        connectionFilter.addAction("Connnecting")
+        requireContext().registerReceiver(object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                val bundle = intent.extras
+                //接上了
+                if(bundle?.getBoolean("connect")!!){
+                    Log.d(TAG,"HHHHHHHHHHHHere!")
+                    Log.d(TAG,((activity as MainActivity?) == null).toString())
+                    getPreviousCondition()
+                }
+            }
+        }, connectionFilter)
     }
 }
