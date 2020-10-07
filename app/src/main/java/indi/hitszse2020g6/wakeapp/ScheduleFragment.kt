@@ -17,7 +17,6 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.leinardi.android.speeddial.SpeedDialView
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 
@@ -194,6 +193,9 @@ class Schedule : Fragment() {
                                             val courseName = element[0]
                                             val courseWeek = element[2]
                                             val courseAddress = element[3]
+                                            val courseNotice = true
+                                            val courseFocus = true
+                                            val courseMute = true
                                             //将数字部分提取出来,比如1-3，4-6，3，9-14周，则提取出1-3,4-6,3,9-14
                                             val weekList =
                                                 Regex("[0-9]*-[0-9]*|[0-9]*").findAll(courseWeek)
@@ -205,17 +207,20 @@ class Schedule : Fragment() {
                                                         //是一个星期段
                                                         val start = element.first().toInt()
                                                         val end = element.last().toInt()
+
                                                         Log.d("start", start.toString())
                                                         Log.d("end", end.toString())
                                                         for (week in start..end) {
-
                                                             val course = Course(
                                                                 courseName,
                                                                 week,
                                                                 col,
                                                                 courseAddress,
                                                                 (row - 2),
-                                                                null
+                                                                null,
+                                                                courseNotice,
+                                                                courseFocus,
+                                                                courseMute
                                                             )
                                                             GlobalScope.launch(Dispatchers.IO) {
                                                                 context?.let { it1 ->
@@ -232,7 +237,10 @@ class Schedule : Fragment() {
                                                             col,
                                                             courseAddress,
                                                             (row - 2),
-                                                            null
+                                                            null,
+                                                            courseNotice,
+                                                            courseFocus,
+                                                            courseMute
                                                         )
                                                         context?.let { it1 ->
                                                             AppRoomDB.getDataBase(it1).getDAO()

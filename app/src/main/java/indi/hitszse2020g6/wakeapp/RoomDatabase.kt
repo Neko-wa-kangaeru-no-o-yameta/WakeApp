@@ -99,7 +99,10 @@ data class Course(
     @ColumnInfo(name = "day_of_week") var dayOfWeek: Int,
     @ColumnInfo(name = "class_address") var address: String,
     @ColumnInfo(name = "class_time") var time: Int,
-    @ColumnInfo(name = "course_color") var color: Int?
+    @ColumnInfo(name = "course_color") var color: Int?,
+    @ColumnInfo(name = "course_notice") var notice: Boolean,
+    @ColumnInfo(name = "course_focus") var focus: Boolean,
+    @ColumnInfo(name = "course_mute") var mute: Boolean
 ) {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "course_id")
@@ -188,8 +191,8 @@ interface RoomDAO {
     @Query("UPDATE course_table SET course_color = (:course_color) WHERE course_name = (:course_name)")
     fun InsertCourseColorIntoTable(course_color:Int,course_name: String)
 
-    @Query("UPDATE course_table SET course_name = (:course_name),class_address = (:course_address) WHERE course_id = (:course_id)")
-    fun updateCourseDetails(course_name:String,course_address:String,course_id:Long)
+    @Query("UPDATE course_table SET course_name = (:course_name),class_address = (:course_address),course_notice = :alarm,course_focus = :focus ,course_mute = :mute WHERE course_id = (:course_id)")
+    fun updateCourseDetails(course_name:String,course_address:String,alarm:Boolean,focus:Boolean,mute:Boolean,course_id:Long)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(vararg course: Course)
