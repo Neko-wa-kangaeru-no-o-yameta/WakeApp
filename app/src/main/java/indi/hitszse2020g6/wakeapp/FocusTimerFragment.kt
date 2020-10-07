@@ -79,18 +79,19 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
 
         startBtn.setOnClickListener {
             if (condition_flag == 0) {
-
-                (activity as MainActivity).binder?.setIsBlocking(true)
-
-                setButtonAni(true)
                 //获得设置的时间
                 total_time = (hourpicker.value * 3600 + minuteipcker.value * 60).toLong()
                 if(total_time>0){
+                    (activity as MainActivity).binder?.setIsBlocking(true)
+
+                    setButtonAni(true)
                     //设置动画时长
                     myCircle.setCountdownTime(total_time * 1000)
                     myCircle.setAnimation(0f)
 
                     setMyCountDownTimer(total_time)
+                }else{
+                    Toast.makeText(context,"Unable to start a 0 minute focus.",Toast.LENGTH_SHORT).show()
                 }
             } else if (condition_flag == -1) {
 
