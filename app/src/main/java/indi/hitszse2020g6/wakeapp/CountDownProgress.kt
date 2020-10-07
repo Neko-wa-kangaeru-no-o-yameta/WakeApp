@@ -13,6 +13,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
+import android.widget.Toast
 
 class CountDownProgress: View {
     private var defaultCircleSolideColor: Int = Color.BLUE
@@ -183,7 +184,9 @@ class CountDownProgress: View {
     }
 
     fun stopAnima(){
+        Toast.makeText(context,"Anima End",Toast.LENGTH_SHORT).show()
         animator.end()
+        invalidate()
     }
 
 //    fun startCountDownTime(myCountDownTimer: CountDownTimer){

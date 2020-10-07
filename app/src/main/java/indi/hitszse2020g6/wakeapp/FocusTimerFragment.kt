@@ -143,7 +143,7 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
         }
 
         cancelBtn.setOnClickListener {
-
+            (activity as MainActivity).binder?.setIsStored(false)
             val mt = MyFocusEntry(
                 uid = System.currentTimeMillis(),
                 totalFocusTime = total_time,
@@ -156,7 +156,6 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
             for (item in items) {
                 Log.d("${item.focusDate}", "${item.totalFocusTime} ${item.focusTitle}")
             }
-
             condition_flag = 0
             val myTime = MyTimeEntry(
                 1,
@@ -175,7 +174,9 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
             if ((activity as MainActivity).mBound) {
                 (activity as MainActivity).binder?.stopCountDownTimer()
             }
-            myCircle.stopAnima()
+            myCircle.setAnimation(1f)
+            myCircle.setCountdownTime(0)
+//            myCircle.stopAnima()
             toggleDisplay(false)
         }
 
