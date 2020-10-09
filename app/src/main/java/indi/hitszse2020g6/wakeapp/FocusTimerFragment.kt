@@ -1,14 +1,9 @@
 package indi.hitszse2020g6.wakeapp
 
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.content.*
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -20,16 +15,12 @@ import android.widget.NumberPicker
 import android.widget.TimePicker
 import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.os.HandlerExecutor
 import androidx.dynamicanimation.animation.SpringAnimation
 import androidx.dynamicanimation.animation.SpringForce
 import androidx.fragment.app.Fragment
 import indi.hitszse2020g6.wakeapp.mainPage.MainPageEventList
 import kotlinx.android.synthetic.main.fragment_focus_timer.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-
+import android.content.SharedPreferences
 
 const val REQUEST_CODE_OVERLAY = 101
 const val REQUEST_SYS_ALERT = 102
@@ -48,7 +39,7 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
 
     private var btnFlag: Boolean = false
 
-    //    private lateinit var myDatabase: AppRoomDB
+    private lateinit var mySharedPreferences: SharedPreferences
     private lateinit var myDao: RoomDAO
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -93,18 +84,9 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
                 }
             } else if (condition_flag == -1) {
                 condition_flag = 0
-                val myTime = MyTimeEntry(
-                    1,
-                    total_time,
-                    condition_flag,
-                    System.currentTimeMillis(),
-                    set_focus_title
-                )
-                if (myDao.findFromTimeTable().isEmpty()) {
-                    myDao.insertMyTime(myTime)
-                } else {
-                    myDao.updateMyTime(myTime)
-                }
+
+                storeTime()
+
                 startBtn.setImageDrawable(
                     ResourcesCompat.getDrawable(
                         resources,
@@ -157,18 +139,9 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
                 Log.d("${item.focusDate}", "${item.totalFocusTime} ${item.focusTitle}")
             }
             condition_flag = 0
-            val myTime = MyTimeEntry(
-                1,
-                total_time,
-                condition_flag,
-                System.currentTimeMillis(),
-                set_focus_title
-            )
-            if (myDao.findFromTimeTable().isEmpty()) {
-                myDao.insertMyTime(myTime)
-            } else {
-                myDao.updateMyTime(myTime)
-            }
+
+            storeTime()
+
             setButtonAni(false)
             myCountDownTimer?.cancel()
             (activity as MainActivity).binder?.setIsStored(false)
@@ -349,18 +322,9 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
             (activity as MainActivity).binder?.setIsStored(true)
             (activity as MainActivity).binder?.startMyCountDownTimer(total_time,set_focus_title)
             Toast.makeText(context, total_time.toString(), Toast.LENGTH_SHORT).show()
-            val myTime = MyTimeEntry(
-                1,
-                total_time,
-                condition_flag,
-                System.currentTimeMillis(),
-                set_focus_title
-            )
-            if (myDao.findFromTimeTable().isEmpty()) {
-                myDao.insertMyTime(myTime)
-            } else {
-                myDao.updateMyTime(myTime)
-            }
+
+            storeTime()
+
             myCircle.setCountdownTime(total_time * 1000)
             myCircle.setAnimation(0f)
             toggleDisplay(true)
@@ -430,7 +394,6 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
 
     private fun getPreviousCondition() {
         Log.d(TAG,"getPreviousConditon")
-        val tmp = myDao.findFromTimeTable()
         var distance:Long
         if((activity as MainActivity).binder!=null&& (activity as MainActivity).binder?.getConditon()!! > 0 &&!(activity as MainActivity).binder?.getIsStored()!!){
             //第一次进来，后台已经开始计时了
@@ -443,12 +406,13 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
             Log.d(TAG,"backgroung stored ${(activity as MainActivity).binder?.getIsStored()}")
             (activity as MainActivity).binder?.setIsStored(true)
         }else{
-            if (tmp.isNotEmpty()) {
-                total_time = tmp[0].totalTime
-                condition_flag = tmp[0].conditionFlag
-                before_sys_time = tmp[0].beforeSysTime
-                set_focus_title = tmp[0].before_title
+            mySharedPreferences = requireContext().getSharedPreferences("user_time",Context.MODE_PRIVATE)
+            if(mySharedPreferences.getInt("condition_flag",-2)!=-2){
+                condition_flag = mySharedPreferences.getInt("condition_flag",-2)
+                total_time = mySharedPreferences.getLong("total_time",0)
+                before_sys_time = mySharedPreferences.getLong("before_system_time",System.currentTimeMillis())
             }
+
             distance = (System.currentTimeMillis() - before_sys_time) / 1000      // before_sys_time is in ms, distance is in s???
             //如果之前是计时状态但是计时已经结束
             if (condition_flag == 1 && distance >= total_time) {
@@ -512,5 +476,14 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
             divide1.visibility = View.GONE
             divide2.visibility = View.GONE
         }
+    }
+
+    private fun storeTime(){
+        mySharedPreferences = requireContext().getSharedPreferences("user_time",Context.MODE_PRIVATE)
+        var editor = mySharedPreferences.edit()
+        editor.putLong("total_time",total_time)
+        editor.putLong("before_system_time",System.currentTimeMillis())
+        editor.putInt("condition_flag",condition_flag)
+        editor.commit()
     }
 }

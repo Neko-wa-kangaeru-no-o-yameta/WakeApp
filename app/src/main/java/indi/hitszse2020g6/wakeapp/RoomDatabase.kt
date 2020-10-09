@@ -54,16 +54,6 @@ class Converters {
     }
 }
 
-@Entity(tableName = "timeTable")
-class MyTimeEntry(
-    @PrimaryKey(autoGenerate = true)val id                  : Int,
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    var totalTime           :Long,              //The total time of the last count setting
-    var conditionFlag       :Int,               //1->counting,-1->counting over,0->waiting
-    var beforeSysTime       :Long,               //System time when timing starts
-    var before_title        :String             //the title of the focus
-)
-
 @Entity(tableName = "focusTable")
 class MyFocusEntry(
     @PrimaryKey(autoGenerate = true)val uid                 : Long,
@@ -120,7 +110,7 @@ data class Course(
     var courseId: Long = 0
 }
 
-@Database(entities = [EventTableEntry::class, GenRuleEntry::class,MyTimeEntry::class,Course::class,MyFocusEntry::class], version = 1)
+@Database(entities = [EventTableEntry::class, GenRuleEntry::class,Course::class,MyFocusEntry::class], version = 1)
 @TypeConverters(Converters::class)
 abstract class AppRoomDB: RoomDatabase() {
     abstract fun getDAO(): RoomDAO
@@ -173,15 +163,6 @@ interface RoomDAO {
 
     @Update
     fun updateEvent(vararg re: EventTableEntry)
-
-    @Query("SELECT * FROM timeTable WHERE id = 1")
-    fun findFromTimeTable():List<MyTimeEntry>
-
-    @Update
-    fun updateMyTime(mt:MyTimeEntry)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertMyTime(mt:MyTimeEntry)
 
     //SceduleTable
     @Query("SELECT * FROM course_table WHERE course_id = (:courseId)")

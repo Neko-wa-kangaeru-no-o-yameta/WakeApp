@@ -1,7 +1,6 @@
 package indi.hitszse2020g6.wakeapp
 
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.ApplicationInfo
 import android.graphics.drawable.Drawable
@@ -12,21 +11,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.navigation.findNavController
-import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_choose_white_list.*
-import kotlinx.android.synthetic.main.fragment_focus_statistic.view.*
-import kotlinx.android.synthetic.main.fragment_focus_statistic.view.textView
-import kotlinx.android.synthetic.main.my_app_item_layout.*
 import kotlinx.android.synthetic.main.my_app_item_layout.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.json.json
 import org.json.JSONArray
-import java.nio.channels.Selector
 
 const val REQUEST_SELECT_WHITE_LIST = 123
 const val RESULT_OK = 100
@@ -46,8 +37,8 @@ class ChooseWhiteListActivity : AppCompatActivity(),CompoundButton.OnCheckedChan
         Log.d(TAG,"${jsonArray.length()}")
         if(jsonArray.length()>0){
             for(item in 0 until jsonArray.length()){
-                tmpList.add(jsonArray.get(item) as String)
-                Log.d(TAG,tmpList[item])
+                myWhiteList.add(jsonArray.get(item) as String)
+                Log.d(TAG,myWhiteList[item])
             }
         }
 
@@ -80,9 +71,9 @@ class ChooseWhiteListActivity : AppCompatActivity(),CompoundButton.OnCheckedChan
 //                this.finish()
 //            }
 
-            var jsonArray = convertIntoJsonArray()
+            val jsonArray = convertIntoJsonArray()
                 mySharedPreferences = getSharedPreferences("user_default_white_list", Context.MODE_PRIVATE)
-                var editor = mySharedPreferences.edit()
+                val editor = mySharedPreferences.edit()
                 editor.putString("default_white_list",jsonArray.toString())
                 editor.commit()
                 this.finish()
@@ -123,7 +114,7 @@ class ChooseWhiteListActivity : AppCompatActivity(),CompoundButton.OnCheckedChan
                     val v: View = vi.inflate(R.layout.my_app_item_layout, null)
                     v.app_name.text = item.appName
                     Log.d(TAG,tmpList.size.toString())
-                    if(item.appPackageName in tmpList){
+                    if(item.appPackageName in myWhiteList){
                         v.switch_white_list.isChecked = true
                     }
                     v.imageView.setImageDrawable(item.appIcon)
@@ -140,14 +131,16 @@ class ChooseWhiteListActivity : AppCompatActivity(),CompoundButton.OnCheckedChan
     }
 
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
-        var myParent = (buttonView?.parent) as ViewGroup
+        val myParent = (buttonView?.parent) as ViewGroup
         if(buttonView.isChecked){
             myWhiteList.add(myParent.getChildAt(7).hideTextView.text.toString())
+        }else{
+            myWhiteList.remove(myParent.getChildAt(7).hideTextView.text.toString())
         }
     }
 
     fun convertIntoJsonArray(): JSONArray {
-        var jsonArray:JSONArray = JSONArray()
+        val jsonArray:JSONArray = JSONArray()
         for(item in myWhiteList){
             jsonArray.put(item)
         }

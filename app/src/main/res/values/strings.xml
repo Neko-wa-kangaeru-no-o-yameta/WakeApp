@@ -85,4 +85,8 @@
     <string name="textview">TextView</string>
     <string name="switch_white_list">switch_white_list</string>
     <string name="todo">TODO</string>
+    <string name="app">正在加载设备app列表，请稍后...</string>
+    <string name="sure_white_list">确认</string>
+    <string name="cancel_white_list">取消</string>
+    <string name="set_white_list">设置白名单</string>
 </resources>

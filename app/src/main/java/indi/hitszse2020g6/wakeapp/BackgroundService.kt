@@ -1,6 +1,5 @@
 package indi.hitszse2020g6.wakeapp
 
-import android.app.PendingIntent
 import android.app.Service
 import android.app.usage.UsageStats
 import android.app.usage.UsageStatsManager
@@ -13,7 +12,6 @@ import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.WindowManager
-import androidx.core.content.res.ResourcesCompat
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.concurrent.schedule
@@ -188,10 +186,10 @@ class BackgroundService : Service() {
         fun getFocusTitle() = focusTitle
 
         fun startTimer(startTime:Long,endTime:Long, title: String){
-            var totalTime = endTime - startTime
+            val totalTime = endTime - startTime
             startMyCountDownTimer(totalTime,title)
             //发送BroadCast通知切换页面
-            var myIntent = Intent()
+            val myIntent = Intent()
             myIntent.action = "switchToFocusFragment"
             sendBroadcast(myIntent)
         }
