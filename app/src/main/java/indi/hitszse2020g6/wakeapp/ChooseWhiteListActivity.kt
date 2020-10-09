@@ -1,6 +1,8 @@
 package indi.hitszse2020g6.wakeapp
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.ApplicationInfo
 import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
@@ -11,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
 import androidx.navigation.findNavController
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_choose_white_list.*
 import kotlinx.android.synthetic.main.fragment_focus_statistic.view.*
 import kotlinx.android.synthetic.main.fragment_focus_statistic.view.textView
@@ -19,11 +22,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.json.JSONArray
+
+const val REQUEST_SELECT_WHITE_LIST = 123
+const val RESULT_OK = 100
 
 class ChooseWhiteListActivity : AppCompatActivity(),CompoundButton.OnCheckedChangeListener {
 
     private val TAG:String = "ChooseWhiteListActivity"
     private var myWhiteList:MutableList<String> = mutableListOf()
+    private lateinit var mySharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,7 +42,28 @@ class ChooseWhiteListActivity : AppCompatActivity(),CompoundButton.OnCheckedChan
             for(item in myWhiteList){
                 Log.d(TAG,item)
             }
-            finish()
+
+
+            //如果是lgz申请的
+            var myIntent = intent
+            var b: Bundle? = myIntent.extras
+            if(b!!.get("REQUEST_CODE")== REQUEST_SELECT_WHITE_LIST){
+                myIntent = intent
+                var gson = Gson()
+                var myString = gson.toJson(myWhiteList)
+                b.putString("customized_white_list", myString)
+                myIntent.putExtras(b)
+                this.setResult(RESULT_OK,myIntent)
+                this.finish()
+            }else{
+                //用户通过设置页面打开的
+                var jsonArray = convertIntoJsonArray()
+                mySharedPreferences = getSharedPreferences("user_default_white_list", Context.MODE_PRIVATE)
+                var editor = mySharedPreferences.edit()
+                editor.putString("default_white_list",jsonArray.toString())
+                editor.commit()
+                this.finish()
+            }
         }
 
         white_list_cancel.setOnClickListener {
@@ -86,6 +115,14 @@ class ChooseWhiteListActivity : AppCompatActivity(),CompoundButton.OnCheckedChan
 //                Log.d(TAG,"$itemPos ${myParent.getChildAt(itemPos).hideTextView.text}")
 //            }
 //        }
+    }
+
+    fun convertIntoJsonArray(): JSONArray {
+        var jsonArray:JSONArray = JSONArray()
+        for(item in myWhiteList){
+            jsonArray.put(item)
+        }
+        return jsonArray
     }
 }
 

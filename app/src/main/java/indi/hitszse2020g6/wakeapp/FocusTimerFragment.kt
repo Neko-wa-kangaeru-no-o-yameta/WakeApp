@@ -82,8 +82,6 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
                 //获得设置的时间
                 total_time = (hourpicker.value * 3600 + minuteipcker.value * 60).toLong()
                 if(total_time>0){
-                    (activity as MainActivity).binder?.setIsBlocking(true)
-
                     setButtonAni(true)
                     //设置动画时长
                     myCircle.setCountdownTime(total_time * 1000)
@@ -94,9 +92,6 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
                     Toast.makeText(context,"Unable to start a 0 minute focus.",Toast.LENGTH_SHORT).show()
                 }
             } else if (condition_flag == -1) {
-
-                (activity as MainActivity).binder?.setIsBlocking(false)
-
                 condition_flag = 0
                 val myTime = MyTimeEntry(
                     1,
@@ -133,7 +128,7 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
                         null
                     )
                 )
-                (activity as MainActivity).binder?.setIsBlocking(true)
+                (activity as MainActivity).binder?.setIsBlocking(false)
                 true
             } else {
                 pauseBtn.setImageDrawable(
@@ -143,7 +138,7 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
                         null
                     )
                 )
-                (activity as MainActivity).binder?.setIsBlocking(false)
+                (activity as MainActivity).binder?.setIsBlocking(true)
                 false
             }
         }
@@ -181,7 +176,7 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
             myCircle.setAnimation(1f)
             myCircle.setCountdownTime(0)
             toggleDisplay(false)
-
+            (activity as MainActivity).binder?.setIsBlocking(false)
         }
 
         getPreviousCondition()

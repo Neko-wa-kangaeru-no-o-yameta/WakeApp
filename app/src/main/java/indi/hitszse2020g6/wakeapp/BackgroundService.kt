@@ -170,6 +170,7 @@ class BackgroundService : Service() {
         fun stopCountDownTimer(){
             myCountTime = 0
             myCountDownTimer!!.cancel()
+            isBlocking = false
         }
 
         fun setCustomWhiteList(cusWL: List<String>) {
@@ -199,6 +200,7 @@ class BackgroundService : Service() {
             myCountTime = totalTime
             focusTitle = title
             //开始计时
+            isBlocking = true
             if(myCountTime.toInt()!=0 && myCountDownTimer!=null){
                 //如果之前在计时
                 myCountDownTimer!!.cancel()
@@ -209,6 +211,8 @@ class BackgroundService : Service() {
                     myCountTime--
                 }
                 override fun onFinish() {
+                    isStored = false
+                    isBlocking = false
                     Log.d(TAG,"BACKGROUND TIMER FINISHED")
                 }
             }.start()
