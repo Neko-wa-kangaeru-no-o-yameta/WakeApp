@@ -168,7 +168,7 @@ class ScheduleFragment : Fragment() {
             if (sheet != null) {
                 for (row in 0 until 9) {
                     for (col in 0 until 8) {
-                        val courseText = sheet.getRow(row).getCell(col).toString()
+                        val courseText = sheet.getRow(row).getCell(col)?.toString()?:continue
 
                         val cellCourse = parseCell(courseText, col, row)
 
