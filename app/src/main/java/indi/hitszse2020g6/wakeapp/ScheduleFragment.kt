@@ -234,6 +234,7 @@ class ScheduleFragment : Fragment() {
                         Log.d("end", end.toString())
                         for (week in start..end) {
                             val course = Course(
+                                0,
                                 courseName,
                                 week,
                                 col,
@@ -249,6 +250,7 @@ class ScheduleFragment : Fragment() {
                     } else {
                         //是单个星期
                         val course = Course(
+                            0,
                             courseName,
                             element.first().toInt(),
                             col,
@@ -313,7 +315,7 @@ fun Activity.setPerCourseColor() {
 
 }
 
-suspend fun Activity.getPerWeekCourse(search: Int): List<Course> {
+fun Activity.getPerWeekCourse(search: Int): List<Course> {
     val courseForPerWeek = arrayListOf<Course>()
 
     val classALL = AppRoomDB.getDataBase(this).getDAO().findWeekCourse(search)

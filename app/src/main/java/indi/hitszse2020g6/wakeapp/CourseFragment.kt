@@ -56,9 +56,7 @@ class CourseFragment : Fragment() {
         val viewPager2 = view.findViewById<ViewPager2>(R.id.viewPager2) ?: return
 
         // todo 读入课程数据库Room
-        //从数据库返回每周的数据
-//        val weekAll = context?.let { AppDatabase.getInstance(it).CourseDao().getWeekAll() }
-        //用一个list来存每周的课程
+
 
         //为ViewPager2设置适配器
         Log.d("CourseFragment", "got view")

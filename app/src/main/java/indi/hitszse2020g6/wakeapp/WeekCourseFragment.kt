@@ -14,7 +14,6 @@ import android.widget.GridLayout
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import kotlinx.coroutines.Dispatchers
@@ -56,7 +55,7 @@ class WeekCourseFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setCardViewMessage()
+        updateCourseCardView()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -65,11 +64,11 @@ class WeekCourseFragment : Fragment() {
         if(requestCode == INTENT_ADD_COURSE){
             //直接更新
             Log.d("get in2","get in")
-            setCardViewMessage()
+            updateCourseCardView()
         }
     }
 
-    private fun WeekCourseFragment.setCardViewMessage() {
+    private fun WeekCourseFragment.updateCourseCardView() {
         view?.findViewById<GridLayout>(R.id.GridLayout).apply {
             GlobalScope.launch(Dispatchers.IO) {
                 val weekCourse = activity?.getPerWeekCourse(param1!!)!!
@@ -79,7 +78,7 @@ class WeekCourseFragment : Fragment() {
                         val courseTime = ele.time
                         val couseDayOfWeek = ele.dayOfWeek
                         val courseAddress = ele.address
-                        var courseColor = ele.color
+                        val courseColor = ele.color
                         val cardTag = "${couseDayOfWeek.toString()}${courseTime.toString()}"
                         Log.d("cardTag", cardTag)
                         val cardView = view?.findViewWithTag<CardView>(cardTag)

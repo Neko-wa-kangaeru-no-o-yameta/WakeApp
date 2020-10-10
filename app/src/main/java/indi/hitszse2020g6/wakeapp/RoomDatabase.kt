@@ -105,20 +105,20 @@ class GenRuleEntry(
 
 @Entity(tableName = "course_table")
 data class Course(
-    @ColumnInfo(name = "course_name") var courseName: String,
-    @ColumnInfo(name = "week") var week: Int,
-    @ColumnInfo(name = "day_of_week") var dayOfWeek: Int,
-    @ColumnInfo(name = "class_address") var address: String,
-    @ColumnInfo(name = "class_time") var time: Int,
-    @ColumnInfo(name = "course_color") var color: Int?,
-    @ColumnInfo(name = "course_notice") var notice: Boolean,
-    @ColumnInfo(name = "course_focus") var focus: Boolean,
-    @ColumnInfo(name = "course_mute") var mute: Boolean
-) {
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "course_id")
-    var courseId: Long = 0
-}
+    @ColumnInfo(name = "course_id")         var courseId: Long = 0,
+    @ColumnInfo(name = "course_name")       var courseName: String,
+    @ColumnInfo(name = "week")              var week: Int,
+    @ColumnInfo(name = "day_of_week")       var dayOfWeek: Int,
+    @ColumnInfo(name = "class_address")     var address: String,
+    @ColumnInfo(name = "class_time")        var time: Int,
+    @ColumnInfo(name = "course_color")      var color: Int?,
+    @ColumnInfo(name = "course_notice")     var notice: Boolean,
+    @ColumnInfo(name = "course_focus")      var focus: Boolean,
+    @ColumnInfo(name = "course_mute")       var mute: Boolean
+)
+
+
 
 @Database(
     entities = [EventTableEntry::class, GenRuleEntry::class, MyTimeEntry::class, Course::class, MyFocusEntry::class],
@@ -188,7 +188,7 @@ interface RoomDAO {
 
     //SceduleTable
     @Query("SELECT * FROM course_table WHERE course_id = (:courseId)")
-    fun getCourseWithId(courseId: Long): List<Course>
+    fun getCourseById(courseId: Long): List<Course>
 
     @Query("SELECT * FROM course_table")
     fun getAll(): List<Course>
@@ -206,9 +206,9 @@ interface RoomDAO {
     fun getAllCourse(): List<String>
 
     @Transaction
-    fun importClass(courseList: List<Course>) {
+    fun importClass(courseList: List<Course>) :List<Long> {
         deleteAllCourse()
-        insertCourses(courseList)
+        return insertCourses(courseList)
     }
 
 
@@ -216,7 +216,7 @@ interface RoomDAO {
     fun deleteAllCourse()
 
     @Insert
-    fun insertCourses(courseList: List<Course>)
+    fun insertCourses(courseList: List<Course>) :   List<Long>
 
     @Query("UPDATE course_table SET course_color = (:course_color) WHERE course_name = (:course_name)")
     fun insertCourseColorIntoTable(course_color: Int, course_name: String)
