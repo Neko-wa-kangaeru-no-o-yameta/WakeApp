@@ -10,7 +10,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
-import indi.hitszse2020g6.wakeapp.databinding.CourseAddActivityBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -19,6 +18,7 @@ const val RESULT_ADD_NEW_COURSE = 5
 const val UNIQUE_COURSE_DETAIL = "indi.hitszse2020g6.wakeapp.UNIQUE_COURSE_DETAIL"
 
 class CourseDetails {
+    var courseWeek :Int = 0
     var courseTime: Int = 0
     var alarm = true
     var focus = true
@@ -28,8 +28,7 @@ class CourseDetails {
 class CourseAddActivity : AppCompatActivity() {
     private var isNewCourse = true
     private var courseId: Long? = null
-
-    private lateinit var viewBinding: CourseAddActivityBinding
+    private val chineseWeek = arrayOf("星期一","星期二","星期三","星期四","星期五","星期六","星期日")
 
     companion object {
 
@@ -41,8 +40,8 @@ class CourseAddActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewBinding = CourseAddActivityBinding.inflate(layoutInflater)
-        setContentView(viewBinding.root)
+
+        setContentView(R.layout.course_add_activity)
 
         this.lifecycleScope.launch(Dispatchers.Main) {
             if (intent.extras != null) {
@@ -62,14 +61,26 @@ class CourseAddActivity : AppCompatActivity() {
                 val courseAddress = courseDetail.address
 
                 detail.courseTime = courseDetail.time
-                Log.d("detail.courseTime1", detail.courseTime.toString())
+                detail.courseWeek = courseDetail.week
 
                 detail.alarm = courseDetail.notice
                 detail.focus = courseDetail.focus
                 detail.mute = courseDetail.mute
+                //修改显示
+                findViewById<EditText>(R.id.addCourseDetail_courseName).setText(courseName)
+                findViewById<EditText>(R.id.addCourseDetail_courseAddress).setText(courseAddress)
 
-                viewBinding.addCourseDetailCourseName.setText(courseName)
-                viewBinding.addCourseDetailCourseAddress.setText(courseAddress)
+                findViewById<TextView>(R.id.courseDetail_time).text = this@CourseAddActivity.getString(
+                    R.string.courseDetail_timeContent
+                ).format(
+                    chineseWeek[ detail.courseWeek - 1],
+                    detail.courseTime
+                )
+                findViewById<TextView>(R.id.courseDetail_time_week).text = this@CourseAddActivity.getString(
+                    R.string.courseDetail_timeContentWeek
+                ).format(
+                    detail.courseWeek
+                )
             } else {
                 detail.alarm = true
                 detail.focus = true
@@ -176,7 +187,6 @@ class CourseAddActivity : AppCompatActivity() {
 
             findViewById<ImageButton>(R.id.course_mute).apply {
                 Log.d("mute3", detail.mute.toString())
-                Log.d("detail.courseTime3", detail.courseTime.toString())
                 toggleImageDrawable(
                     this,
                     detail.mute,
@@ -193,18 +203,19 @@ class CourseAddActivity : AppCompatActivity() {
                     )
                 }
             }
-            findViewById<CardView>(R.id.courseDetail_timeAddCard).apply {
-                if (!isNewCourse) {
-                    findViewById<TextView>(R.id.courseDetail_time).text = context.getString(
-                        R.string.courseDetail_timeContent
-                    ).format(
-                        detail.courseTime
-                    )
+            //修改时间第几周
+            findViewById<CardView>(R.id.courseDetail_timeAddCard_week).apply {
+                setOnClickListener{
+
                 }
+            }
+            //修改时间信息：星期几，第几节
+            findViewById<CardView>(R.id.courseDetail_timeAddCard).apply {
                 setOnClickListener {
 
                 }
             }
+
         }
 
 

@@ -2,6 +2,7 @@ package indi.hitszse2020g6.wakeapp
 
 import android.Manifest
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -315,7 +316,7 @@ fun Activity.setPerCourseColor() {
 
 }
 
-fun Activity.getPerWeekCourse(search: Int): List<Course> {
+fun Context.getCourseOfTheWeek(search: Int): List<Course> {
     val courseForPerWeek = arrayListOf<Course>()
 
     val classALL = AppRoomDB.getDataBase(this).getDAO().findWeekCourse(search)

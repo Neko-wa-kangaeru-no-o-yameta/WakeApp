@@ -33,6 +33,7 @@
     <string name="eventDetail_detailTitleText">备注信息</string>
     <string name="scheduleDetail_noStartTimeHint">点击修改开始时间</string>
     <string name="courseDetail_timeAddHint">点击修改所在节数</string>
+    <string name="courseDetail_timeAddWeekHint">点击修改所在周次</string>
     <string name="eventDetail_noStopTimeHint">点击修改结束时间</string>
     <string name="eventDetail_eventTitleInputField">事件标题</string>
     <string name="courseDetail_courseNameInputField">课程名称</string>
@@ -61,7 +62,8 @@
     <string name="eventList_toggleMute">Toggle Mute</string>
     <string name="eventList_startTimeTVContent">开始于%02d月%02d日 %02d:%02d</string>
     <string name="eventList_stopTimeTVContent">结束于%02d月%02d日 %02d:%02d</string>
-    <string name="courseDetail_timeContent">第%01d大节</string>
+    <string name="courseDetail_timeContent">%1$s，第%2$d大节</string>
+    <string name="courseDetail_timeContentWeek">第%d周</string>
     <string name="节次">节次</string>
     <string name="第一大节">第一大节</string>
     <string name="第二大节">第二大节</string>
