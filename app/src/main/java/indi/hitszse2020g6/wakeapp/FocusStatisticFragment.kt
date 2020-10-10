@@ -12,7 +12,6 @@ import android.widget.TextView
 import com.db.williamchart.view.DonutChartView
 import com.db.williamchart.view.HorizontalBarChartView
 import kotlinx.android.synthetic.main.fragment_focus_statistic.*
-import kotlinx.serialization.descriptors.PrimitiveKind
 
 
 //@ExperimentalFeature
@@ -58,9 +57,11 @@ class FocusStatisticFragment : Fragment() {
         }
     }
     //lineChart
+
     private fun setLineChart(Set:LinkedHashMap<String,Float>){
         lineChart.animation.duration = animationDuration
         lineChart.animate(Set)
+        lineChart.labelsFormatter = {a:Float->String.format("%-3f",a)}
     }
     //donutChart
     private fun setDonutTotal(Set:List<Float>): Float {
