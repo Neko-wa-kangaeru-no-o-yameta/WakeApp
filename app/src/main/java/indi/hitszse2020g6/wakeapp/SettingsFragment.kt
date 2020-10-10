@@ -26,5 +26,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
             startActivity(Intent(context,ChooseWhiteListActivity::class.java))
             true
         }
+
+        findPreference<Preference>("custom_theme")?.setOnPreferenceClickListener {
+            startActivity(Intent(context,ChooseCustomTheme::class.java))
+            true
+        }
     }
 }

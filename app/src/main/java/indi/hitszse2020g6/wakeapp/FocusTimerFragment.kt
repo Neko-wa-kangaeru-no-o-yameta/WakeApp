@@ -180,6 +180,7 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
         minutePicker.minValue = 0
         minutePicker.value = 0
 
+
         //设置为对当前值不可编辑
         hourPicker.descendantFocusability = DatePicker.FOCUS_BLOCK_DESCENDANTS
         minutePicker.descendantFocusability = TimePicker.FOCUS_BLOCK_DESCENDANTS

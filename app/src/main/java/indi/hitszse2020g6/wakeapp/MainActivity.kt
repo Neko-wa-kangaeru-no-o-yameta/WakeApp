@@ -11,6 +11,8 @@ import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.app.SkinAppCompatDelegateImpl
 import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import indi.hitszse2020g6.wakeapp.mainPage.MainPageEventList
@@ -42,12 +44,12 @@ class MainActivity : AppCompatActivity() {
             binder = service as BackgroundService.MyBinder
             blockAppService = binder!!.getService()
             mBound = true
-            Log.d("MainActivity","Connected")
+            Log.d("MainActivity", "Connected")
 
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
-            Log.d("MainActivity","disconnected")
+            Log.d("MainActivity", "disconnected")
             mBound = false
         }
     }
@@ -104,7 +106,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        Log.d("MainActivity","Onstart")
+        Log.d("MainActivity", "Onstart")
 
         //获取应用列表权限
         hasPermissionToReadNetworkStats()
@@ -139,7 +141,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onResume() {
-        Log.d("MainActivity","OnResume")
+        Log.d("MainActivity", "OnResume")
         super.onResume()
 
         //获得启动该activity的intent对象
@@ -157,7 +159,7 @@ class MainActivity : AppCompatActivity() {
             //连上的时候说一声
             val myIntent = Intent()
             myIntent.setAction("Connnecting")
-            myIntent.putExtra("connect",true)
+            myIntent.putExtra("connect", true)
             sendBroadcast(myIntent)
         }
     }
@@ -201,6 +203,10 @@ class MainActivity : AppCompatActivity() {
             }
         }, intentFilter)
     }
+
+    override fun getDelegate(): AppCompatDelegate {
+        return SkinAppCompatDelegateImpl.get(this, this)
+    }
 }
 
 class FocusReceiver: BroadcastReceiver() {
@@ -211,7 +217,12 @@ class FocusReceiver: BroadcastReceiver() {
         context!!.startActivity(Intent(context, MainActivity::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             putExtra("RequestCode", REQUEST_OPEN_TIMER_FRG)
-            putExtra(PARAM_START_FOCUS_FROM_BACKGROUND, intent?.getLongExtra(PARAM_START_FOCUS_FROM_BACKGROUND, -1))
+            putExtra(
+                PARAM_START_FOCUS_FROM_BACKGROUND, intent?.getLongExtra(
+                    PARAM_START_FOCUS_FROM_BACKGROUND,
+                    -1
+                )
+            )
         })
     }
 }

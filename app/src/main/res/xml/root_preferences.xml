@@ -14,6 +14,10 @@
             app:key="whiteList"
             app:title="设置白名单"
             app:summary="选择在专注期间仍然可以使用的应用"/>
+        <Preference
+            app:key="custom_theme"
+            app:title="选择主题"
+            app:summary="选择自定义的应用主题"/>
     </PreferenceCategory>
 
 </PreferenceScreen>

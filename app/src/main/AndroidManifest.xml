@@ -21,14 +21,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".AlarmActivity"></activity>
-        <activity android:name=".CourseAddActivity"></activity>
+        <activity android:name=".ChooseCustomTheme"></activity>
+        <activity android:name=".AlarmActivity" />
+        <activity android:name=".CourseAddActivity" />
         <activity android:name=".ChooseWhiteListActivity" />
         <activity android:name=".eventDetail.AffairDetailActivity" />
         <activity android:name=".eventDetail.ScheduleDetailActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -37,9 +39,8 @@
             android:name=".BackgroundService"
             android:exported="false" />
 
-        <receiver android:name=".AlarmReceiver"/>
-        <receiver android:name=".FocusReceiver"/>
-
+        <receiver android:name=".AlarmReceiver" />
+        <receiver android:name=".FocusReceiver" />
     </application>
 
 </manifest>
