@@ -84,4 +84,6 @@ dependencies {
     implementation 'com.diogobernardino.williamchart:tooltip-points:3.7.2'
 
     implementation 'com.google.code.gson:gson:2.8.6'
+
+    implementation 'com.binioter:guideview:1.0.0'
 }

@@ -10,10 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
-import android.widget.DatePicker
-import android.widget.NumberPicker
-import android.widget.TimePicker
-import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import androidx.dynamicanimation.animation.SpringAnimation
 import androidx.dynamicanimation.animation.SpringForce
@@ -21,6 +17,10 @@ import androidx.fragment.app.Fragment
 import indi.hitszse2020g6.wakeapp.mainPage.MainPageEventList
 import kotlinx.android.synthetic.main.fragment_focus_timer.*
 import android.content.SharedPreferences
+import android.widget.*
+import com.binioter.guideview.Component
+import com.binioter.guideview.Guide
+import com.binioter.guideview.GuideBuilder
 
 const val REQUEST_CODE_OVERLAY = 101
 const val REQUEST_SYS_ALERT = 102
@@ -153,6 +153,14 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
         }
 
         getPreviousCondition()
+
+        mySharedPreferences = requireContext().getSharedPreferences("new_user",Context.MODE_PRIVATE)
+        if(mySharedPreferences.getBoolean("isNew",true)){
+            myCircle.post { showGuideView() }
+            var editor = mySharedPreferences.edit()
+            editor.putBoolean("isNew",false)
+            editor.commit()
+        }
     }
 
 
@@ -485,5 +493,78 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
         editor.putLong("before_system_time",System.currentTimeMillis())
         editor.putInt("condition_flag",condition_flag)
         editor.commit()
+    }
+
+    private fun showGuideView(){
+        val builder = GuideBuilder()
+        builder.setTargetView(myCircle).setAlpha(150).setHighTargetPadding(10).setHighTargetGraphStyle(Component.CIRCLE)
+        builder.setOnVisibilityChangedListener(object : GuideBuilder.OnVisibilityChangedListener{
+            override fun onShown() {}
+            override fun onDismiss() {
+                showGuideView2()
+            }
+        })
+        builder.addComponent(MyCircleComponent())
+        val guide = builder.createGuide()
+        guide.show((activity as MainActivity))
+    }
+
+    private fun showGuideView2(){
+        val builder = GuideBuilder()
+        builder.setTargetView(startBtn).setAlpha(150).setHighTargetCorner(20).setHighTargetPadding(10).setHighTargetGraphStyle(Component.CIRCLE)
+        builder.setOnVisibilityChangedListener(object : GuideBuilder.OnVisibilityChangedListener{
+            override fun onShown() {}
+            override fun onDismiss() {}
+        })
+        builder.addComponent(SetClickComponent())
+        val guide = builder.createGuide()
+        guide.show((activity as MainActivity))
+    }
+
+    class SetClickComponent: Component {
+        override fun getView(inflater: LayoutInflater?): View {
+            var ll:LinearLayout = inflater?.inflate(R.layout.layer_start_timer_btn,null) as LinearLayout
+            return ll
+        }
+
+        override fun getAnchor(): Int {
+            return Component.ANCHOR_BOTTOM
+        }
+
+        override fun getFitPosition(): Int {
+            return Component.FIT_END
+        }
+
+        override fun getXOffset(): Int {
+            return 60
+        }
+
+        override fun getYOffset(): Int {
+            return 0
+        }
+    }
+
+    class MyCircleComponent:Component{
+        override fun getView(inflater: LayoutInflater?): View {
+            var ll:LinearLayout = inflater?.inflate(R.layout.layer_my_circle,null) as LinearLayout
+            return ll
+        }
+
+        override fun getAnchor(): Int {
+            return Component.ANCHOR_OVER
+        }
+
+        override fun getFitPosition(): Int {
+            return Component.FIT_END
+        }
+
+        override fun getXOffset(): Int {
+            return 0
+        }
+
+        override fun getYOffset(): Int {
+            return 100
+        }
+
     }
 }
