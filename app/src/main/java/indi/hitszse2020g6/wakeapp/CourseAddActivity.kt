@@ -1,10 +1,8 @@
 package indi.hitszse2020g6.wakeapp
 
-import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.Window
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
@@ -19,10 +17,12 @@ import kotlinx.coroutines.withContext
 
 const val RESULT_ADD_NEW_COURSE = 5
 const val UNIQUE_COURSE_DETAIL = "indi.hitszse2020g6.wakeapp.UNIQUE_COURSE_DETAIL"
+const val MY_REQUESET_CODE = 5
 
 class CourseDetails {
     var courseWeek :Int = 0
     var courseTime: Int = 0
+    var courseDayOfWeek:Int = 0
     var alarm = true
     var focus = true
     var mute = true
@@ -32,7 +32,7 @@ class CourseAddActivity : AppCompatActivity(),
         WeekPickerFragment.WeekPickerDialogListener{
     private var isNewCourse = true
     private var courseId: Long? = null
-    private val chineseWeek = arrayOf("星期一","星期二","星期三","星期四","星期五","星期六","星期日")
+    private val chineseWeek = arrayOf("星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日")
 
     companion object {
 
@@ -66,7 +66,7 @@ class CourseAddActivity : AppCompatActivity(),
 
                 detail.courseTime = courseDetail.time
                 detail.courseWeek = courseDetail.week
-
+                detail.courseDayOfWeek = courseDetail.dayOfWeek
                 detail.alarm = courseDetail.notice
                 detail.focus = courseDetail.focus
                 detail.mute = courseDetail.mute
@@ -77,7 +77,7 @@ class CourseAddActivity : AppCompatActivity(),
                 findViewById<TextView>(R.id.courseDetail_time).text = this@CourseAddActivity.getString(
                     R.string.courseDetail_timeContent
                 ).format(
-                    chineseWeek[ detail.courseWeek - 1],
+                    chineseWeek[detail.courseDayOfWeek - 1],
                     detail.courseTime
                 )
                 findViewById<TextView>(R.id.courseDetail_time_week).text = this@CourseAddActivity.getString(
@@ -211,13 +211,13 @@ class CourseAddActivity : AppCompatActivity(),
             findViewById<CardView>(R.id.courseDetail_timeAddCard_week).apply {
                 setOnClickListener{
 
-                    WeekPickerFragment().show(supportFragmentManager,"WeekPickerFragment")
 
                 }
             }
             //修改时间信息：星期几，第几节
             findViewById<CardView>(R.id.courseDetail_timeAddCard).apply {
                 setOnClickListener {
+                    WeekPickerFragment().show(supportFragmentManager, "WeekPickerFragment")
 
                 }
             }
@@ -229,6 +229,14 @@ class CourseAddActivity : AppCompatActivity(),
 
     override fun onDialogPositiveClick(dialog: DialogFragment) {
         // User touched the dialog's positive button
+        detail.courseTime = (dialog as WeekPickerFragment).time
+        detail.courseDayOfWeek = (dialog as WeekPickerFragment).dayOfWeek
+        findViewById<TextView>(R.id.courseDetail_time).text = this@CourseAddActivity.getString(
+            R.string.courseDetail_timeContent
+        ).format(
+            chineseWeek[detail.courseDayOfWeek - 1],
+            detail.courseTime
+        )
     }
 
     override fun onDialogNegativeClick(dialog: DialogFragment) {

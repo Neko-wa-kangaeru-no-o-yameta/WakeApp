@@ -81,9 +81,12 @@
     <string name="dialog_ok">选好啦</string>
     <string name="dialog_cancel">不要了</string>
     <string name="WeekChoose">周次/节数</string>
+    <string name="Xing">星</string>
+    <string name="Qi">期</string>
     <string name="Di">第</string>
     <string name="zhou">周</string>
     <string name="jie">节</string>
+    <string name="week_time_pick">星期/周次选择</string>
 
     <string name="title_activity_add_course_detail">AddCourseDetailActivity</string>
     <!--

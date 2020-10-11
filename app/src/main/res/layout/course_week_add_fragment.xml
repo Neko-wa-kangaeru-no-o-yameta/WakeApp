@@ -1,99 +1,109 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical">
 
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2.5"
+        android:gravity="center"
+        android:orientation="horizontal">
 
-        <ImageView
-                android:id="@+id/weekPicker"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                    android:id="@+id/weekPicker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/courseDetail_timeAddHint"
+                    android:padding="12dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_baseline_date_range_24" />
+
+            <TextView
+                android:id="@+id/textView_forNumberPickerHint1"
+                android:layout_width="53dp"
+                android:layout_height="wrap_content"
+
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/WeekChoose"
+                android:textSize="10sp"
+                app:layout_constraintStart_toEndOf="@+id/weekPicker"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textView_forNumberPickerHint2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:contentDescription="@string/courseDetail_timeAddHint"
-                android:padding="12dp"
+
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="32dp"
+                android:text="@string/Xing"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_baseline_date_range_24" />
+                app:layout_constraintTop_toBottomOf="@+id/textView_forNumberPickerHint1" />
 
-        <TextView
-            android:id="@+id/textView_forNumberPickerHint1"
-            android:layout_width="53dp"
-            android:layout_height="wrap_content"
+            <TextView
+                android:id="@+id/textView_forNumberPickerHint3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
 
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:text="@string/WeekChoose"
-            android:textSize="10sp"
-            app:layout_constraintStart_toEndOf="@+id/weekPicker"
-            app:layout_constraintTop_toTopOf="parent" />
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="32dp"
+                android:text="@string/Qi"
+                app:layout_constraintStart_toEndOf="@+id/textView_forNumberPickerHint2"
+                app:layout_constraintTop_toBottomOf="@+id/textView_forNumberPickerHint1" />
 
-        <TextView
-            android:id="@+id/textView_forNumberPickerHint2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            <TextView
+                android:id="@+id/textView_forNumberPickerHint4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="32dp"
+                android:text="@string/Di"
+                app:layout_constraintStart_toEndOf="@+id/numberPicker1"
+                app:layout_constraintTop_toBottomOf="@+id/textView_forNumberPickerHint1" />
 
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="32dp"
-            android:text="@string/Di"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView_forNumberPickerHint1" />
+            <TextView
+                android:id="@+id/textView_forNumberPickerHint5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginEnd="24dp"
+                android:text="@string/jie"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/numberPicker2"
+                app:layout_constraintTop_toBottomOf="@+id/textView_forNumberPickerHint1" />
 
-        <TextView
-            android:id="@+id/textView_forNumberPickerHint3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            <NumberPicker
+                android:id="@+id/numberPicker1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                app:layout_constraintStart_toEndOf="@+id/textView_forNumberPickerHint3"
+                app:layout_constraintTop_toBottomOf="@+id/textView_forNumberPickerHint2"
+                tools:layout_conversion_absoluteHeight="180dp"
+                tools:layout_conversion_absoluteWidth="64dp" />
 
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="32dp"
-            android:text="@string/zhou"
-            app:layout_constraintStart_toEndOf="@+id/numberPicker1"
-            app:layout_constraintTop_toBottomOf="@+id/textView_forNumberPickerHint1" />
-
-        <TextView
-            android:id="@+id/textView_forNumberPickerHint4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="32dp"
-            android:text="@string/Di"
-            app:layout_constraintStart_toEndOf="@+id/textView_forNumberPickerHint3"
-            app:layout_constraintTop_toBottomOf="@+id/textView_forNumberPickerHint1" />
-
-        <TextView
-            android:id="@+id/textView_forNumberPickerHint5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="32dp"
-            android:text="@string/jie"
-            app:layout_constraintStart_toEndOf="@+id/numberPicker2"
-            app:layout_constraintTop_toBottomOf="@+id/textView_forNumberPickerHint1" />
-
-        <NumberPicker
-            android:id="@+id/numberPicker1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            app:layout_constraintStart_toEndOf="@+id/textView_forNumberPickerHint2"
-            app:layout_constraintTop_toBottomOf="@+id/textView_forNumberPickerHint2"
-            tools:layout_conversion_absoluteHeight="180dp"
-            tools:layout_conversion_absoluteWidth="64dp"/>
-
-        <NumberPicker
-            android:id="@+id/numberPicker2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            app:layout_constraintStart_toEndOf="@+id/textView_forNumberPickerHint4"
-            app:layout_constraintTop_toBottomOf="@+id/textView_forNumberPickerHint4"
-            tools:layout_conversion_absoluteHeight="180dp"
-            tools:layout_conversion_absoluteWidth="64dp"/>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <NumberPicker
+                android:id="@+id/numberPicker2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                app:layout_constraintStart_toEndOf="@+id/textView_forNumberPickerHint4"
+                app:layout_constraintTop_toBottomOf="@+id/textView_forNumberPickerHint4"
+                tools:layout_conversion_absoluteHeight="180dp"
+                tools:layout_conversion_absoluteWidth="64dp" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 
 
 </LinearLayout>
