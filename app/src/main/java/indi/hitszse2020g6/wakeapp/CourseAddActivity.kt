@@ -1,14 +1,17 @@
 package indi.hitszse2020g6.wakeapp
 
+import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.Window
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -25,7 +28,8 @@ class CourseDetails {
     var mute = true
 }
 
-class CourseAddActivity : AppCompatActivity() {
+class CourseAddActivity : AppCompatActivity(),
+        WeekPickerFragment.WeekPickerDialogListener{
     private var isNewCourse = true
     private var courseId: Long? = null
     private val chineseWeek = arrayOf("星期一","星期二","星期三","星期四","星期五","星期六","星期日")
@@ -207,6 +211,8 @@ class CourseAddActivity : AppCompatActivity() {
             findViewById<CardView>(R.id.courseDetail_timeAddCard_week).apply {
                 setOnClickListener{
 
+                    WeekPickerFragment().show(supportFragmentManager,"WeekPickerFragment")
+
                 }
             }
             //修改时间信息：星期几，第几节
@@ -221,6 +227,13 @@ class CourseAddActivity : AppCompatActivity() {
 
     }
 
+    override fun onDialogPositiveClick(dialog: DialogFragment) {
+        // User touched the dialog's positive button
+    }
+
+    override fun onDialogNegativeClick(dialog: DialogFragment) {
+        // User touched the dialog's negative button
+    }
     private fun toggleImageDrawable(btn: ImageButton, on: Boolean, onID: Int, offID: Int) {
         with(btn) {
             setImageDrawable(
@@ -232,4 +245,5 @@ class CourseAddActivity : AppCompatActivity() {
             )
         }
     }
+
 }

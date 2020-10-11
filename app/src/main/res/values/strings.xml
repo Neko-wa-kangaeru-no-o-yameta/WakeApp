@@ -78,6 +78,13 @@
     <string name="星期五">星期五</string>
     <string name="星期六">星期六</string>
     <string name="星期日">星期日</string>
+    <string name="dialog_ok">选好啦</string>
+    <string name="dialog_cancel">不要了</string>
+    <string name="WeekChoose">周次/节数</string>
+    <string name="Di">第</string>
+    <string name="zhou">周</string>
+    <string name="jie">节</string>
+
     <string name="title_activity_add_course_detail">AddCourseDetailActivity</string>
     <!--
     This string is used for square devices and overridden by hello_world in
