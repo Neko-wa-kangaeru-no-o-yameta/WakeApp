@@ -11,8 +11,6 @@ import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.appcompat.app.SkinAppCompatDelegateImpl
 import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import indi.hitszse2020g6.wakeapp.mainPage.MainPageEventList
@@ -202,10 +200,6 @@ class MainActivity : AppCompatActivity() {
                 bottomNavigationView.selectedItemId = R.id.bottomNavFocusBtn
             }
         }, intentFilter)
-    }
-
-    override fun getDelegate(): AppCompatDelegate {
-        return SkinAppCompatDelegateImpl.get(this, this)
     }
 }
 

@@ -14,5 +14,5 @@
     <color name="CourseTableColor6">#03DAC6</color>
     <color name="CourseTableColor7">#985EFF</color>
     <color name="CourseTableColor8">#00C4B4</color>
-
+    <color name="CircleColor">#ff6776</color>
 </resources>

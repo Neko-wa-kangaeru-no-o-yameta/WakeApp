@@ -86,9 +86,4 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
 
     implementation 'com.binioter:guideview:1.0.0'
-
-    implementation 'skin.support:skin-support:3.1.4'                   // skin-support 基础控件支持
-    implementation 'skin.support:skin-support:4.0.5'                   // skin-support
-    implementation 'skin.support:skin-support-appcompat:4.0.5'         // skin-support 基础控件支持
-    implementation 'skin.support:skin-support-appcompat:4.0.5'         // skin-support 基础控件支持
 }

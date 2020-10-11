@@ -19,7 +19,6 @@ import kotlinx.android.synthetic.main.fragment_focus_timer.*
 import android.content.SharedPreferences
 import android.widget.*
 import com.binioter.guideview.Component
-import com.binioter.guideview.Guide
 import com.binioter.guideview.GuideBuilder
 
 const val REQUEST_CODE_OVERLAY = 101
@@ -67,20 +66,20 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
         Log.d(TAG, "onActivityCreated")
         initNumberPicker(hourpicker, minuteipcker)
 
-
         startBtn.setOnClickListener {
             if (condition_flag == 0) {
                 //获得设置的时间
                 total_time = (hourpicker.value * 3600 + minuteipcker.value * 60).toLong()
-                if(total_time>0){
+                if (total_time > 0) {
                     setButtonAni(true)
                     //设置动画时长
                     myCircle.setCountdownTime(total_time * 1000)
                     myCircle.setAnimation(0f)
 
                     setMyCountDownTimer(total_time)
-                }else{
-                    Toast.makeText(context,"Unable to start a 0 minute focus.",Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(context, "Unable to start a 0 minute focus.", Toast.LENGTH_SHORT)
+                        .show()
                 }
             } else if (condition_flag == -1) {
                 condition_flag = 0
@@ -154,11 +153,12 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
 
         getPreviousCondition()
 
-        mySharedPreferences = requireContext().getSharedPreferences("new_user",Context.MODE_PRIVATE)
-        if(mySharedPreferences.getBoolean("isNew",true)){
+        mySharedPreferences =
+            requireContext().getSharedPreferences("new_user", Context.MODE_PRIVATE)
+        if (mySharedPreferences.getBoolean("isNew", true)) {
             myCircle.post { showGuideView() }
             var editor = mySharedPreferences.edit()
-            editor.putBoolean("isNew",false)
+            editor.putBoolean("isNew", false)
             editor.commit()
         }
     }
@@ -329,7 +329,7 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
             condition_flag = 1
             total_time = setTime
             (activity as MainActivity).binder?.setIsStored(true)
-            (activity as MainActivity).binder?.startMyCountDownTimer(total_time,set_focus_title)
+            (activity as MainActivity).binder?.startMyCountDownTimer(total_time, set_focus_title)
             Toast.makeText(context, total_time.toString(), Toast.LENGTH_SHORT).show()
 
             storeTime()
@@ -402,27 +402,30 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
     }
 
     private fun getPreviousCondition() {
-        Log.d(TAG,"getPreviousConditon")
-        var distance:Long
-        if((activity as MainActivity).binder!=null&& (activity as MainActivity).binder?.getConditon()!! > 0 &&!(activity as MainActivity).binder?.getIsStored()!!){
+        Log.d(TAG, "getPreviousConditon")
+        var distance: Long
+        if ((activity as MainActivity).binder != null && (activity as MainActivity).binder?.getConditon()!! > 0 && !(activity as MainActivity).binder?.getIsStored()!!) {
             //第一次进来，后台已经开始计时了
-            Log.d(TAG,"Background Service is Timing")
+            Log.d(TAG, "Background Service is Timing")
             condition_flag = 0
             total_time = (activity as MainActivity).binder?.getConditon()!!
             set_focus_title = (activity as MainActivity).binder?.getFocusTitle()!!
             distance = 0
             setMyCountDownTimer(total_time)
-            Log.d(TAG,"backgroung stored ${(activity as MainActivity).binder?.getIsStored()}")
+            Log.d(TAG, "backgroung stored ${(activity as MainActivity).binder?.getIsStored()}")
             (activity as MainActivity).binder?.setIsStored(true)
-        }else{
-            mySharedPreferences = requireContext().getSharedPreferences("user_time",Context.MODE_PRIVATE)
-            if(mySharedPreferences.getInt("condition_flag",-2)!=-2){
-                condition_flag = mySharedPreferences.getInt("condition_flag",-2)
-                total_time = mySharedPreferences.getLong("total_time",0)
-                before_sys_time = mySharedPreferences.getLong("before_system_time",System.currentTimeMillis())
+        } else {
+            mySharedPreferences =
+                requireContext().getSharedPreferences("user_time", Context.MODE_PRIVATE)
+            if (mySharedPreferences.getInt("condition_flag", -2) != -2) {
+                condition_flag = mySharedPreferences.getInt("condition_flag", -2)
+                total_time = mySharedPreferences.getLong("total_time", 0)
+                before_sys_time =
+                    mySharedPreferences.getLong("before_system_time", System.currentTimeMillis())
             }
 
-            distance = (System.currentTimeMillis() - before_sys_time) / 1000      // before_sys_time is in ms, distance is in s???
+            distance =
+                (System.currentTimeMillis() - before_sys_time) / 1000      // before_sys_time is in ms, distance is in s???
             //如果之前是计时状态但是计时已经结束
             if (condition_flag == 1 && distance >= total_time) {
                 condition_flag = -1
@@ -430,7 +433,7 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
         }
         //如果之前是在计时状态
         if (condition_flag == 1) {
-            if ((activity as MainActivity).mBound&& (!(activity as MainActivity).binder?.getBlock()!!)) {
+            if ((activity as MainActivity).mBound && (!(activity as MainActivity).binder?.getBlock()!!)) {
                 btnFlag = true
                 pauseBtn.setImageDrawable(
                     ResourcesCompat.getDrawable(
@@ -444,7 +447,7 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
             toggleDisplay(true)
             myCircle.setCountdownTime((total_time - distance) * 1000)
             myCircle.setAnimation(distance.toFloat() / total_time.toFloat())
-            setMyCountDownTimer(total_time-distance)
+            setMyCountDownTimer(total_time - distance)
         } else if (condition_flag == -1) {
             //之前关掉的时候是计时结束状态
             toggleDisplay(true)
@@ -487,19 +490,21 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
         }
     }
 
-    private fun storeTime(){
-        mySharedPreferences = requireContext().getSharedPreferences("user_time",Context.MODE_PRIVATE)
+    private fun storeTime() {
+        mySharedPreferences =
+            requireContext().getSharedPreferences("user_time", Context.MODE_PRIVATE)
         var editor = mySharedPreferences.edit()
-        editor.putLong("total_time",total_time)
-        editor.putLong("before_system_time",System.currentTimeMillis())
-        editor.putInt("condition_flag",condition_flag)
+        editor.putLong("total_time", total_time)
+        editor.putLong("before_system_time", System.currentTimeMillis())
+        editor.putInt("condition_flag", condition_flag)
         editor.commit()
     }
 
-    private fun showGuideView(){
+    private fun showGuideView() {
         val builder = GuideBuilder()
-        builder.setTargetView(myCircle).setAlpha(150).setHighTargetPadding(10).setHighTargetGraphStyle(Component.CIRCLE)
-        builder.setOnVisibilityChangedListener(object : GuideBuilder.OnVisibilityChangedListener{
+        builder.setTargetView(myCircle).setAlpha(150).setHighTargetPadding(10)
+            .setHighTargetGraphStyle(Component.CIRCLE)
+        builder.setOnVisibilityChangedListener(object : GuideBuilder.OnVisibilityChangedListener {
             override fun onShown() {}
             override fun onDismiss() {
                 showGuideView2()
@@ -510,10 +515,11 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
         guide.show((activity as MainActivity))
     }
 
-    private fun showGuideView2(){
+    private fun showGuideView2() {
         val builder = GuideBuilder()
-        builder.setTargetView(startBtn).setAlpha(150).setHighTargetCorner(20).setHighTargetPadding(10).setHighTargetGraphStyle(Component.CIRCLE)
-        builder.setOnVisibilityChangedListener(object : GuideBuilder.OnVisibilityChangedListener{
+        builder.setTargetView(startBtn).setAlpha(150).setHighTargetCorner(20)
+            .setHighTargetPadding(10).setHighTargetGraphStyle(Component.CIRCLE)
+        builder.setOnVisibilityChangedListener(object : GuideBuilder.OnVisibilityChangedListener {
             override fun onShown() {}
             override fun onDismiss() {}
         })
@@ -522,9 +528,10 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
         guide.show((activity as MainActivity))
     }
 
-    class SetClickComponent: Component {
+    class SetClickComponent : Component {
         override fun getView(inflater: LayoutInflater?): View {
-            var ll:LinearLayout = inflater?.inflate(R.layout.layer_start_timer_btn,null) as LinearLayout
+            var ll: LinearLayout =
+                inflater?.inflate(R.layout.layer_start_timer_btn, null) as LinearLayout
             return ll
         }
 
@@ -545,9 +552,9 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
         }
     }
 
-    class MyCircleComponent:Component{
+    class MyCircleComponent : Component {
         override fun getView(inflater: LayoutInflater?): View {
-            var ll:LinearLayout = inflater?.inflate(R.layout.layer_my_circle,null) as LinearLayout
+            var ll: LinearLayout = inflater?.inflate(R.layout.layer_my_circle, null) as LinearLayout
             return ll
         }
 
