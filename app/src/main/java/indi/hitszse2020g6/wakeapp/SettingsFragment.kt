@@ -31,5 +31,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
             startActivity(Intent(context,ChooseCustomTheme::class.java))
             true
         }
+
+        findPreference<Preference>("setScheduleTime")?.setOnPreferenceClickListener {
+            startActivity(Intent(context,ChooseScheduleTime::class.java))
+            true
+        }
     }
 }

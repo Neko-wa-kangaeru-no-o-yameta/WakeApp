@@ -90,4 +90,5 @@
     <string name="cancel_white_list">取消</string>
     <string name="set_white_list">设置白名单</string>
     <string name="select_theme">选择主题</string>
+    <string name="set_schedule_time">设置当前学期起止日期</string>
 </resources>

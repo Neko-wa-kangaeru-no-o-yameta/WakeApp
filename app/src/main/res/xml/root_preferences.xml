@@ -1,4 +1,5 @@
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory app:title="Clear All">
 
@@ -17,7 +18,11 @@
         <Preference
             app:key="custom_theme"
             app:title="选择主题"
-            app:summary="选择自定义的应用主题"/>
+            app:summary="选择下次打开应用时展示的主题"/>
+        <Preference
+            android:key="setScheduleTime"
+            app:title="设置学期起止时间"
+            app:summary="选择当前学期的开始时间和结束时间"/>
     </PreferenceCategory>
 
 </PreferenceScreen>

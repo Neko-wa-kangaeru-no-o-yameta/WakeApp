@@ -19,6 +19,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.util.*
 
 
 const val INTENT_AFFAIR_DETAIL = 1
@@ -54,6 +55,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        ThemeColors(this)
         setContentView(R.layout.activity_main)
 
         MainPageEventList.DAO = AppRoomDB.getDataBase(this).getDAO()

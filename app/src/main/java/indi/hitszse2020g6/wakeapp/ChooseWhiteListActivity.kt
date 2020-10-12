@@ -31,7 +31,10 @@ class ChooseWhiteListActivity : AppCompatActivity(),CompoundButton.OnCheckedChan
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        ThemeColors(this)
         setContentView(R.layout.activity_choose_white_list)
+
+
         mySharedPreferences = getSharedPreferences("user_default_white_list", Context.MODE_PRIVATE)
         var jsonArray = JSONArray(mySharedPreferences.getString("default_white_list","[]"))
         Log.d(TAG,"${jsonArray.length()}")
