@@ -63,7 +63,7 @@
     <string name="eventList_startTimeTVContent">开始于%02d月%02d日 %02d:%02d</string>
     <string name="eventList_stopTimeTVContent">结束于%02d月%02d日 %02d:%02d</string>
     <string name="courseDetail_timeContent">%1$s，第%2$d大节</string>
-    <string name="courseDetail_timeContentWeek">第%d周</string>
+    <string name="courseDetail_timeContentWeek">第%d周至第%d周</string>
     <string name="节次">节次</string>
     <string name="第一大节">第一大节</string>
     <string name="第二大节">第二大节</string>
@@ -80,12 +80,14 @@
     <string name="星期日">星期日</string>
     <string name="dialog_ok">选好啦</string>
     <string name="dialog_cancel">不要了</string>
-    <string name="WeekChoose">周次/节数</string>
+    <string name="WeekChoose">星期/节数</string>
+    <string name="WeekChoose2">周次</string>
     <string name="Xing">星</string>
     <string name="Qi">期</string>
     <string name="Di">第</string>
     <string name="zhou">周</string>
     <string name="jie">节</string>
+    <string name="Zhi">至</string>
     <string name="week_time_pick">星期/周次选择</string>
 
     <string name="title_activity_add_course_detail">AddCourseDetailActivity</string>

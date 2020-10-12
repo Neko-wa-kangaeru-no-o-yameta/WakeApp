@@ -221,10 +221,16 @@ interface RoomDAO {
     @Query("UPDATE course_table SET course_color = (:course_color) WHERE course_name = (:course_name)")
     fun insertCourseColorIntoTable(course_color: Int, course_name: String)
 
-    @Query("UPDATE course_table SET course_name = (:course_name),class_address = (:course_address),course_notice = :alarm,course_focus = :focus ,course_mute = :mute WHERE course_id = (:course_id)")
+    @Query("DELETE FROM course_table WHERE course_id = (:course_id)")
+    fun deleteCourseById(course_id: Long)
+
+    @Query("UPDATE course_table SET course_name = (:course_name),class_address = (:course_address),week = (:course_week) ,day_of_week = (:course_dayOFWeek),class_time = (:course_time),course_notice = :alarm,course_focus = :focus ,course_mute = :mute WHERE course_id = (:course_id)")
     fun updateCourseDetails(
         course_name: String,
         course_address: String,
+        course_week : Int,
+        course_dayOFWeek :Int,
+        course_time :Int,
         alarm: Boolean,
         focus: Boolean,
         mute: Boolean,

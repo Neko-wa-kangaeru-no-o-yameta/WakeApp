@@ -19,8 +19,18 @@ const val RESULT_ADD_NEW_COURSE = 5
 const val UNIQUE_COURSE_DETAIL = "indi.hitszse2020g6.wakeapp.UNIQUE_COURSE_DETAIL"
 const val MY_REQUESET_CODE = 5
 
+class Date{
+    var weekBegin:Int = 0
+    var weekEnd :Int = 0
+    var time : Int = 0
+    var dayOfWeek :Int = 0
+}
 class CourseDetails {
-    var courseWeek :Int = 0
+    var courseName: String = ""
+    var courseAddress: String = ""
+    var dateList = arrayListOf<Date>()
+    var courseWeekBegin :Int = 0
+    var courseWeekEnd :Int = 0
     var courseTime: Int = 0
     var courseDayOfWeek:Int = 0
     var alarm = true
@@ -29,16 +39,13 @@ class CourseDetails {
 }
 
 class CourseAddActivity : AppCompatActivity(),
-        WeekPickerFragment.WeekPickerDialogListener{
+        TimePickFragment.TimePickerDialogListener,WeekPickerFragment.WeekPickerDialogListner{
     private var isNewCourse = true
     private var courseId: Long? = null
     private val chineseWeek = arrayOf("星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日")
-
+    
     companion object {
-
         var detail = CourseDetails()
-
-
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,21 +65,18 @@ class CourseAddActivity : AppCompatActivity(),
                         courseId!!
                     ).first()
                 }
-
-                Log.d("get form database", "")
-
-                val courseName = courseDetail.courseName
-                val courseAddress = courseDetail.address
-
+                detail.courseName = courseDetail.courseName
+                detail.courseAddress = courseDetail.address
                 detail.courseTime = courseDetail.time
-                detail.courseWeek = courseDetail.week
+                detail.courseWeekBegin = courseDetail.week
+                detail.courseWeekEnd = courseDetail.week
                 detail.courseDayOfWeek = courseDetail.dayOfWeek
                 detail.alarm = courseDetail.notice
                 detail.focus = courseDetail.focus
                 detail.mute = courseDetail.mute
                 //修改显示
-                findViewById<EditText>(R.id.addCourseDetail_courseName).setText(courseName)
-                findViewById<EditText>(R.id.addCourseDetail_courseAddress).setText(courseAddress)
+                findViewById<EditText>(R.id.addCourseDetail_courseName).setText(detail.courseName)
+                findViewById<EditText>(R.id.addCourseDetail_courseAddress).setText(detail.courseAddress)
 
                 findViewById<TextView>(R.id.courseDetail_time).text = this@CourseAddActivity.getString(
                     R.string.courseDetail_timeContent
@@ -83,7 +87,8 @@ class CourseAddActivity : AppCompatActivity(),
                 findViewById<TextView>(R.id.courseDetail_time_week).text = this@CourseAddActivity.getString(
                     R.string.courseDetail_timeContentWeek
                 ).format(
-                    detail.courseWeek
+                    detail.courseWeekBegin,
+                    detail.courseWeekEnd,
                 )
             } else {
                 detail.alarm = true
@@ -94,56 +99,73 @@ class CourseAddActivity : AppCompatActivity(),
             findViewById<ImageButton>(R.id.courseDetail_confirm).setOnClickListener {
                 this@CourseAddActivity.lifecycleScope.launch(Dispatchers.Main) {
                     if (isNewCourse) {
-                        Log.d("isNewCourse", isNewCourse.toString())
-                        val courseName =
-                            findViewById<EditText>(R.id.addCourseDetail_courseName).text.toString()
-                        val courseAddress =
-                            findViewById<EditText>(R.id.addCourseDetail_courseAddress).text.toString()
-                        val course = Course(
-                            0,
-                            courseName, 1, 1, courseAddress, 3, getColor(R.color.CourseTableColor1),
-                            detail.alarm, detail.focus, detail.mute
-                        )
-                        Log.d("courseName", courseName)
-                        withContext(Dispatchers.IO) {
-                            AppRoomDB.getDataBase(it.context).getDAO().insertCourse(course)
+                        if((detail.courseTime != 0)&&(detail.courseWeekBegin != 0)
+                            &&(detail.courseWeekEnd != 0)&&(detail.courseDayOfWeek != 0)){//对时间有做修改
+                            detail.courseName =
+                                findViewById<EditText>(R.id.addCourseDetail_courseName).text.toString()
+                            detail.courseAddress =
+                                findViewById<EditText>(R.id.addCourseDetail_courseAddress).text.toString()
+                            //根据时间段将时间拆分
+                            for(week in detail.courseWeekBegin ..detail.courseWeekEnd){
+                                val course = Course(
+                                    0,
+                                    detail.courseName,
+                                    week,
+                                    detail.courseDayOfWeek,
+                                    detail.courseAddress,
+                                    detail.courseTime,
+                                    getColor(R.color.CourseTableColor1),
+                                    detail.alarm,
+                                    detail.focus,
+                                    detail.mute
+                                )
+                                withContext(Dispatchers.IO) {
+                                    AppRoomDB.getDataBase(it.context).getDAO().insertCourse(course)
+                                }
+                            }
+                            val data = Intent()
+                            setResult(RESULT_ADD_NEW_COURSE, data)
+                            finish()
                         }
-                        val data = Intent()
-                        setResult(RESULT_ADD_NEW_COURSE, data)
-                        finish()
                     } else {
                         //不是一个新的课程
-                        val courseName =
+                        detail.courseName =
                             findViewById<EditText>(R.id.addCourseDetail_courseName).text.toString()
-                        val courseAddress =
+                        detail.courseAddress =
                             findViewById<EditText>(R.id.addCourseDetail_courseAddress).text.toString()
                         if (courseId != null) {
-                            withContext(Dispatchers.IO) {
-                                AppRoomDB.getDataBase(this@CourseAddActivity).getDAO()
-                                    .updateCourseDetails(
-                                        courseName,
-                                        courseAddress,
-                                        detail.alarm,
-                                        detail.focus,
-                                        detail.mute,
-                                        courseId!!
-                                    )
-                                val courseDetail =
-                                    AppRoomDB.getDataBase(this@CourseAddActivity).getDAO()
-                                        .getCourseById(
-                                            courseId!!
+                            if(detail.courseWeekBegin <= detail.courseWeekEnd){
+                                withContext(Dispatchers.IO){
+                                    AppRoomDB.getDataBase(this@CourseAddActivity).getDAO().
+                                    deleteCourseById(courseId!!)
+                                }
+                                for(week in detail.courseWeekBegin ..detail.courseWeekEnd){
+                                    Log.d("week:",week.toString())
+                                    withContext(Dispatchers.IO) {
+                                        val course = Course(
+                                            0,
+                                            detail.courseName,
+                                            week,
+                                            detail.courseDayOfWeek,
+                                            detail.courseAddress,
+                                            detail.courseTime,
+                                            getColor(R.color.CourseTableColor1),
+                                            detail.alarm,
+                                            detail.focus,
+                                            detail.mute
                                         )
-                                Log.d("courseDetail", courseDetail.toString())
-
+                                        withContext(Dispatchers.IO) {
+                                            AppRoomDB.getDataBase(it.context).getDAO().insertCourse(course)
+                                        }
+                                    }
+                                }
                             }
-
                         }
                         val data = Intent()
                         setResult(RESULT_ADD_NEW_COURSE, data)
                         finish()
                     }
                 }
-
             }
 
             findViewById<ImageButton>(R.id.courseDetail_cancel).setOnClickListener {
@@ -169,6 +191,7 @@ class CourseAddActivity : AppCompatActivity(),
                     )
                 }
             }
+
             //连上小手机
             findViewById<ImageButton>(R.id.course_focus).apply {
                 Log.d("focus3", detail.focus.toString())
@@ -210,14 +233,14 @@ class CourseAddActivity : AppCompatActivity(),
             //修改时间第几周
             findViewById<CardView>(R.id.courseDetail_timeAddCard_week).apply {
                 setOnClickListener{
-
+                    WeekPickerFragment().show(supportFragmentManager,"WeekPickerFragment")
 
                 }
             }
             //修改时间信息：星期几，第几节
             findViewById<CardView>(R.id.courseDetail_timeAddCard).apply {
                 setOnClickListener {
-                    WeekPickerFragment().show(supportFragmentManager, "WeekPickerFragment")
+                    TimePickFragment().show(supportFragmentManager, "TimePickFragment")
 
                 }
             }
@@ -227,10 +250,10 @@ class CourseAddActivity : AppCompatActivity(),
 
     }
 
-    override fun onDialogPositiveClick(dialog: DialogFragment) {
+    override fun onDialogPositiveClickForTime(dialog: DialogFragment) {
         // User touched the dialog's positive button
-        detail.courseTime = (dialog as WeekPickerFragment).time
-        detail.courseDayOfWeek = (dialog as WeekPickerFragment).dayOfWeek
+        detail.courseTime = (dialog as TimePickFragment).time
+        detail.courseDayOfWeek = (dialog as TimePickFragment).dayOfWeek
         findViewById<TextView>(R.id.courseDetail_time).text = this@CourseAddActivity.getString(
             R.string.courseDetail_timeContent
         ).format(
@@ -239,9 +262,28 @@ class CourseAddActivity : AppCompatActivity(),
         )
     }
 
-    override fun onDialogNegativeClick(dialog: DialogFragment) {
-        // User touched the dialog's negative button
+    override fun onDialogNegativeClickForTime(dialog: DialogFragment) {
+        //Of Course Do noting
     }
+
+    override fun onDialogPositiveClickForWeek(dialog: DialogFragment) {
+        detail.courseWeekBegin = (dialog as WeekPickerFragment).weekBegin
+        detail.courseWeekEnd = (dialog as WeekPickerFragment).weekEnd
+        Log.d("courseWeekBegin",detail.courseWeekBegin.toString())
+        Log.d("courseWeekEnd",detail.courseWeekEnd.toString())
+
+        findViewById<TextView>(R.id.courseDetail_time_week).text = this@CourseAddActivity.getString(
+            R.string.courseDetail_timeContentWeek
+        ).format(
+            detail.courseWeekBegin,
+            detail.courseWeekEnd,
+        )
+    }
+
+    override fun onDialogNegativeClickForWeek(dialog: DialogFragment) {
+        //Of Course Do noting
+    }
+
     private fun toggleImageDrawable(btn: ImageButton, on: Boolean, onID: Int, offID: Int) {
         with(btn) {
             setImageDrawable(

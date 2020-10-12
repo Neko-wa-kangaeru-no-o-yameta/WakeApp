@@ -39,6 +39,7 @@ class WeekCourseFragment : Fragment() {
         arguments?.let {
             param1 = it.getInt(ARG_PARAM1)
         }
+        Log.d("这是第几周:",param1.toString())
 
     }
 
@@ -67,6 +68,11 @@ class WeekCourseFragment : Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        Log.d("onResume",param1.toString())
+    }
+
     private fun updateCourseCardView() {
         view?.findViewById<GridLayout>(R.id.GridLayout).apply {
             this@WeekCourseFragment.lifecycleScope.launch(Dispatchers.Main) {
@@ -80,6 +86,9 @@ class WeekCourseFragment : Fragment() {
                         val cardTag = "$courseDayOfWeek$courseTime"
                         val cardView = view?.findViewWithTag<CardView>(cardTag)!!
                         cardView.removeAllViews()
+                        cardView.setCardBackgroundColor(resources.getColor(R.color.colorBackground,
+                            context?.theme
+                        ))
                     }
                 }
 
