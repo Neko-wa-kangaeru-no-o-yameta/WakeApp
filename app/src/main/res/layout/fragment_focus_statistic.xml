@@ -27,7 +27,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
         android:text="分"
-        android:textColor="#FFFFFF"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="@+id/focusTime0"
         app:layout_constraintStart_toEndOf="@+id/focusTime0" />
@@ -158,7 +157,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
-        android:text="近15天专注时长统计"
+        android:text="近7天专注时长统计"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/focusTime1" />
@@ -177,7 +176,7 @@
         app:chart_labelsSize="9sp"
         app:chart_lineColor="#9999FF"
         app:chart_lineThickness="3dp"
-        app:chart_smoothLine = "true"
+        app:chart_smoothLine="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"

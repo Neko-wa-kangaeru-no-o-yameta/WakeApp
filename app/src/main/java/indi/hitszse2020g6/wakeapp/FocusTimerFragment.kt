@@ -141,7 +141,6 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
             condition_flag = 0
 
             storeTime()
-
             setButtonAni(false)
             myCountDownTimer?.cancel()
             (activity as MainActivity).binder?.setIsStored(false)
