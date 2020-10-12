@@ -11,8 +11,10 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.db.williamchart.view.DonutChartView
 import com.db.williamchart.view.HorizontalBarChartView
+import indi.hitszse2020g6.wakeapp.mainPage.MainPageEventList
 import kotlinx.android.synthetic.main.fragment_focus_statistic.*
-import kotlinx.serialization.descriptors.PrimitiveKind
+import java.util.*
+import kotlin.collections.LinkedHashMap
 
 
 //@ExperimentalFeature
@@ -29,13 +31,39 @@ class FocusStatisticFragment : Fragment() {
 
     @SuppressLint("Range")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        showStatistic(focusFrequency, breakTimes, focusTime)
+        readTodayStatistic(myDao)
+        //以下所使用的参数均为全局变量，写入参数列表只是为了明确函数的定义
+        showTodayStatistic(focusFrequency, breakTimes, focusTime)
+        val lineSet = linkedMapOf<String,Float>()
+        getLineChartDataWeek(myDao,lineSet)
         setLineChart(lineSet)
         setDonutChart(donutPairSet, donutColorSet)
     }
 
-    //statistic
-    private fun showStatistic(focusFrequency:Int,breakTimes:Int,focusTime: Int) {
+
+    //today's statistic
+    private fun readTodayStatistic(myDao:RoomDAO){
+        val nowDate = Calendar.getInstance().apply{
+            set(Calendar.HOUR_OF_DAY,0)
+            set(Calendar.MINUTE,0)
+            set(Calendar.SECOND,0)
+            set(Calendar.MILLISECOND,0)
+        }.timeInMillis
+        val statisticList:List<MyFocusEntry> = myDao.findFocusData(nowDate)
+        //计算计时取消的次数和总共的时长
+        var count = 0
+        var totalTime = 0L
+        for(data in statisticList){
+            if(data.isCanceled) count++
+            totalTime += data.totalFocusTime
+        }
+        focusFrequency = statisticList.size//计时的总次数即为总的表项数
+        breakTimes = count//计时取消的次数已经计算完成
+        focusTime = (totalTime/60).toInt()
+    }
+
+
+    private fun showTodayStatistic(focusFrequency:Int,breakTimes:Int,focusTime: Int) {
         requireView().findViewById<TextView>(R.id.focusFrequency1)!!.text =
             (focusFrequency / 10).toString()
         requireView().findViewById<TextView>(R.id.focusFrequency0)!!.apply {
@@ -57,10 +85,35 @@ class FocusStatisticFragment : Fragment() {
             text = (focusTime % 10).toString()
         }
     }
+
+
     //lineChart
+    //week statistic
+    private fun getLineChartDataWeek(myDao: RoomDAO,lineSet: LinkedHashMap<String,Float>){
+        val dayTime = (24*60*60000).toLong()
+        val beginDate = Calendar.getInstance().apply{
+            set(Calendar.HOUR_OF_DAY,0)
+            set(Calendar.MINUTE,0)
+            set(Calendar.SECOND,0)
+            set(Calendar.MILLISECOND,0)
+        }.timeInMillis - 6*dayTime
+        val statisticList:List<MyFocusEntry> = myDao.findFocusData(beginDate)
+        //计算计时取消的次数和总共的时长
+        var index = 0
+        for(count in 1..7){
+            var totalTime = 0L
+            while(index < statisticList.size && statisticList[index].focusDate < beginDate + count*dayTime){
+                totalTime += statisticList[index].totalFocusTime
+                index++
+            }
+            lineSet[String.format("%d",count)] = (totalTime.toFloat()/60)
+        }
+    }
+
     private fun setLineChart(Set:LinkedHashMap<String,Float>){
         lineChart.animation.duration = animationDuration
         lineChart.animate(Set)
+        lineChart.labelsFormatter = {a:Float->String.format("%-3.1f",a)}
     }
     //donutChart
     private fun setDonutTotal(Set:List<Float>): Float {
@@ -104,6 +157,8 @@ class FocusStatisticFragment : Fragment() {
 
 
     companion object {
+        //constant DAO
+        private var myDao:RoomDAO = MainPageEventList.DAO
         //constant variable
         private const val animationDuration = 1000L
         private const val legendAnimationDuration = 0L
@@ -118,23 +173,23 @@ class FocusStatisticFragment : Fragment() {
         )
 
         //read from database
-        private var focusFrequency = 13
-        private var breakTimes = 14
-        private var focusTime = 147
-        private val lineSet = linkedMapOf(
-            "label1" to 5f,
-            "label2" to 4.5f,
-            "label3" to 4.7f,
-            "label4" to 3.5f,
-            "label5" to 3.6f,
-            "label6" to 7.5f,
-            "label7" to 7.5f,
-            "label8" to 10f,
-            "label9" to 5f,
-            "label10" to 6.5f,
-            "label11" to 3f,
-            "label12" to 4f
-        )
+        private var focusFrequency = 0
+        private var breakTimes = 0
+        private var focusTime = 0
+//        private var lineSet = linkedMapOf(
+//            "label1" to 5f,
+//            "label2" to 4.5f,
+//            "label3" to 4.7f,
+//            "label4" to 3.5f,
+//            "label5" to 3.6f,
+//            "label6" to 7.5f,
+//            "label7" to 7.5f,
+//            "label8" to 10f,
+//            "label9" to 5f,
+//            "label10" to 6.5f,
+//            "label11" to 3f,
+//            "label12" to 4f
+//        )
         private var donutPairSet = linkedMapOf<String, Float>(
             "A" to 100f,
             "B" to 100f,

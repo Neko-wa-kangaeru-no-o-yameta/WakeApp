@@ -157,7 +157,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
-        android:text="本月专注时长统计"
+        android:text="近7天专注时长统计"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/focusTime1" />
@@ -170,32 +170,19 @@
         android:layout_marginTop="16dp"
         android:layout_marginRight="24dp"
         android:layout_marginBottom="224dp"
-        app:chart_axis="none"
-        app:chart_labelsColor="#AAAAFF"
-        app:chart_labelsSize="10sp"
+        android:saveEnabled="false"
+        app:chart_axis="xy"
+        app:chart_labelsColor="#000000"
+        app:chart_labelsSize="9sp"
         app:chart_lineColor="#9999FF"
         app:chart_lineThickness="3dp"
-        app:chart_smoothLine="true"
+        app:chart_smoothLine="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/lineChartTitle" />
 
-
-    <com.db.williamchart.view.HorizontalBarChartView
-        android:id="@+id/horizontalBarChart1"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:visibility="visible"
-        app:chart_axis="y"
-        app:chart_barsColor="#CCCCEE"
-        app:chart_barsRadius="6dp"
-        app:chart_labelsColor="#475F50"
-        app:chart_labelsSize="14sp"
-        app:chart_spacing="0dp"
-        tools:layout_editor_absoluteX="24dp"
-        tools:layout_editor_absoluteY="651dp" />
 
     <LinearLayout
         android:id="@+id/legendLayout"
