@@ -15,6 +15,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import indi.hitszse2020g6.wakeapp.AppRoomDB
 import indi.hitszse2020g6.wakeapp.R
+import kotlinx.android.synthetic.main.fragment_course.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -64,12 +65,12 @@ class CourseFragment : Fragment() {
         GlobalScope.launch (Dispatchers.IO){
             var maxWeek = context?.let { AppRoomDB.getDataBase(it).getDAO().getMaxWeek() }
             Handler(Looper.getMainLooper()).post {
-                viewPager2.adapter = object : FragmentStateAdapter(this@CourseFragment) {
-                    override fun getItemCount(): Int = if(maxWeek == null) 0 else maxWeek
-                    override fun createFragment(position: Int): Fragment {
-                        return WeekCourseFragment.newInstance(position + 1)
-                    }
+                val myAdapter =  MyViewPageAdapter(this@CourseFragment)
+                if (maxWeek != null) {
+                    myAdapter.maxWeek = maxWeek
                 }
+                viewPager2.adapter = myAdapter
+
                 // todo 根据具体课程表初始化周次tab
                 TabLayoutMediator(tabLayout, viewPager2) { tab, position ->
                     tab.text = "第${position + 1}周"
@@ -77,6 +78,7 @@ class CourseFragment : Fragment() {
             }
         }
     }
+
 
     companion object {
         /**
@@ -96,4 +98,27 @@ class CourseFragment : Fragment() {
                 }
             }
     }
+}
+
+class MyViewPageAdapter(val fragment: CourseFragment):FragmentStateAdapter(fragment){
+    var maxWeek:Int = 0
+    override fun getItemCount(): Int {
+        return maxWeek
+    }
+    override fun createFragment(position: Int): Fragment {
+        return WeekCourseFragment.newInstance(position + 1)
+    }
+
+    override fun onBindViewHolder(
+        holder: FragmentViewHolder,
+        position: Int,
+        payloads: MutableList<Any>
+    ) {
+        super.onBindViewHolder(holder, position, payloads)
+        val fragment:WeekCourseFragment? = fragment.fragmentManager?.findFragmentById(position) as WeekCourseFragment?
+        if (fragment != null) {
+            fragment.updateCourseCardView()
+        }
+    }
+
 }

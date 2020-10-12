@@ -15,6 +15,8 @@ import androidx.annotation.RequiresApi
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.viewpager2.widget.ViewPager2
+import kotlinx.android.synthetic.main.fragment_course.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -66,14 +68,17 @@ class WeekCourseFragment : Fragment() {
             Log.d("get in2", "get in")
             updateCourseCardView()
         }
+        requireActivity().findViewById<ViewPager2>(R.id.viewPager2).adapter?.notifyDataSetChanged()
+
     }
 
     override fun onResume() {
         super.onResume()
+//        updateCourseCardView()
         Log.d("onResume",param1.toString())
     }
 
-    private fun updateCourseCardView() {
+    fun updateCourseCardView() {
         view?.findViewById<GridLayout>(R.id.GridLayout).apply {
             this@WeekCourseFragment.lifecycleScope.launch(Dispatchers.Main) {
 
