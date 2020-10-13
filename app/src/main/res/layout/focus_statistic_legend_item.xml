@@ -8,13 +8,13 @@
 
     <com.db.williamchart.view.HorizontalBarChartView
         android:id="@+id/horizontalBarChart"
-        android:layout_width="80dp"
+        android:layout_width="100dp"
         android:layout_height="25dp"
         app:chart_axis="y"
         app:chart_barsColor="#475F50"
         app:chart_barsRadius="6dp"
         app:chart_labelsColor="#475F50"
-        app:chart_labelsSize="12sp"
+        app:chart_labelsSize="10sp"
         app:chart_spacing="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
