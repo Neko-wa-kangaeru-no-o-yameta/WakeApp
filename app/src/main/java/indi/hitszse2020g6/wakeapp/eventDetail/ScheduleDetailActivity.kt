@@ -4,6 +4,7 @@ import android.app.DatePickerDialog
 import android.app.Dialog
 import android.app.TimePickerDialog
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -12,10 +13,7 @@ import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.RecyclerView
-import indi.hitszse2020g6.wakeapp.Detail
-import indi.hitszse2020g6.wakeapp.EventTableEntry
-import indi.hitszse2020g6.wakeapp.R
-import indi.hitszse2020g6.wakeapp.Reminder
+import indi.hitszse2020g6.wakeapp.*
 import indi.hitszse2020g6.wakeapp.mainPage.MainPageEventList
 import java.util.*
 import kotlin.collections.ArrayList
@@ -65,6 +63,7 @@ class ScheduleDetailActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        ThemeColors(this)
         setContentView(R.layout.activity_schedule_detail)
         setSupportActionBar(findViewById(R.id.scheduleDetail_actionBar))
 
@@ -240,6 +239,22 @@ class ScheduleDetailActivity :
                 mute = !mute
                 toggleImageDrawable(this, mute, R.drawable.mute_on_24, R.drawable.mute_off_24)
             }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val sharedPreferences: SharedPreferences =
+            getSharedPreferences("changeTheme", Context.MODE_PRIVATE)
+        if(sharedPreferences.getBoolean("changed",false)){
+            val tmp = getSharedPreferences("redGreenBlue", Context.MODE_PRIVATE)
+            var red = tmp.getInt("red",43)
+            var green = tmp.getInt("green",44)
+            var blue = tmp.getInt("blue",48)
+            var editor = sharedPreferences.edit()
+            editor.putBoolean("changed",false)
+            editor.apply()
+            ThemeColors.setNewThemeColor(this,red,green,blue)
         }
     }
 

@@ -87,6 +87,22 @@ class ChooseWhiteListActivity : AppCompatActivity(),CompoundButton.OnCheckedChan
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        val sharedPreferences: SharedPreferences =
+            getSharedPreferences("changeTheme", Context.MODE_PRIVATE)
+        if(sharedPreferences.getBoolean("changed",false)){
+            val tmp = getSharedPreferences("redGreenBlue",Context.MODE_PRIVATE)
+            var red = tmp.getInt("red",43)
+            var green = tmp.getInt("green",44)
+            var blue = tmp.getInt("blue",48)
+            var editor = sharedPreferences.edit()
+            editor.putBoolean("changed",false)
+            editor.apply()
+            ThemeColors.setNewThemeColor(this,red,green,blue)
+        }
+    }
+
     override fun onStart() {
         super.onStart()
         Log.d(TAG,"onStart")

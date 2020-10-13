@@ -1,6 +1,8 @@
 package indi.hitszse2020g6.wakeapp
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -35,6 +37,7 @@ class CourseAddActivity : AppCompatActivity() {
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        ThemeColors(this)
         setContentView(R.layout.activity_course_add)
         if(intent.extras != null){
             //是老事件
@@ -146,6 +149,23 @@ class CourseAddActivity : AppCompatActivity() {
             }
         }
 
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val sharedPreferences: SharedPreferences =
+            getSharedPreferences("changeTheme", Context.MODE_PRIVATE)
+        if(sharedPreferences.getBoolean("changed",false)){
+            val tmp = getSharedPreferences("redGreenBlue", Context.MODE_PRIVATE)
+            var red = tmp.getInt("red",43)
+            var green = tmp.getInt("green",44)
+            var blue = tmp.getInt("blue",48)
+            var editor = sharedPreferences.edit()
+            editor.putBoolean("changed",false)
+            editor.apply()
+            ThemeColors.setNewThemeColor(this,red,green,blue)
+        }
 
     }
     private fun toggleImageDrawable(btn: ImageButton, on: Boolean, onID: Int, offID: Int) {

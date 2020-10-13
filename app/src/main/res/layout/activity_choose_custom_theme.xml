@@ -55,7 +55,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:text="@string/select_theme"
-                android:textColor="#FFFFFF"
+                android:textColor="#ffffff"
                 android:textSize="24sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/theme_confirm"
@@ -67,150 +67,189 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/center_Constrain"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/affairDetail_actionBar">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <HorizontalScrollView
-        android:id="@+id/scroll"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginBottom="24dp"
-        android:paddingHorizontal="8dp"
-        android:scrollbars="none">
-
-        <LinearLayout
-            android:id="@+id/linearLayout3"
-            android:layout_width="wrap_content"
-            android:layout_height="100dp"
-            android:layout_marginBottom="36dp"
+        <HorizontalScrollView
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingHorizontal="8dp"
+            android:scrollbars="none"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <ImageView
+                    android:layout_width="280dp"
+                    android:layout_height="420dp"
+                    app:srcCompat="@drawable/pink_mainpage" />
+
+                <ImageView
+                    android:layout_width="280dp"
+                    android:layout_height="420dp"
+                    app:srcCompat="@drawable/pink_schedule" />
+
+                <ImageView
+                    android:layout_width="280dp"
+                    android:layout_height="420dp"
+                    app:srcCompat="@drawable/pink_timer" />
+
+                <ImageView
+                    android:layout_width="280dp"
+                    android:layout_height="420dp"
+                    app:srcCompat="@drawable/pink_setting" />
+
+            </LinearLayout>
+
+
+        </HorizontalScrollView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <HorizontalScrollView
+            android:id="@+id/scroll"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_marginBottom="24dp"
+            android:orientation="horizontal"
+            android:paddingHorizontal="8dp"
+            android:scrollbars="none"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent">
 
-            <TextView
-                android:id="@+id/theme_grey"
-                android:layout_width="50dp"
-                android:layout_height="match_parent"
-                android:background="@drawable/shape_grey"
-                android:ems="1"
-                android:layout_margin="4dp"
-                android:lineSpacingMultiplier="0.8"
-                android:gravity="center"
-                android:text="素雅灰"
-                android:textColor="#2b2c30"
-                android:clickable="true"/>
-            <TextView
-                android:id="@+id/theme_white"
-                android:layout_width="50dp"
-                android:layout_height="match_parent"
-                android:background="@drawable/shape_white"
-                android:ems="1"
-                android:layout_margin="4dp"
-                android:lineSpacingMultiplier="0.8"
-                android:gravity="center"
-                android:text="极简白"
-                android:textColor="#2b2c30"
-                android:clickable="true"/>
-            <TextView
-                android:id="@+id/theme_green"
-                android:layout_width="50dp"
-                android:layout_height="match_parent"
-                android:background="@drawable/shape_green"
-                android:ems="1"
-                android:layout_margin="4dp"
-                android:lineSpacingMultiplier="0.8"
-                android:gravity="center"
-                android:text="浅葱绿"
-                android:textColor="#ffffff"
-                android:clickable="true"/>
-            <TextView
-                android:id="@+id/theme_yellow"
-                android:layout_width="50dp"
-                android:layout_height="match_parent"
-                android:background="@drawable/shape_yellow"
-                android:ems="1"
-                android:layout_margin="4dp"
-                android:lineSpacingMultiplier="0.8"
-                android:gravity="center"
-                android:text="盛夏黄"
-                android:textColor="#2b2c30"
-                android:clickable="true"/>
-            <TextView
-                android:id="@+id/theme_pink"
-                android:layout_width="50dp"
-                android:layout_height="match_parent"
-                android:background="@drawable/shape_pink"
-                android:ems="1"
-                android:layout_margin="4dp"
-                android:lineSpacingMultiplier="0.8"
-                android:gravity="center"
-                android:text="桃桃粉"
-                android:textColor="#ffffff"
-                android:clickable="true"/>
-            <TextView
-                android:id="@+id/theme_purple"
-                android:layout_width="50dp"
-                android:layout_height="match_parent"
-                android:background="@drawable/shape_purple"
-                android:ems="1"
-                android:layout_margin="4dp"
-                android:lineSpacingMultiplier="0.8"
-                android:gravity="center"
-                android:text="星辰紫"
-                android:textColor="#ffffff"
-                android:clickable="true"/>
-            <TextView
-                android:id="@+id/theme_blue"
-                android:layout_width="50dp"
-                android:layout_height="match_parent"
-                android:background="@drawable/shape_blue"
-                android:ems="1"
-                android:layout_margin="4dp"
-                android:lineSpacingMultiplier="0.8"
-                android:gravity="center"
-                android:text="经典蓝"
-                android:textColor="#ffffff"
-                android:clickable="true"/>
-            <TextView
-                android:id="@+id/theme_red"
-                android:layout_width="50dp"
-                android:layout_height="match_parent"
-                android:background="@drawable/shape_red"
-                android:ems="1"
-                android:layout_margin="4dp"
-                android:lineSpacingMultiplier="0.8"
-                android:gravity="center"
-                android:text="元气红"
-                android:textColor="#ffffff"
-                android:clickable="true"/>
-            <TextView
-                android:id="@+id/theme_black"
-                android:layout_width="50dp"
-                android:layout_height="match_parent"
-                android:background="@drawable/shape_black"
-                android:ems="1"
-                android:layout_margin="4dp"
-                android:lineSpacingMultiplier="0.8"
-                android:gravity="center"
-                android:text="极致黑"
-                android:textColor="#ffffff"
-                android:clickable="true"/>
-        </LinearLayout>
+            <LinearLayout
+                android:id="@+id/linearLayout3"
+                android:layout_width="wrap_content"
+                android:layout_height="100dp"
+                android:layout_marginBottom="36dp"
+                android:orientation="horizontal"
+                android:paddingHorizontal="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent">
 
-    </HorizontalScrollView>
+                <TextView
+                    android:id="@+id/theme_green"
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/shape_green"
+                    android:clickable="true"
+                    android:ems="1"
+                    android:gravity="center"
+                    android:lineSpacingMultiplier="0.8"
+                    android:text="浅葱绿"
+                    android:textColor="#ffffff" />
+
+                <TextView
+                    android:id="@+id/theme_yellow"
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/shape_yellow"
+                    android:clickable="true"
+                    android:ems="1"
+                    android:gravity="center"
+                    android:lineSpacingMultiplier="0.8"
+                    android:text="盛夏黄"
+                    android:textColor="#2b2c30" />
+
+                <TextView
+                    android:id="@+id/theme_pink"
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/shape_pink"
+                    android:clickable="true"
+                    android:ems="1"
+                    android:gravity="center"
+                    android:lineSpacingMultiplier="0.8"
+                    android:text="桃桃粉"
+                    android:textColor="#ffffff" />
+
+                <TextView
+                    android:id="@+id/theme_purple"
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/shape_purple"
+                    android:clickable="true"
+                    android:ems="1"
+                    android:gravity="center"
+                    android:lineSpacingMultiplier="0.8"
+                    android:text="星辰紫"
+                    android:textColor="#ffffff" />
+
+                <TextView
+                    android:id="@+id/theme_blue"
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/shape_blue"
+                    android:clickable="true"
+                    android:ems="1"
+                    android:gravity="center"
+                    android:lineSpacingMultiplier="0.8"
+                    android:text="经典蓝"
+                    android:textColor="#ffffff" />
+
+                <TextView
+                    android:id="@+id/theme_red"
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/shape_red"
+                    android:clickable="true"
+                    android:ems="1"
+                    android:gravity="center"
+                    android:lineSpacingMultiplier="0.8"
+                    android:text="元气红"
+                    android:textColor="#ffffff" />
+
+                <TextView
+                    android:id="@+id/theme_black"
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/shape_black"
+                    android:clickable="true"
+                    android:ems="1"
+                    android:gravity="center"
+                    android:lineSpacingMultiplier="0.8"
+                    android:text="极致黑"
+                    android:textColor="#ffffff" />
+            </LinearLayout>
+
+        </HorizontalScrollView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -31,16 +31,6 @@ class ChooseCustomTheme : AppCompatActivity() {
             var green:Int = 0
             var blue:Int = 0
             when(choosedTheme){
-                "theme_grey"->{
-                    red = 244
-                    green = 245
-                    blue = 249
-                }
-                "theme_white"->{
-                    red = 255
-                    green = 255
-                    blue = 255
-                }
                 "theme_green"->{
                     red = 8
                     green = 212
@@ -95,14 +85,6 @@ class ChooseCustomTheme : AppCompatActivity() {
             context.getSharedPreferences("ThemeColors", Context.MODE_PRIVATE)
         val stringColor = sharedPreferences.getString("color", "2d2d2d")
         when (stringColor) {
-            "f0f0ff" -> {
-                choosedTheme = "theme_grey"
-                clickFunc(theme_grey, getDrawable(R.drawable.shape_grey_selected))
-            }
-            "ffffff" -> {
-                choosedTheme = "theme_white"
-                clickFunc(theme_white, getDrawable(R.drawable.shape_white_selected))
-            }
             "0fd2c3" -> {
                 choosedTheme = "theme_green"
                 clickFunc(theme_green, getDrawable(R.drawable.shape_green_selected))
@@ -135,16 +117,6 @@ class ChooseCustomTheme : AppCompatActivity() {
                 choosedTheme = "theme_black"
                 clickFunc(theme_black, getDrawable(R.drawable.shape_black_selected))
             }
-        }
-
-        theme_grey.setOnClickListener {
-            choosedTheme = "theme_grey"
-            clickFunc(theme_grey, getDrawable(R.drawable.shape_grey_selected))
-        }
-
-        theme_white.setOnClickListener {
-            choosedTheme = "theme_white"
-            clickFunc(theme_white, getDrawable(R.drawable.shape_white_selected))
         }
 
         theme_green.setOnClickListener {

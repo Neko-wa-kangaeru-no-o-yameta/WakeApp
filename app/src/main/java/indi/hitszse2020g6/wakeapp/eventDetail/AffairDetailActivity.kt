@@ -2,6 +2,8 @@ package indi.hitszse2020g6.wakeapp.eventDetail
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.*
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -51,6 +53,7 @@ class AffairDetailActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        ThemeColors(this)
         setContentView(R.layout.activity_affair_detail)
         setSupportActionBar(findViewById(R.id.affairDetail_actionBar))
 
@@ -187,6 +190,22 @@ class AffairDetailActivity :
 
         findViewById<CardView>(R.id.affairDetail_repeatCard).setOnClickListener {
             RepeatTypeDialog().show(supportFragmentManager, "RepeatTypeDialog")
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val sharedPreferences: SharedPreferences =
+            getSharedPreferences("changeTheme", Context.MODE_PRIVATE)
+        if(sharedPreferences.getBoolean("changed",false)){
+            val tmp = getSharedPreferences("redGreenBlue", Context.MODE_PRIVATE)
+            var red = tmp.getInt("red",43)
+            var green = tmp.getInt("green",44)
+            var blue = tmp.getInt("blue",48)
+            var editor = sharedPreferences.edit()
+            editor.putBoolean("changed",false)
+            editor.apply()
+            ThemeColors.setNewThemeColor(this,red,green,blue)
         }
     }
 
