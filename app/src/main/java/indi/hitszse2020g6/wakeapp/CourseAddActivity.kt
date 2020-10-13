@@ -3,14 +3,18 @@ package indi.hitszse2020g6.wakeapp
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.RecyclerView
+import indi.hitszse2020g6.wakeapp.dummy.CourseWeek
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -19,7 +23,7 @@ const val RESULT_ADD_NEW_COURSE = 5
 const val UNIQUE_COURSE_DETAIL = "indi.hitszse2020g6.wakeapp.UNIQUE_COURSE_DETAIL"
 const val MY_REQUESET_CODE = 5
 
-class Date{
+class CourseDate{
     var weekBegin:Int = 0
     var weekEnd :Int = 0
     var time : Int = 0
@@ -28,7 +32,7 @@ class Date{
 class CourseDetails {
     var courseName: String = ""
     var courseAddress: String = ""
-    var dateList = arrayListOf<Date>()
+    var dateList = arrayListOf<CourseDate>()
     var courseWeekBegin :Int = 0
     var courseWeekEnd :Int = 0
     var courseTime: Int = 0
@@ -50,16 +54,17 @@ class CourseAddActivity : AppCompatActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-
         setContentView(R.layout.course_add_activity)
+
+        CourseWeek.ITEMS.clear()
 
         this.lifecycleScope.launch(Dispatchers.Main) {
             if (intent.extras != null) {
                 //是老事件
                 isNewCourse = false
                 courseId = intent.getLongExtra(UNIQUE_COURSE_DETAIL, -1)
-
+                //将其设置为不可见
+                findViewById<ConstraintLayout>(R.id.canBeHide).visibility = ViewGroup.GONE
                 val courseDetail = withContext(Dispatchers.IO) {
                     AppRoomDB.getDataBase(this@CourseAddActivity).getDAO().getCourseById(
                         courseId!!
@@ -243,6 +248,18 @@ class CourseAddActivity : AppCompatActivity(),
                     TimePickFragment().show(supportFragmentManager, "TimePickFragment")
 
                 }
+            }
+            findViewById<ImageButton>(R.id.CourseAddDetail_addCourseTime).setOnClickListener {
+                val courseDate = CourseDate()
+                courseDate.time = 0
+                courseDate.weekBegin = 0
+                courseDate.weekEnd = 0
+                courseDate.dayOfWeek = 0
+                CourseWeek.ITEMS.add(courseDate)
+                findViewById<RecyclerView>(R.id.course_time_add_list_container).adapter?.notifyItemInserted(
+                    detail.dateList.size
+                )
+
             }
 
         }

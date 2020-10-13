@@ -13,6 +13,7 @@ data class Detail(
     var content: String
 )
 
+
 @Serializable
 data class Reminder(
     var time: Long,     // UNIX style
