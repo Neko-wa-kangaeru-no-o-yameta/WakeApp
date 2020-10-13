@@ -43,7 +43,7 @@ class ThemeColors(context: Context) {
     init {
         val sharedPreferences: SharedPreferences =
             context.getSharedPreferences(NAME, Context.MODE_PRIVATE)
-        val stringColor = sharedPreferences.getString(KEY, "004bff")
+        val stringColor = sharedPreferences.getString(KEY, "2d2d2d")
         color = Color.parseColor("#$stringColor")
 //        if (isLightActionBar) context.setTheme(R.style.AppTheme)
         Log.d("Theme Colors",stringColor!!)

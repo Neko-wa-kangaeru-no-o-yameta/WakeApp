@@ -158,7 +158,7 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
             myCircle.post { showGuideView() }
             var editor = mySharedPreferences.edit()
             editor.putBoolean("isNew", false)
-            editor.commit()
+            editor.apply()
         }
     }
 
@@ -376,7 +376,7 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
                     setButtonAni(false)
                     Toast.makeText(context, "计时结束", Toast.LENGTH_SHORT).show()
                     condition_flag = -1
-
+                    storeTime()
                     //service的也要停
                     if ((activity as MainActivity).mBound) {
                         (activity as MainActivity).binder?.stopCountDownTimer()
@@ -496,7 +496,7 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
         editor.putLong("total_time", total_time)
         editor.putLong("before_system_time", System.currentTimeMillis())
         editor.putInt("condition_flag", condition_flag)
-        editor.commit()
+        editor.apply()
     }
 
     private fun showGuideView() {
