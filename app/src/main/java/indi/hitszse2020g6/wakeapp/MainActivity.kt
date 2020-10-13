@@ -19,7 +19,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.util.*
 
 
 const val INTENT_AFFAIR_DETAIL = 1
@@ -31,7 +30,7 @@ const val PARAM_START_FOCUS_TIME = "indi.hitszse2020g6.wakeapp.paramStartFocus"
 const val ACTION_START_FOCUS_TIME = "indi.hitszse2020g6.wakeapp.actionStartFocus"
 const val ACTION_START_ALARM = "indi.hitszse2020g6.wakeapp.actionStartAlarm"
 
-class MainActivity : AppCompatActivity() {
+class MainActivity() : AppCompatActivity() {
 
     var mBound = false
     lateinit var blockAppService: BackgroundService
@@ -54,6 +53,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        Log.d("MainActivity", "Oncreate")
         super.onCreate(savedInstanceState)
         ThemeColors(this)
         setContentView(R.layout.activity_main)
@@ -143,6 +143,19 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         Log.d("MainActivity", "OnResume")
         super.onResume()
+
+        val sharedPreferences: SharedPreferences =
+            getSharedPreferences("changeTheme", Context.MODE_PRIVATE)
+        if(sharedPreferences.getBoolean("changed",false)){
+               val tmp = getSharedPreferences("redGreenBlue",Context.MODE_PRIVATE)
+            var red = tmp.getInt("red",43)
+            var green = tmp.getInt("green",44)
+            var blue = tmp.getInt("blue",48)
+            var editor = sharedPreferences.edit()
+            editor.putBoolean("changed",false)
+            editor.apply()
+            ThemeColors.setNewThemeColor(this,red,green,blue)
+        }
 
         //获得启动该activity的intent对象
         val myIntent: Intent = intent

@@ -78,6 +78,14 @@ class ChooseCustomTheme : AppCompatActivity() {
                 }
             }
             ThemeColors.setNewThemeColor(this, red, green, blue)
+            var editor = getSharedPreferences("redGreenBlue", Context.MODE_PRIVATE).edit()
+            editor.putInt("red", red)
+            editor.putInt("green",green)
+            editor.putInt("blue",blue)
+            editor.apply()
+            editor = getSharedPreferences("changeTheme", Context.MODE_PRIVATE).edit()
+            editor.putBoolean("changed",true)
+            editor.commit()
         }
         theme_cancel.setOnClickListener {
             finish()
