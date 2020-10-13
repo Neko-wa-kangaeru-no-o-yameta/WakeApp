@@ -39,24 +39,29 @@ class MyTime {
     }
 }
 
-class ScheduleDetailActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+class ScheduleDetailActivity :
+    AppCompatActivity(),
+    DatePickerDialog.OnDateSetListener,
+    TimePickerDialog.OnTimeSetListener,
+    RepeatTypeDialog.RepeatTypeListener,
+    RepeatWeekdayDialog.RepeatWeekDayDialogListener {
 
     private var isNewSchedule = true
     private lateinit var entryToEdit: EventTableEntry
 
     var settingStartTime = true
 
-    companion object{
-        var startTime = MyTime()
-        var stopTime = MyTime()
+    var startTime = MyTime()
+    var stopTime = MyTime()
 
-        var alarm = true
-        var focus = true
-        var mute = true
-        
-        var hasWL = false
-        var whiteList: List<String> = ArrayList()
-    }
+    var alarm = true
+    var focus = true
+    var mute = true
+
+    var hasWL = false
+    var whiteList: List<String> = ArrayList()
+
+    var repeatAt = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -95,6 +100,7 @@ class ScheduleDetailActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLi
                     stopTime.hour  = stop.get(Calendar.HOUR_OF_DAY)
                     stopTime.minute= stop.get(Calendar.MINUTE)
 
+                    repeatAt = entryToEdit.repeatAt
 
                     EventDetailList.ITEMS = entryToEdit.detail.toMutableList()
                     EventReminderList.ITEMS = entryToEdit.reminder.toMutableList()
@@ -103,8 +109,8 @@ class ScheduleDetailActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLi
                     break
                 }
             }
-
         }
+        setRepeatList()
 
         findViewById<ImageButton>(R.id.scheduleDetail_confirm).setOnClickListener {
             val stop = Calendar.getInstance().apply {
@@ -130,7 +136,8 @@ class ScheduleDetailActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLi
                     isAutoGen   = false,
                     isClass     = false,
                     ruleId      = -1,
-                    classId     = -1
+                    classId     = -1,
+                    repeatAt    = repeatAt
                 )
             } else {
                 entryToEdit.title       = findViewById<EditText>(R.id.scheduleDetail_eventTitle).text.toString()
@@ -287,5 +294,37 @@ class ScheduleDetailActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLi
             )
         }
         Log.d("OnTimeSet", "$setHourOfDay : $setMinute")
+    }
+
+    fun setRepeatList() {
+        val repeatList = findViewById<LinearLayout>(R.id.scheduleDetail_repeatContent)
+        repeatList.removeAllViews()
+        if(repeatAt == 0) {
+            val tv = TextView(this)
+            tv.text = "只触发一次"
+            repeatList.addView(tv)
+        } else {
+            for (i in 0 until 7) {
+                if(repeatAt and (1 shl i) != 0) {
+                    val tv = TextView(this)
+                    tv.text = resources.getStringArray(R.array.repeat_weekday_types)[i]
+                    repeatList.addView(tv)
+                }
+            }
+        }
+    }
+
+    override fun onRepeatTypeSet(doRepeat: Boolean) {
+        if(!doRepeat) {
+            repeatAt = 0
+            setRepeatList()
+        } else {
+            RepeatWeekdayDialog(repeatAt).show(supportFragmentManager, "Weekday picker")
+        }
+    }
+
+    override fun onRepeatWeekdaySet(repeatAt: Int) {
+        this.repeatAt = repeatAt
+        setRepeatList()
     }
 }

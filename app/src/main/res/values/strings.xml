@@ -91,4 +91,7 @@
     <string name="set_white_list">设置白名单</string>
     <string name="select_theme">选择主题</string>
     <string name="set_schedule_time">设置当前学期起止日期</string>
+    <string name="RepeatTypeDialogTitle">选择重复类型</string>
+    <string name="eventDetail_repeatTitleText">重复方式</string>
+    <string name="eventDetail_repeatTextNoRepeat">不重复</string>
 </resources>

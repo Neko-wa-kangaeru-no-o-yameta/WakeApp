@@ -10,6 +10,8 @@
         android:id="@+id/affairDetail_mainContainer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:clipChildren="false"
+        android:clipToPadding="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -21,29 +23,31 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
+            android:clipChildren="false"
+            android:clipToPadding="false"
             android:orientation="vertical">
 
             <EditText
                 android:id="@+id/affairDetail_eventTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:autofillHints="事件标题"
                 android:ems="10"
+                android:hint="@string/eventDetail_eventTitleInputField"
                 android:inputType="text"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:hint="@string/eventDetail_eventTitleInputField"
-                android:autofillHints="事件标题" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
                 android:id="@+id/affairDetail_alarm"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/eventDetail_alarm"
                 android:padding="12dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/alarm_on_24"
-                android:contentDescription="@string/eventDetail_alarm" />
+                app:srcCompat="@drawable/alarm_on_24" />
 
             <View
                 android:id="@+id/divider3"
@@ -113,13 +117,13 @@
                 android:id="@+id/affairDetail_addDetail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:padding="12dp"
                 android:layout_marginVertical="16dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/eventDetail_addDetail"
+                android:padding="12dp"
                 android:src="@drawable/add_circle_outline_24"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/affairDetail_detailListFragment"
-                android:contentDescription="@string/eventDetail_addDetail" />
+                app:layout_constraintTop_toBottomOf="@+id/affairDetail_detailListFragment" />
 
 
             <View
@@ -130,14 +134,14 @@
                 android:background="?android:attr/listDivider"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/affairDetail_addDetail"  />
+                app:layout_constraintTop_toBottomOf="@+id/affairDetail_addDetail" />
 
             <TextView
                 android:id="@+id/affairDetail_reminderTitleText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/eventDetail_remindTitleText"
                 android:layout_marginVertical="16dp"
+                android:text="@string/eventDetail_remindTitleText"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/divider4" />
 
@@ -154,13 +158,53 @@
                 android:id="@+id/affairDetail_addReminder"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:padding="12dp"
                 android:layout_marginVertical="16dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/eventDetail_hint_addReminder"
+                android:padding="12dp"
                 android:src="@drawable/add_circle_outline_24"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/affairDetail_reminderListFragment"
-                android:contentDescription="@string/eventDetail_hint_addReminder" />
+                app:layout_constraintTop_toBottomOf="@+id/affairDetail_reminderListFragment" />
+
+            <View
+                android:id="@+id/divider5"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginVertical="16dp"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/affairDetail_addReminder" />
+
+
+            <TextView
+                android:id="@+id/affairDetail_repeatTitleText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="16dp"
+                android:text="@string/eventDetail_repeatTitleText"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/divider5" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/affairDetail_repeatCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_marginVertical="16dp"
+                app:cardCornerRadius="5dp"
+                app:contentPadding="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/affairDetail_repeatTitleText">
+
+                <LinearLayout
+                    android:id="@+id/affairDetail_repeatContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+            </androidx.cardview.widget.CardView>
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

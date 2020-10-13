@@ -7,6 +7,14 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
+const val MONDAY    : Int = 1 shl 0
+const val TUESDAY   : Int = 1 shl 1
+const val WEDNESDAY : Int = 1 shl 2
+const val THURSDAY  : Int = 1 shl 3
+const val FRIDAY    : Int = 1 shl 4
+const val SATURDAY  : Int = 1 shl 5
+const val SUNDAY    : Int = 1 shl 6
+
 @Serializable
 data class Detail (
     var title: String,
@@ -83,15 +91,9 @@ class EventTableEntry (
     var isAutoGen           : Boolean,          // is auto generated
     var isClass             : Boolean,          // is class?
     var ruleId              : Long,             // generated from...
-    var classId             : Long              // generated from...
+    var classId             : Long,             // generated from...
+    var repeatAt            : Int               // repeat
 )
-
-@Entity(tableName = "GenRuleTable")
-class GenRuleEntry (
-    @PrimaryKey(autoGenerate = true)
-    var uid                 : Long,             // unique id
-)
-
 
 @Entity(tableName = "course_table")
 data class Course(
@@ -110,7 +112,7 @@ data class Course(
     var courseId: Long = 0
 }
 
-@Database(entities = [EventTableEntry::class, GenRuleEntry::class,Course::class,MyFocusEntry::class], version = 1)
+@Database(entities = [EventTableEntry::class, Course::class,MyFocusEntry::class], version = 1, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class AppRoomDB: RoomDatabase() {
     abstract fun getDAO(): RoomDAO
@@ -151,6 +153,9 @@ interface RoomDAO {
 
     @Query("SELECT * FROM EventTable WHERE isAffair=0")
     fun getSchedule(): List<EventTableEntry>
+
+    @Query("SELECT * FROM EventTable WHERE ruleId=:genRuleId")
+    fun getRepeatEvents(genRuleId: Long): List<EventTableEntry>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertEvent(re: EventTableEntry) : Long

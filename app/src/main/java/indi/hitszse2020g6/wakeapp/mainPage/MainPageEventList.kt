@@ -38,7 +38,8 @@ object MainPageEventList {
         stopTime    : Long,
         notice      : Boolean,
         isAutoGen   : Boolean,
-        ruleId      : Long
+        ruleId      : Long,
+        repeatAt    : Int
     ) {
         val entry = EventTableEntry(
             uid         = 0,    // auto gen
@@ -57,7 +58,8 @@ object MainPageEventList {
             isAutoGen   = isAutoGen,
             isClass     = false,
             ruleId      = ruleId,
-            classId     = -1
+            classId     = -1,
+            repeatAt    = repeatAt
         )
 
         eventList.add(entry)        // uid should catch up in milliseconds
@@ -99,7 +101,8 @@ object MainPageEventList {
         isAutoGen   : Boolean,
         isClass     : Boolean,
         ruleId      : Long,
-        classId     : Long
+        classId     : Long,
+        repeatAt    : Int
     ) {
         val entry = EventTableEntry(
             uid         = 0,    // auto gen
@@ -118,7 +121,8 @@ object MainPageEventList {
             isAutoGen   = isAutoGen,
             isClass     = isClass,
             ruleId      = ruleId,
-            classId     = classId
+            classId     = classId,
+            repeatAt    = repeatAt
         )
         eventList.add(entry)        // uid should catch up in milliseconds
 
@@ -238,5 +242,9 @@ object MainPageEventList {
 
     fun focusHash(uid: Long): Int {
         return uid.toInt()
+    }
+
+    fun clearStat() {
+
     }
 }

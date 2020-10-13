@@ -1,9 +1,7 @@
 package indi.hitszse2020g6.wakeapp.eventDetail
 
 import android.app.DatePickerDialog
-import android.app.Dialog
 import android.app.TimePickerDialog
-import android.content.Context
 import android.graphics.*
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -11,7 +9,7 @@ import android.util.Log
 import android.widget.*
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.DialogFragment
+import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
 import indi.hitszse2020g6.wakeapp.*
 import indi.hitszse2020g6.wakeapp.mainPage.MainPageEventList
@@ -19,7 +17,12 @@ import java.util.*
 
 const val UNIQUE_ID_TO_AFFAIR_DETAIL = "indi.hitszse2020g6.wakeapp.UNIQUE_ID_FOR_MAIN_TO_AFFAIR_DETAIL"
 
-class AffairDetailActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+class AffairDetailActivity :
+    AppCompatActivity(),
+    DatePickerDialog.OnDateSetListener,
+    TimePickerDialog.OnTimeSetListener,
+    RepeatTypeDialog.RepeatTypeListener,
+    RepeatWeekdayDialog.RepeatWeekDayDialogListener{
 
     private var isNewAffair = true
     private lateinit var entryToEdit: EventTableEntry
@@ -32,6 +35,7 @@ class AffairDetailActivity : AppCompatActivity(), DatePickerDialog.OnDateSetList
     var minute  : Int = c.get(Calendar.MINUTE)
     var alarm   : Boolean = true
 
+    var repeatAt: Int = 0
 
     private fun toggleImageDrawable(btn: ImageButton, on: Boolean, onID: Int, offID: Int) {
         with(btn) {
@@ -69,6 +73,7 @@ class AffairDetailActivity : AppCompatActivity(), DatePickerDialog.OnDateSetList
                     hour   = c.get(Calendar.HOUR_OF_DAY)
                     minute = c.get(Calendar.MINUTE)
                     alarm  = entryToEdit.notice
+                    repeatAt = entryToEdit.repeatAt
                     EventDetailList.ITEMS = entryToEdit.detail.toMutableList()
                     EventReminderList.ITEMS = entryToEdit.reminder.toMutableList()
                     findViewById<EditText>(R.id.affairDetail_eventTitle).setText(entryToEdit.title)
@@ -78,6 +83,8 @@ class AffairDetailActivity : AppCompatActivity(), DatePickerDialog.OnDateSetList
             }
 
         }
+
+        setRepeatList()
 
         findViewById<ImageButton>(R.id.affairDetail_confirm).setOnClickListener {
 
@@ -111,7 +118,8 @@ class AffairDetailActivity : AppCompatActivity(), DatePickerDialog.OnDateSetList
                     stopTime    = stopTime.timeInMillis / 1000,
                     notice      = alarm,
                     isAutoGen   = false,
-                    ruleId      = -1
+                    ruleId      = -1,
+                    repeatAt
                 )
             } else {
                 entryToEdit.title       = title
@@ -121,6 +129,7 @@ class AffairDetailActivity : AppCompatActivity(), DatePickerDialog.OnDateSetList
                 entryToEdit.notice      = alarm
                 entryToEdit.isAutoGen   = false
                 entryToEdit.ruleId      = -1
+                entryToEdit.repeatAt    = repeatAt
                 MainPageEventList.updateEvent(entryToEdit)
             }
             finish()
@@ -175,6 +184,10 @@ class AffairDetailActivity : AppCompatActivity(), DatePickerDialog.OnDateSetList
                 toggleImageDrawable(this, alarm, R.drawable.alarm_on_24, R.drawable.alarm_off_24)
             }
         }
+
+        findViewById<CardView>(R.id.affairDetail_repeatCard).setOnClickListener {
+            RepeatTypeDialog().show(supportFragmentManager, "RepeatTypeDialog")
+        }
     }
 
     private fun disableAddButton(view: ImageButton) {
@@ -206,5 +219,37 @@ class AffairDetailActivity : AppCompatActivity(), DatePickerDialog.OnDateSetList
         findViewById<TextView>(R.id.affairDetail_stopTimeText).text = getString(
             R.string.eventList_stopTimeTVContent
         ).format(month, date, hour, minute)
+    }
+
+    override fun onRepeatTypeSet(doRepeat: Boolean) {
+        if(!doRepeat) {
+            repeatAt = 0
+            setRepeatList()
+        } else {
+            RepeatWeekdayDialog(repeatAt).show(supportFragmentManager, "Weekday picker")
+        }
+    }
+
+    override fun onRepeatWeekdaySet(repeatAt: Int) {
+        this.repeatAt = repeatAt
+        setRepeatList()
+    }
+
+    fun setRepeatList() {
+        val repeatList = findViewById<LinearLayout>(R.id.affairDetail_repeatContent)
+        repeatList.removeAllViews()
+        if(repeatAt == 0) {
+            val tv = TextView(this)
+            tv.text = "只触发一次"
+            repeatList.addView(tv)
+        } else {
+            for (i in 0 until 7) {
+                if(repeatAt and (1 shl i) != 0) {
+                    val tv = TextView(this)
+                    tv.text = resources.getStringArray(R.array.repeat_weekday_types)[i]
+                    repeatList.addView(tv)
+                }
+            }
+        }
     }
 }
