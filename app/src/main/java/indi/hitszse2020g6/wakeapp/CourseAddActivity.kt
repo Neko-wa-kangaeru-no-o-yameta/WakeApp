@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.ScrollView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
@@ -15,6 +16,8 @@ import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import indi.hitszse2020g6.wakeapp.dummy.CourseWeek
+import indi.hitszse2020g6.wakeapp.eventDetail.EventDetailList
+import indi.hitszse2020g6.wakeapp.eventDetail.EventReminderList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -56,6 +59,8 @@ class CourseAddActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.course_add_activity)
 
+        EventDetailList.ITEMS.clear()
+        EventReminderList.ITEMS.clear()
         CourseWeek.ITEMS.clear()
 
         this.lifecycleScope.launch(Dispatchers.Main) {
@@ -260,6 +265,22 @@ class CourseAddActivity : AppCompatActivity(),
                     CourseWeek.ITEMS.size
                 )
 
+            }
+            findViewById<ImageButton>(R.id.CourseDescription_Add).setOnClickListener {
+                if(EventDetailList.ITEMS.size < 10) {
+                    EventDetailList.ITEMS.add(Detail("", ""))
+                    findViewById<RecyclerView>(R.id.eventDetail_descriptionListContainer).adapter?.notifyItemInserted(EventDetailList.ITEMS.size)
+                }
+            }
+            findViewById<ImageButton>(R.id.CourseReminder_Add).setOnClickListener {
+                if(EventReminderList.ITEMS.size < 10) {
+                    EventReminderList.ITEMS.
+                    add(Reminder(0, ring = false, vibration = false, notification = false, ""))
+                    findViewById<RecyclerView>(R.id.eventDetail_reminderListContainer).adapter?.notifyItemInserted(EventReminderList.ITEMS.size)
+                    findViewById<ScrollView>(R.id.addCourseDetail_mainContainer).apply { post {
+                        fullScroll(ScrollView.FOCUS_DOWN)
+                    } }
+                }
             }
 
         }
