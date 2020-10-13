@@ -238,14 +238,14 @@ class CourseAddActivity : AppCompatActivity(),
             //修改时间第几周
             findViewById<CardView>(R.id.courseDetail_timeAddCard_week).apply {
                 setOnClickListener{
-                    WeekPickerFragment().show(supportFragmentManager,"WeekPickerFragment")
+                    WeekPickerFragment(-1).show(supportFragmentManager,"WeekPickerFragment")
 
                 }
             }
             //修改时间信息：星期几，第几节
             findViewById<CardView>(R.id.courseDetail_timeAddCard).apply {
                 setOnClickListener {
-                    TimePickFragment().show(supportFragmentManager, "TimePickFragment")
+                    TimePickFragment(-1).show(supportFragmentManager, "TimePickFragment")
 
                 }
             }
@@ -257,7 +257,7 @@ class CourseAddActivity : AppCompatActivity(),
                 courseDate.dayOfWeek = 0
                 CourseWeek.ITEMS.add(courseDate)
                 findViewById<RecyclerView>(R.id.course_time_add_list_container).adapter?.notifyItemInserted(
-                    detail.dateList.size
+                    CourseWeek.ITEMS.size
                 )
 
             }
@@ -286,6 +286,7 @@ class CourseAddActivity : AppCompatActivity(),
     override fun onDialogPositiveClickForWeek(dialog: DialogFragment) {
         detail.courseWeekBegin = (dialog as WeekPickerFragment).weekBegin
         detail.courseWeekEnd = (dialog as WeekPickerFragment).weekEnd
+        Log.d("pos",(dialog as WeekPickerFragment).position.toString())
         Log.d("courseWeekBegin",detail.courseWeekBegin.toString())
         Log.d("courseWeekEnd",detail.courseWeekEnd.toString())
 

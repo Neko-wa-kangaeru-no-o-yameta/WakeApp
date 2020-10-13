@@ -1,5 +1,6 @@
 package indi.hitszse2020g6.wakeapp
 
+import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -20,7 +21,7 @@ class MyCourseTimeAddAdapter(
     private val values: List<CourseDate>,
     private val context: FragmentActivity?
 ) : RecyclerView.Adapter<MyCourseTimeAddAdapter.ViewHolder>(),
-    CourseWeekItemTouchHelperAdapter,TimePickFragment.TimePickerDialogListener,WeekPickerFragment.WeekPickerDialogListner {
+    CourseWeekItemTouchHelperAdapter {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -29,15 +30,14 @@ class MyCourseTimeAddAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = values[position]
         holder.weekView.setOnClickListener {
             if (context != null) {
-                WeekPickerFragment().show(context.supportFragmentManager,"WeekPickerFragment")
+                WeekPickerFragment(position).show(context.supportFragmentManager,"WeekPickerFragment")
             }
         }
         holder.timeView.setOnClickListener {
             if (context != null) {
-                TimePickFragment().show(context.supportFragmentManager,"WeekPickerFragment")
+                TimePickFragment(position).show(context.supportFragmentManager,"WeekPickerFragment")
             }
         }
     }
@@ -57,16 +57,5 @@ class MyCourseTimeAddAdapter(
 //            return super.toString() + " '" + contentView.text + "'"
 //        }
     }
-    override fun onDialogPositiveClickForWeek(dialog: DialogFragment) {
 
-    }
-    override fun onDialogNegativeClickForWeek(dialog: DialogFragment){
-
-    }
-    override fun onDialogPositiveClickForTime(dialog: DialogFragment){
-
-    }
-    override fun onDialogNegativeClickForTime(dialog: DialogFragment){
-
-    }
 }

@@ -10,9 +10,10 @@ import android.widget.NumberPicker
 import androidx.fragment.app.DialogFragment
 
 
-class TimePickFragment: DialogFragment(){
+class TimePickFragment(position: Int): DialogFragment(){
     var dayOfWeek:Int = -1
     var time :Int = -1
+    var position : Int = position
     //    internal lateinit var listener: WeekPickerDialogListener
     internal lateinit var listener: TimePickerDialogListener
     interface TimePickerDialogListener{
@@ -78,9 +79,10 @@ class TimePickFragment: DialogFragment(){
     }
 }
 
-class WeekPickerFragment :DialogFragment(){
+class WeekPickerFragment(position:Int) :DialogFragment(){
     var weekBegin: Int = -1
     var weekEnd : Int = -1
+    var position :Int = position
     internal lateinit var listener:WeekPickerDialogListner
 
     interface WeekPickerDialogListner{
