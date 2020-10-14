@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.graphics.Color
+import android.text.Layout
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.db.williamchart.view.DonutChartView
@@ -179,21 +180,27 @@ class FocusStatisticFragment : Fragment() {
         return donutTotal
     }
 
-    private fun setDonutChart(Set: LinkedHashMap<String, Float>,ColorSet:IntArray){
+    private fun setDonutChart(Set: LinkedHashMap<String, Float>,ColorSet:IntArray) {
         val legendCreator = requireView().findViewById<LinearLayout>(R.id.legendLayout)
         legendCreator.removeAllViews()
         val donutSet = Set.map { it.value }
-        var counter = 0
-        for (data in Set) {
-            val tempLegendData = linkedMapOf(" " to 0f, data.toPair().first to 10f)
-            val legendItem = LayoutInflater.from(legendCreator.context)
-                .inflate((R.layout.focus_statistic_legend_item), legendCreator, false)
-            val legend = legendItem.findViewById<HorizontalBarChartView>(R.id.horizontalBarChart)
-            legend.barsColor = ColorSet[ColorSet.size - counter-1]
-            legend.animation.duration = legendAnimationDuration
-            legend.animate(tempLegendData)
-            legendCreator.addView(legendItem)
-            counter++
+        if (Set.size == 0) {
+            val emptyItem = LayoutInflater.from(legendCreator.context).inflate((R.layout.focus_statistic_empty_item),legendCreator,false)
+            legendCreator.addView(emptyItem)
+        }
+        else {
+            var counter = 0
+            for (data in Set) {
+                val tempLegendData = linkedMapOf(" " to 0f, data.toPair().first to 10f)
+                val legendItem = LayoutInflater.from(legendCreator.context)
+                    .inflate((R.layout.focus_statistic_legend_item), legendCreator, false)
+                val legend = legendItem.findViewById<HorizontalBarChartView>(R.id.horizontalBarChart)
+                legend.barsColor = ColorSet[ColorSet.size - counter - 1]
+                legend.animation.duration = legendAnimationDuration
+                legend.animate(tempLegendData)
+                legendCreator.addView(legendItem)
+                counter++
+            }
         }
         val donutChartCreator = requireView().findViewById<LinearLayout>(R.id.donutChartLayout)
         val chartItem = LayoutInflater.from(donutChartCreator.context)
