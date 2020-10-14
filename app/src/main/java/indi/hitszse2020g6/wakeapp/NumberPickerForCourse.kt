@@ -42,9 +42,10 @@ class TimePickFragment(position: Int): DialogFragment(){
         val npTime = view.findViewById<NumberPicker>(R.id.numberPicker2)
         npDayOfWeek.minValue = 1
         npDayOfWeek.maxValue = 7
+        npDayOfWeek.wrapSelectorWheel = false
         npTime.maxValue = 6
         npTime.minValue = 1
-
+        npTime.wrapSelectorWheel = false
         builder.setView(view)
             .setPositiveButton(R.string.dialog_ok,
                 DialogInterface.OnClickListener { dialog, id ->

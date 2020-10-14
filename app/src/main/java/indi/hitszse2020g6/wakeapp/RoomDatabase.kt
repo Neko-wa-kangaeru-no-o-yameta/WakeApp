@@ -198,8 +198,7 @@ interface RoomDAO {
     @Query("SELECT * FROM course_table WHERE course_name IN (:course_name)")
     fun loadAllCourseNames(course_name: String): List<Course>
 
-    @Query("SELECT * FROM course_table WHERE week = (:week) and day_of_week = (:dayOfWeek) and time(:time)")
-
+    @Query("SELECT * FROM course_table WHERE (week = (:week) and day_of_week = (:dayOfWeek) and class_time =(:time))")
     fun selectCourseByTime(
         week: Int,
         dayOfWeek: Int,

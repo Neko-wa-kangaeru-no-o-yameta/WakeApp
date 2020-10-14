@@ -31,19 +31,12 @@ class MyCourseTimeAddAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.weekView.apply {
-            Log.d("adapter:weekBegin==========================",CourseWeek.ITEMS[position].weekBegin.toString())
-            Log.d("adapter:weekEnd",CourseWeek.ITEMS[position].weekEnd.toString())
-            if((CourseWeek.ITEMS[position].weekBegin != 0) &&(CourseWeek.ITEMS[position].weekEnd != 0)){
-                Log.d("position",position.toString())
-                Log.d("adapter:weekBegin",CourseWeek.ITEMS[position].weekBegin.toString())
-                Log.d("adapter:weekEnd",CourseWeek.ITEMS[position].weekEnd.toString())
-                text =context.getString(R.string.courseDetail_timeContentWeek).
-                    format(
-                        CourseWeek.ITEMS[position].weekBegin,
-                        CourseWeek.ITEMS[position].weekEnd)
-            }
-            else{
-                text = context.getString(R.string.courseDetail_timeAddWeekHint)
+            text = if((CourseWeek.ITEMS[position].weekBegin != 0) &&(CourseWeek.ITEMS[position].weekEnd != 0)){
+                context.getString(R.string.courseDetail_timeContentWeek).format(
+                    CourseWeek.ITEMS[position].weekBegin,
+                    CourseWeek.ITEMS[position].weekEnd)
+            } else{
+                context.getString(R.string.courseDetail_timeAddWeekHint)
             }
             setOnClickListener {
                 this@MyCourseTimeAddAdapter.context?.supportFragmentManager?.let { it1 ->
@@ -54,14 +47,13 @@ class MyCourseTimeAddAdapter(
         }
 
         holder.timeView.apply {
-            if((CourseWeek.ITEMS[position].dayOfWeek != 0)&&(CourseWeek.ITEMS[position].time != 0)){
-                text = context.getString(R.string.courseDetail_timeContent).format(
+            text = if((CourseWeek.ITEMS[position].dayOfWeek != 0)&&(CourseWeek.ITEMS[position].time != 0)){
+                context.getString(R.string.courseDetail_timeContent).format(
                     chineseWeek[CourseWeek.ITEMS[position].dayOfWeek - 1],
                     CourseWeek.ITEMS[position].time
                 )
-            }
-            else{
-                text = context.getString(R.string.courseDetail_timeAddHint)
+            } else{
+                context.getString(R.string.courseDetail_timeAddHint)
             }
             setOnClickListener {
                 this@MyCourseTimeAddAdapter.context?.supportFragmentManager?.let { it1 ->

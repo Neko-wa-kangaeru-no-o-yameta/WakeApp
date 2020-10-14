@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.GridLayout
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
@@ -67,12 +68,14 @@ class WeekCourseFragment : Fragment() {
             //直接更新
             Log.d("get in2", "get in")
             updateCourseCardView()
+            Toast.makeText(context,"小猫咪帮你更新课程表啦", Toast.LENGTH_SHORT).show()
         }
         param1?.toInt()?.let {
             requireActivity().findViewById<ViewPager2>(R.id.viewPager2).adapter?.notifyItemChanged(
                 it
             )
         }
+
     }
 
     override fun onResume() {
