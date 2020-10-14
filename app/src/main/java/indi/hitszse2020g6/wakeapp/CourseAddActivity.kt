@@ -20,6 +20,7 @@ import indi.hitszse2020g6.wakeapp.dummy.CourseWeek
 import indi.hitszse2020g6.wakeapp.eventDetail.EventDetailList
 import indi.hitszse2020g6.wakeapp.eventDetail.EventReminderList
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -53,7 +54,7 @@ class CourseAddActivity : AppCompatActivity(),
     private var isNewCourse = true
     private var courseId: Long? = null
     private val chineseWeek = arrayOf("星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日")
-    
+    private var courseName:String = ""
     companion object {
         var detail = CourseDetails()
     }
@@ -74,11 +75,13 @@ class CourseAddActivity : AppCompatActivity(),
                 courseId = intent.getLongExtra(UNIQUE_COURSE_DETAIL, -1)
                 //将其设置为不可见
                 findViewById<ConstraintLayout>(R.id.canBeHide).visibility = ViewGroup.GONE
+                findViewById<TextView>(R.id.CourseDetailAdd_title).visibility = ViewGroup.GONE
                 val courseDetail = withContext(Dispatchers.IO) {
                     AppRoomDB.getDataBase(this@CourseAddActivity).getDAO().getCourseById(
                         courseId!!
                     ).first()
                 }
+                courseName = courseDetail.courseName    //用气作为查找数据库的标识
                 detail.courseName = courseDetail.courseName
                 detail.courseAddress = courseDetail.address
                 detail.courseTime = courseDetail.time
@@ -107,6 +110,7 @@ class CourseAddActivity : AppCompatActivity(),
                     detail.courseWeekEnd,
                 )
             } else {
+                findViewById<TextView>(R.id.CourseDetailChange_title).visibility = ViewGroup.GONE
                 detail.alarm = true
                 detail.focus = true
                 detail.mute = true
@@ -145,44 +149,19 @@ class CourseAddActivity : AppCompatActivity(),
                             finish()
                         }
                     } else {
-                        CourseChangeSelectFragment().show(supportFragmentManager,"WeekPickerFragment")
                         //不是一个新的课程
+                        //只能修改课程名称/课程地点/备注/以及提醒我
+                        //TODO 提醒我还要等带庚宝，所以暂时留个坑给提醒我，一起填上就好了
+
+                        //先准备好要存的数据，EventDetailList会自动更新，所需不需要特地读取，之后将其直接存入即可
                         detail.courseName =
                             findViewById<EditText>(R.id.addCourseDetail_courseName).text.toString()
                         detail.courseAddress =
                             findViewById<EditText>(R.id.addCourseDetail_courseAddress).text.toString()
-                        if (courseId != null) {
-                            if(detail.courseWeekBegin <= detail.courseWeekEnd){
-                                withContext(Dispatchers.IO){
-                                    AppRoomDB.getDataBase(this@CourseAddActivity).getDAO().
-                                    deleteCourseById(courseId!!)
-                                }
-                                for(week in detail.courseWeekBegin ..detail.courseWeekEnd){
-                                    Log.d("week:",week.toString())
-                                    withContext(Dispatchers.IO) {
-                                        val course = Course(
-                                            0,
-                                            detail.courseName,
-                                            week,
-                                            detail.courseDayOfWeek,
-                                            detail.courseAddress,
-                                            detail.courseTime,
-                                            getColor(R.color.CourseTableColor1),
-                                            detail.alarm,
-                                            detail.focus,
-                                            detail.mute,
-                                            EventDetailList.ITEMS.toList()
-                                        )
-                                        withContext(Dispatchers.IO) {
-                                            AppRoomDB.getDataBase(it.context).getDAO().insertCourse(course)
-                                        }
-                                    }
-                                }
-                            }
-                        }
-//                        val data = Intent()
-//                        setResult(RESULT_ADD_NEW_COURSE, data)
-//                        finish()
+                        //弹出选择范围的弹窗
+                        CourseChangeSelectFragment().show(supportFragmentManager,"WeekPickerFragment")
+
+
                     }
                 }
             }
@@ -293,6 +272,20 @@ class CourseAddActivity : AppCompatActivity(),
                     } }
                 }
             }
+            //删除按钮
+            findViewById<CardView>(R.id.deleteCard).setOnClickListener {
+                GlobalScope.launch(Dispatchers.IO){
+                    //删掉这门课程
+                    Log.d("courseId",courseId.toString())
+                    courseId?.let { it1 -> AppRoomDB.getDataBase(this@CourseAddActivity).getDAO().deleteCourseById(it1) }
+                //删掉之后返回
+                    withContext(Dispatchers.Main){
+                        val data = Intent()
+                        setResult(RESULT_ADD_NEW_COURSE, data)
+                        finish()
+                    }
+                }
+            }
 
         }
 
@@ -334,8 +327,52 @@ class CourseAddActivity : AppCompatActivity(),
         //Of Course Do noting
     }
 
+    //TODO 提醒我还要等带庚宝，所以暂时留个坑
     override fun onDialogPositiveClickForCourseChangeSelect(dialog: DialogFragment) {
-        Log.d("onDialogPositiveClickForCourseChangeSelect","back from onDialogPositiveClickForCourseChangeSelect")
+        val select = (dialog as CourseChangeSelectFragment).selectItem
+        GlobalScope.launch(Dispatchers.IO){
+            if(select == 0){
+                courseId?.let {
+                    AppRoomDB.getDataBase(this@CourseAddActivity).getDAO().updateCourseDetailById(
+                        detail.courseName,
+                        detail.courseAddress,
+                        detail.alarm,
+                        detail.focus,
+                        detail.mute,
+                        EventDetailList.ITEMS.toList(),
+                        it
+                    )
+                }
+            }
+            else if(select == 1){
+                AppRoomDB.getDataBase(this@CourseAddActivity).getDAO().updateCourseDetailByTime(
+                    detail.courseName,
+                    detail.courseAddress,
+                    detail.alarm,
+                    detail.focus,
+                    detail.mute,
+                    EventDetailList.ITEMS.toList(),
+                    detail.courseTime,
+                    courseName
+                )
+            }
+            else if(select == 2){
+                AppRoomDB.getDataBase(this@CourseAddActivity).getDAO().updateCourseDetailByName(
+                    detail.courseName,
+                    detail.courseAddress,
+                    detail.alarm,
+                    detail.focus,
+                    detail.mute,
+                    EventDetailList.ITEMS.toList(),
+                    courseName
+                )
+            }
+            withContext(Dispatchers.Main){
+                val data = Intent()
+                setResult(RESULT_ADD_NEW_COURSE, data)
+                finish()
+            }
+        }
     }
 
     override fun onDialogNegativeClickForCourseChangeSelect(dialog: DialogFragment) {

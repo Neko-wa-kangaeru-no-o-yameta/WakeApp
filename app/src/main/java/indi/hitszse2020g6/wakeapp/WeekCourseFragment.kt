@@ -74,7 +74,7 @@ class WeekCourseFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-//        updateCourseCardView()
+        updateCourseCardView()
         Log.d("onResume",param1.toString())
     }
 

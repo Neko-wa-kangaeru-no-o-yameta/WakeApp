@@ -223,6 +223,43 @@ interface RoomDAO {
     @Query("UPDATE course_table SET course_color = (:course_color) WHERE course_name = (:course_name)")
     fun insertCourseColorIntoTable(course_color: Int, course_name: String)
 
+    //通过id进行更新
+    @Query("UPDATE course_table SET course_name = (:name),class_address = (:address),course_notice = (:notice),course_focus = (:focus), course_mute = (:mute),course_detail=(:detail) WHERE course_id = (:course_id)")
+    fun updateCourseDetailById(
+        name: String,
+        address: String,
+        notice: Boolean,
+        focus: Boolean,
+        mute: Boolean,
+        detail: List<Detail>,
+        course_id: Long
+    )
+
+    //修改这一时间段的courseDetails
+    @Query("UPDATE course_table SET course_name = (:name),class_address = (:address),course_notice = (:notice),course_focus = (:focus), course_mute = (:mute),course_detail=(:detail) WHERE (class_time = (:time) and course_name = (:oldName))")
+    fun updateCourseDetailByTime(
+        name: String,
+        address: String,
+        notice: Boolean,
+        focus: Boolean,
+        mute: Boolean,
+        detail: List<Detail>,
+        time :Int,
+        oldName :String
+    )
+
+    //修改这门课所有时间的CourseDetails
+    @Query("UPDATE course_table SET course_name = (:name),class_address = (:address),course_notice = (:notice),course_focus = (:focus), course_mute = (:mute),course_detail=(:detail) WHERE  course_name = (:oldName)")
+    fun updateCourseDetailByName(
+        name: String,
+        address: String,
+        notice: Boolean,
+        focus: Boolean,
+        mute: Boolean,
+        detail: List<Detail>,
+        oldName: String
+    )
+
     @Query("DELETE FROM course_table WHERE course_id = (:course_id)")
     fun deleteCourseById(course_id: Long)
 

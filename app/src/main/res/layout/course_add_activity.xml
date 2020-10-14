@@ -270,11 +270,41 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_marginVertical="16dp"
+                    android:layout_marginTop="8dp"
                     android:background="?android:attr/listDivider"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/CourseReminder_Add" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/deleteCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="5dp"
+                    app:contentPadding="3dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:gravity="center"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:id="@+id/ShanChuKeCheng"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginVertical="8dp"
+                        android:layout_gravity="center"
+                        android:text="@string/DeleteCourse"
+                        android:layout_centerHorizontal="true"
+                        android:textAlignment="center"
+                        android:textColor="#FF0000" />
+
+                </androidx.cardview.widget.CardView>
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
     </ScrollView>
 
@@ -321,16 +351,31 @@
                 android:contentDescription="@string/cancel" />
 
             <TextView
-                android:id="@+id/scheduleDetail_title"
+                android:id="@+id/CourseDetailChange_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#FFFFFF"
                 android:textSize="24sp"
+                android:text="@string/courseDetailChange"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/courseDetail_confirm"
+                app:layout_constraintStart_toEndOf="@+id/courseDetail_cancel"
+                app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/CourseDetailAdd_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                android:textSize="24sp"
+                android:text="@string/courseDetailAdd"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/courseDetail_confirm"
                 app:layout_constraintStart_toEndOf="@+id/courseDetail_cancel"
                 app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
     </androidx.appcompat.widget.Toolbar>
 </androidx.constraintlayout.widget.ConstraintLayout>

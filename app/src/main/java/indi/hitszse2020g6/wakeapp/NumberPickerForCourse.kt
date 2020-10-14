@@ -176,6 +176,7 @@ class CourseChangeSelectFragment :DialogFragment(){
             )
             .setPositiveButton(R.string.dialog_ok,
                 DialogInterface.OnClickListener { dialog, which ->
+                    Log.d("selectItem",selectItem.toString())
                     listener.onDialogPositiveClickForCourseChangeSelect(this)
                 })
             .setNegativeButton(R.string.dialog_cancel,
