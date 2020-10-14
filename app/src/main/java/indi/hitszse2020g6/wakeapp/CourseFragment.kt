@@ -70,7 +70,7 @@ class CourseFragment : Fragment() {
                     myAdapter.maxWeek = maxWeek
                 }
                 viewPager2.adapter = myAdapter
-                viewPager2.offscreenPageLimit = 1
+//                viewPager2.offscreenPageLimit = 1
                 // todo 根据具体课程表初始化周次tab
                 TabLayoutMediator(tabLayout, viewPager2) { tab, position ->
                     tab.text = "第${position + 1}周"

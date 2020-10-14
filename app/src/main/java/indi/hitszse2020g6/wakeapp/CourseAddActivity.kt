@@ -1,19 +1,14 @@
 package indi.hitszse2020g6.wakeapp
 
-import android.app.ProgressDialog.show
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.ScrollView
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.core.view.get
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
@@ -56,6 +51,8 @@ class CourseAddActivity : AppCompatActivity(),
     private var courseId: Long? = null
     private val chineseWeek = arrayOf("星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日")
     private var courseName:String = ""
+    private var HaveFlag:Int = 0
+    private val resultList = arrayListOf<CourseDate>()
     companion object {
         var detail = CourseDetails()
     }
@@ -113,6 +110,12 @@ class CourseAddActivity : AppCompatActivity(),
             } else {
                 //对于新事件，啥都是新的
                 findViewById<TextView>(R.id.CourseDetailChange_title).visibility = ViewGroup.GONE
+                detail.courseWeekEnd = 0
+                detail.dateList.clear()
+                detail.courseName = ""
+                detail.courseWeekBegin = 0
+                detail.courseTime = 0
+                detail.courseDayOfWeek = 0
                 detail.alarm = true
                 detail.focus = true
                 detail.mute = true
@@ -121,35 +124,116 @@ class CourseAddActivity : AppCompatActivity(),
             findViewById<ImageButton>(R.id.courseDetail_confirm).setOnClickListener {
                 this@CourseAddActivity.lifecycleScope.launch(Dispatchers.Main) {
                     if (isNewCourse) {
-                        //
-                        if((detail.courseTime != 0)&&(detail.courseWeekBegin != 0)
-                            &&(detail.courseWeekEnd != 0)&&(detail.courseDayOfWeek != 0)){//对时间有做修改
-                            detail.courseName =
-                                findViewById<EditText>(R.id.addCourseDetail_courseName).text.toString()
-                            detail.courseAddress =
-                                findViewById<EditText>(R.id.addCourseDetail_courseAddress).text.toString()
-                            //根据时间段将时间拆分
-                            for(week in detail.courseWeekBegin ..detail.courseWeekEnd){
-                                val course = Course(
-                                    0,
-                                    detail.courseName,
-                                    week,
-                                    detail.courseDayOfWeek,
-                                    detail.courseAddress,
-                                    detail.courseTime,
-                                    getColor(R.color.CourseTableColor1),
-                                    detail.alarm,
-                                    detail.focus,
-                                    detail.mute,
-                                    EventDetailList.ITEMS.toList()
-                                )
-                                withContext(Dispatchers.IO) {
-                                    AppRoomDB.getDataBase(it.context).getDAO().insertCourse(course)
+                        //是新课程，输入的正确性检查
+                        resultList.clear()
+                        Log.d("1:weekBegin",detail.courseWeekBegin.toString())
+                        Log.d("1:weekEnd",detail.courseWeekEnd.toString())
+                        Log.d("1:day",detail.courseDayOfWeek.toString())
+                        Log.d("1:time",detail.courseTime.toString())
+                        for(ele in 0 until CourseWeek.ITEMS.size){
+                            Log.d("CourseWeekItems",ele.toString())
+                            Log.d("weekBegin",CourseWeek.ITEMS[ele].weekBegin.toString())
+                            Log.d("weekEnd",CourseWeek.ITEMS[ele].weekEnd.toString())
+                            Log.d("day",CourseWeek.ITEMS[ele].dayOfWeek.toString())
+                            Log.d("time",CourseWeek.ITEMS[ele].time.toString())
+                        }
+                        if (detail.courseWeekBegin > detail.courseWeekEnd){
+                            Toast.makeText(this@CourseAddActivity,"小猫咪说你的课程时间的设置错了啦",Toast.LENGTH_SHORT).show()
+                        }
+                        else{
+                            for(ele in 0 until CourseWeek.ITEMS.size){
+                                if(CourseWeek.ITEMS[ele].weekBegin > CourseWeek.ITEMS[ele].weekEnd){
+                                    Toast.makeText(this@CourseAddActivity,"小猫咪说你第${(ele+1)}个时间设置错了噢",Toast.LENGTH_SHORT).show()
+                                    HaveFlag = 1
                                 }
                             }
-                            val data = Intent()
-                            setResult(RESULT_ADD_NEW_COURSE, data)
-                            finish()
+                            if(HaveFlag == 0){
+                                //时间设置上没有错误，查看会不会和课程表的冲突
+                                for(week in detail.courseWeekBegin .. detail.courseWeekEnd){
+                                    if((week != 0) && (detail.courseDayOfWeek != 0 ) &&(detail.courseTime) != 0){//表示有设置
+                                        withContext(Dispatchers.IO){
+                                            val list = AppRoomDB.getDataBase(this@CourseAddActivity).getDAO().selectCourseByTime(
+                                                week,detail.courseDayOfWeek,detail.courseTime
+                                            )
+                                            if(list.isNotEmpty()){
+                                                withContext(Dispatchers.Main){
+                                                    Toast.makeText(this@CourseAddActivity,
+                                                        "小猫咪说在你的第1个课程时间设置中，已经有${list.size}门课程啦，请检查",
+                                                        Toast.LENGTH_SHORT).show()
+                                                }
+                                                HaveFlag = 1
+                                            }
+                                            else{
+                                                val result = CourseDate()
+                                                result.time = detail.courseTime
+                                                result.weekEnd = week
+                                                result.weekBegin = week
+                                                result.dayOfWeek = detail.courseDayOfWeek
+                                                resultList.add(result)
+                                                HaveFlag = 0
+                                            }
+                                        }
+                                    }
+                                }
+                                if(HaveFlag == 0){
+                                    for(ele in 0 until CourseWeek.ITEMS.size){
+                                        for(week in CourseWeek.ITEMS[ele].weekBegin ..CourseWeek.ITEMS[ele].weekEnd){
+                                            if((week != 0)&&(CourseWeek.ITEMS[ele].dayOfWeek != 0)&&(CourseWeek.ITEMS[ele].time != 0)){
+                                                withContext(Dispatchers.IO){
+                                                    val list = AppRoomDB.getDataBase(this@CourseAddActivity).getDAO().selectCourseByTime(
+                                                        week,CourseWeek.ITEMS[ele].dayOfWeek,CourseWeek.ITEMS[ele].time
+                                                    )
+                                                    if(list.isNotEmpty()){
+                                                        withContext(Dispatchers.Main){
+                                                            Toast.makeText(this@CourseAddActivity,
+                                                                "小猫咪说在你的第${ele + 2}个课程时间设置中，已经有${list.size}门课程啦，请检查",
+                                                                Toast.LENGTH_SHORT).show()
+                                                        }
+                                                        HaveFlag = 1
+                                                    }
+                                                    else{
+                                                        val result = CourseDate()
+                                                        result.time = CourseWeek.ITEMS[ele].time
+                                                        result.weekEnd = week
+                                                        result.weekBegin = week
+                                                        result.dayOfWeek = CourseWeek.ITEMS[ele].dayOfWeek
+                                                        resultList.add(result)
+                                                        HaveFlag = 0
+                                                    }
+                                                }
+                                            }
+                                            if(HaveFlag == 1)   break
+                                        }
+                                        if(HaveFlag == 1)   break
+                                    }
+                                }
+                                if(HaveFlag == 0){
+                                    //表示没有找到跟设置时间段冲突的课程
+                                    for(ele in resultList){
+                                        for(week in ele.weekBegin..ele.weekEnd){
+                                            val course = Course(
+                                                0,//id
+                                                detail.courseName,
+                                                week,
+                                                ele.dayOfWeek,
+                                                detail.courseAddress,
+                                                ele.time,
+                                                getColor(R.color.CourseTableColor1),
+                                                detail.alarm,
+                                                detail.focus,
+                                                detail.mute,
+                                                EventDetailList.ITEMS.toList()
+                                            )
+                                            withContext(Dispatchers.IO) {
+                                                AppRoomDB.getDataBase(it.context).getDAO().insertCourse(course)
+                                            }
+                                        }
+                                    }
+                                    val data = Intent()
+                                    setResult(RESULT_ADD_NEW_COURSE, data)
+                                    finish()
+                                }
+                            }
                         }
                     } else {
                         //不是一个新的课程
@@ -175,7 +259,6 @@ class CourseAddActivity : AppCompatActivity(),
             //连上小闹钟
 
             findViewById<ImageButton>(R.id.course_alarm).apply {
-                Log.d("alarm3", detail.alarm.toString())
                 toggleImageDrawable(
                     this,
                     detail.alarm,
@@ -195,7 +278,6 @@ class CourseAddActivity : AppCompatActivity(),
 
             //连上小手机
             findViewById<ImageButton>(R.id.course_focus).apply {
-                Log.d("focus3", detail.focus.toString())
                 toggleImageDrawable(
                     this,
                     detail.focus,
@@ -214,7 +296,6 @@ class CourseAddActivity : AppCompatActivity(),
             }
 
             findViewById<ImageButton>(R.id.course_mute).apply {
-                Log.d("mute3", detail.mute.toString())
                 toggleImageDrawable(
                     this,
                     detail.mute,
@@ -258,9 +339,7 @@ class CourseAddActivity : AppCompatActivity(),
 
             }
             findViewById<ImageButton>(R.id.CourseDescription_Add).setOnClickListener {
-                Log.d("setOnClickListener","get in details")
                 if(EventDetailList.ITEMS.size < 10) {
-                    Log.d("setOnClickListener","get in details22222222")
                     EventDetailList.ITEMS.add(Detail("", ""))
                     findViewById<RecyclerView>(R.id.eventDetail_descriptionListContainer).adapter?.notifyItemInserted(EventDetailList.ITEMS.size)
                 }
@@ -280,7 +359,6 @@ class CourseAddActivity : AppCompatActivity(),
             findViewById<CardView>(R.id.deleteCard).setOnClickListener {
                 GlobalScope.launch(Dispatchers.IO){
                     //删掉这门课程
-                    Log.d("courseId",courseId.toString())
                     courseId?.let { it1 -> AppRoomDB.getDataBase(this@CourseAddActivity).getDAO().deleteCourseById(it1) }
                 //删掉之后返回
                     withContext(Dispatchers.Main){
@@ -309,12 +387,8 @@ class CourseAddActivity : AppCompatActivity(),
         else{
             CourseWeek.ITEMS[pos].weekBegin = (dialog as WeekPickerFragment).weekBegin
             CourseWeek.ITEMS[pos].weekEnd = (dialog as WeekPickerFragment).weekEnd
-            findViewById<RecyclerView>(R.id.course_time_add_list_container)[pos]
-                .findViewById<TextView>(R.id.course_time_add_discription_week).text =
-                this@CourseAddActivity.getString(R.string.courseDetail_timeContentWeek).format(
-                    CourseWeek.ITEMS[pos].weekBegin,
-                    CourseWeek.ITEMS[pos].weekEnd
-                )
+            findViewById<RecyclerView>(R.id.course_time_add_list_container).adapter?.notifyItemChanged(pos)
+
         }
     }
 
@@ -336,16 +410,8 @@ class CourseAddActivity : AppCompatActivity(),
             //表示是从recycleView里面传进去的
             CourseWeek.ITEMS[pos].dayOfWeek = (dialog as TimePickFragment).dayOfWeek
             CourseWeek.ITEMS[pos].time = (dialog as TimePickFragment).time
-            Log.d("dayOfWeek",CourseWeek.ITEMS[pos].dayOfWeek.toString())
-            Log.d("time",CourseWeek.ITEMS[pos].time.toString())
-            findViewById<RecyclerView>(R.id.course_time_add_list_container)[pos]
-                .findViewById<TextView>(R.id.courseDetail_time_add_discription_time).text =
-                this@CourseAddActivity.getString(R.string.courseDetail_timeContent).format(
-                    chineseWeek[CourseWeek.ITEMS[pos].dayOfWeek - 1],
-                    CourseWeek.ITEMS[pos].time
-                )
+            findViewById<RecyclerView>(R.id.course_time_add_list_container).adapter?.notifyItemChanged(pos)
         }
-
     }
 
 
@@ -413,6 +479,8 @@ class CourseAddActivity : AppCompatActivity(),
             )
         }
     }
+
+
 
     override fun onDialogNegativeClickForTime(dialog: DialogFragment) {
         //Of Course Do noting

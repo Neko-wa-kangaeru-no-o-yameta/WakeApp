@@ -30,6 +30,7 @@
     <string name="eventDetail_hint_addReminder">Add reminder</string>
     <string name="eventDetail_remindTitleText">提醒我…</string>
     <string name="DeleteCourse">删除课程</string>
+    <string name="LittleCatSays">小猫咪说你的课程时间的设置错了，检查一下噢</string>
     <string name="pick_topic">选一下想应用到哪儿啦</string>
     <string name="courseDetailChange">课程修改</string>
     <string name="courseDetailAdd">课程新增</string>

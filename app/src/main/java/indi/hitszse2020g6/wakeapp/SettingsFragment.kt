@@ -21,6 +21,12 @@ class SettingsFragment : PreferenceFragmentCompat() {
             }
             true
         }
+        findPreference<Preference>("clear_course_table")?.setOnPreferenceClickListener {
+            GlobalScope.launch(Dispatchers.IO){
+                this@SettingsFragment.context?.let { it1 -> AppRoomDB.getDataBase(it1).getDAO().deleteAllCourse() }
+            }
+            true
+        }
 
         findPreference<Preference>("whiteList")?.setOnPreferenceClickListener{
             startActivity(Intent(context,ChooseWhiteListActivity::class.java))

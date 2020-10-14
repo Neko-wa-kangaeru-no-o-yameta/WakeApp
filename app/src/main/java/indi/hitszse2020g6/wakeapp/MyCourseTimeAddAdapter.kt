@@ -22,7 +22,7 @@ class MyCourseTimeAddAdapter(
     private val context: FragmentActivity?
 ) : RecyclerView.Adapter<MyCourseTimeAddAdapter.ViewHolder>(),
     CourseWeekItemTouchHelperAdapter {
-
+    private val chineseWeek = arrayOf("星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日")
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.course_time_add, parent, false)
@@ -30,14 +30,37 @@ class MyCourseTimeAddAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.weekView.setOnClickListener {
-            if (context != null) {
-                WeekPickerFragment(position).show(context.supportFragmentManager,"WeekPickerFragment")
+        holder.weekView.apply {
+            Log.d("adapter:weekBegin==========================",CourseWeek.ITEMS[position].weekBegin.toString())
+            Log.d("adapter:weekEnd",CourseWeek.ITEMS[position].weekEnd.toString())
+            if((CourseWeek.ITEMS[position].weekBegin != 0) &&(CourseWeek.ITEMS[position].weekEnd != 0)){
+                Log.d("adapter:weekBegin",CourseWeek.ITEMS[position].weekBegin.toString())
+                Log.d("adapter:weekEnd",CourseWeek.ITEMS[position].weekEnd.toString())
+                text =context.getString(R.string.courseDetail_timeContentWeek).
+                    format(
+                        CourseWeek.ITEMS[position].weekBegin,
+                        CourseWeek.ITEMS[position].weekEnd)
+            }
+            setOnClickListener {
+                this@MyCourseTimeAddAdapter.context?.supportFragmentManager?.let { it1 ->
+                    WeekPickerFragment(position).show(
+                        it1,"WeekPickerFragment")
+                }
             }
         }
-        holder.timeView.setOnClickListener {
-            if (context != null) {
-                TimePickFragment(position).show(context.supportFragmentManager,"WeekPickerFragment")
+
+        holder.timeView.apply {
+            if((CourseWeek.ITEMS[position].dayOfWeek != 0)&&(CourseWeek.ITEMS[position].time != 0)){
+                text = context.getString(R.string.courseDetail_timeContent).format(
+                    chineseWeek[CourseWeek.ITEMS[position].dayOfWeek - 1],
+                    CourseWeek.ITEMS[position].time
+                )
+            }
+            setOnClickListener {
+                this@MyCourseTimeAddAdapter.context?.supportFragmentManager?.let { it1 ->
+                    TimePickFragment(position).show(
+                        it1,"WeekPickerFragment")
+                }
             }
         }
     }

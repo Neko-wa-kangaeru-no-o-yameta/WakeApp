@@ -1,10 +1,15 @@
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory app:title="Clear All">
 
         <Preference
             app:key="clear_event_table"
             app:title="Clear the event table"
+            app:useSimpleSummaryProvider="true" />
+        <Preference
+            app:key="clear_course_table"
+            app:title="Clear the course table"
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 

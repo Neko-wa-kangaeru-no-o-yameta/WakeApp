@@ -68,13 +68,15 @@ class WeekCourseFragment : Fragment() {
             Log.d("get in2", "get in")
             updateCourseCardView()
         }
-        requireActivity().findViewById<ViewPager2>(R.id.viewPager2).adapter?.notifyDataSetChanged()
-
+        param1?.toInt()?.let {
+            requireActivity().findViewById<ViewPager2>(R.id.viewPager2).adapter?.notifyItemChanged(
+                it
+            )
+        }
     }
 
     override fun onResume() {
         super.onResume()
-        updateCourseCardView()
         Log.d("onResume",param1.toString())
     }
 

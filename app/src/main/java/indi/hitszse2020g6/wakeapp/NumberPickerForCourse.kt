@@ -102,6 +102,7 @@ class WeekPickerFragment(position:Int) :DialogFragment(){
         }
     }
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        Log.d("get in--------------------------------------------------","weekPickFragment")
         val builder = AlertDialog.Builder(activity)
         val infalter = requireActivity().layoutInflater;
         builder.context.theme.applyStyle(R.style.MyAlertDialog,true)
