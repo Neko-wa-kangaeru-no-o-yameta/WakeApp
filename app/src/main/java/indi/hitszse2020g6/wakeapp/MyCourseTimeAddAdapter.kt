@@ -34,12 +34,16 @@ class MyCourseTimeAddAdapter(
             Log.d("adapter:weekBegin==========================",CourseWeek.ITEMS[position].weekBegin.toString())
             Log.d("adapter:weekEnd",CourseWeek.ITEMS[position].weekEnd.toString())
             if((CourseWeek.ITEMS[position].weekBegin != 0) &&(CourseWeek.ITEMS[position].weekEnd != 0)){
+                Log.d("position",position.toString())
                 Log.d("adapter:weekBegin",CourseWeek.ITEMS[position].weekBegin.toString())
                 Log.d("adapter:weekEnd",CourseWeek.ITEMS[position].weekEnd.toString())
                 text =context.getString(R.string.courseDetail_timeContentWeek).
                     format(
                         CourseWeek.ITEMS[position].weekBegin,
                         CourseWeek.ITEMS[position].weekEnd)
+            }
+            else{
+                text = context.getString(R.string.courseDetail_timeAddWeekHint)
             }
             setOnClickListener {
                 this@MyCourseTimeAddAdapter.context?.supportFragmentManager?.let { it1 ->
@@ -55,6 +59,9 @@ class MyCourseTimeAddAdapter(
                     chineseWeek[CourseWeek.ITEMS[position].dayOfWeek - 1],
                     CourseWeek.ITEMS[position].time
                 )
+            }
+            else{
+                text = context.getString(R.string.courseDetail_timeAddHint)
             }
             setOnClickListener {
                 this@MyCourseTimeAddAdapter.context?.supportFragmentManager?.let { it1 ->
