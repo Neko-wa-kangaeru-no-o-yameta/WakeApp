@@ -13,7 +13,7 @@
         app:chart_axis="y"
         app:chart_barsColor="#475F50"
         app:chart_barsRadius="6dp"
-        app:chart_labelsColor="#475F50"
+        app:chart_labelsColor="#000000"
         app:chart_labelsSize="10sp"
         app:chart_spacing="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
