@@ -219,7 +219,7 @@
 
     <LinearLayout
         android:id="@+id/donutChartLayout"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginTop="24dp"
