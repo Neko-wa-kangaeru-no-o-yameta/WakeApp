@@ -34,7 +34,8 @@
         app:layout_constraintTop_toTopOf="@+id/myCircle"
         app:layout_constraintVertical_bias="0.496"
         tools:layout_conversion_absoluteHeight="180dp"
-        tools:layout_conversion_absoluteWidth="64dp" />
+        tools:layout_conversion_absoluteWidth="64dp"
+        android:scrollbars="none"/>
 
     <TextView
         android:id="@+id/hourText"
@@ -60,7 +61,8 @@
         app:layout_constraintStart_toEndOf="@+id/hourText"
         app:layout_constraintTop_toTopOf="@+id/hourText"
         tools:layout_conversion_absoluteHeight="180dp"
-        tools:layout_conversion_absoluteWidth="64dp" />
+        tools:layout_conversion_absoluteWidth="64dp"
+        android:scrollbars="none"/>
 
     <TextView
         android:id="@+id/minText"

@@ -58,12 +58,6 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        Log.d(TAG, "onActivityCreated")
         initNumberPicker(hourpicker, minuteipcker)
 
         startBtn.setOnClickListener {
@@ -85,6 +79,14 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
                 condition_flag = 0
 
                 storeTime()
+                val mt = MyFocusEntry(
+                    uid = System.currentTimeMillis(),
+                    totalFocusTime = total_time,
+                    focusDate = System.currentTimeMillis(),
+                    set_focus_title,
+                    false
+                )
+                myDao.addFocusData(mt)
 
                 startBtn.setImageDrawable(
                     ResourcesCompat.getDrawable(
@@ -322,6 +324,12 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
         }
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        Log.d(TAG, "onActivityCreated")
+
+    }
+
     private fun setMyCountDownTimer(setTime: Long) {
         if (condition_flag == 0) {
             setButtonAni(true)
@@ -382,19 +390,6 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
                         (activity as MainActivity).binder?.stopCountDownTimer()
                         (activity as MainActivity).binder?.setIsStored(false)
                     }
-
-                    val mt = MyFocusEntry(
-                        uid = System.currentTimeMillis(),
-                        totalFocusTime = total_time,
-                        focusDate = System.currentTimeMillis(),
-                        set_focus_title,
-                        false
-                    )
-                    myDao.addFocusData(mt)
-                    var items = myDao.findFocusData(System.currentTimeMillis() - 100000000)
-                    for (item in items) {
-                        Log.d("${item.focusDate}", "${item.totalFocusTime} ${item.focusTitle}")
-                    }
                 }
             }
         }.start()
@@ -453,7 +448,8 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
             hour.text = "00"
             minute.text = "00"
             second.text = "00"
-
+            myCircle.setCountdownTime(0)
+            myCircle.setAnimation(0f)
             startBtn.setImageDrawable(
                 ResourcesCompat.getDrawable(
                     resources,

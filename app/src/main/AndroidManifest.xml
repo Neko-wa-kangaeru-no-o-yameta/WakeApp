@@ -21,7 +21,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".ChooseScheduleTime"></activity>
+        <activity android:name=".ChooseScheduleTime" />
         <activity android:name=".ChooseCustomTheme" />
         <activity android:name=".AlarmActivity" />
         <activity android:name=".CourseAddActivity" />
