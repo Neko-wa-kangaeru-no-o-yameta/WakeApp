@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.view.get
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
@@ -110,6 +111,7 @@ class CourseAddActivity : AppCompatActivity(),
                     detail.courseWeekEnd,
                 )
             } else {
+                //对于新事件，啥都是新的
                 findViewById<TextView>(R.id.CourseDetailChange_title).visibility = ViewGroup.GONE
                 detail.alarm = true
                 detail.focus = true
@@ -119,6 +121,7 @@ class CourseAddActivity : AppCompatActivity(),
             findViewById<ImageButton>(R.id.courseDetail_confirm).setOnClickListener {
                 this@CourseAddActivity.lifecycleScope.launch(Dispatchers.Main) {
                     if (isNewCourse) {
+                        //
                         if((detail.courseTime != 0)&&(detail.courseWeekBegin != 0)
                             &&(detail.courseWeekEnd != 0)&&(detail.courseDayOfWeek != 0)){//对时间有做修改
                             detail.courseName =
@@ -272,6 +275,7 @@ class CourseAddActivity : AppCompatActivity(),
                     } }
                 }
             }
+
             //删除按钮
             findViewById<CardView>(R.id.deleteCard).setOnClickListener {
                 GlobalScope.launch(Dispatchers.IO){
@@ -288,46 +292,65 @@ class CourseAddActivity : AppCompatActivity(),
             }
 
         }
-
-
     }
-
-    override fun onDialogPositiveClickForTime(dialog: DialogFragment) {
-        // User touched the dialog's positive button
-        detail.courseTime = (dialog as TimePickFragment).time
-        detail.courseDayOfWeek = (dialog as TimePickFragment).dayOfWeek
-        findViewById<TextView>(R.id.courseDetail_time).text = this@CourseAddActivity.getString(
-            R.string.courseDetail_timeContent
-        ).format(
-            chineseWeek[detail.courseDayOfWeek - 1],
-            detail.courseTime
-        )
-    }
-
-    override fun onDialogNegativeClickForTime(dialog: DialogFragment) {
-        //Of Course Do noting
-    }
-
+    //选择星期的dialog
     override fun onDialogPositiveClickForWeek(dialog: DialogFragment) {
-        detail.courseWeekBegin = (dialog as WeekPickerFragment).weekBegin
-        detail.courseWeekEnd = (dialog as WeekPickerFragment).weekEnd
-        Log.d("pos",(dialog as WeekPickerFragment).position.toString())
-        Log.d("courseWeekBegin",detail.courseWeekBegin.toString())
-        Log.d("courseWeekEnd",detail.courseWeekEnd.toString())
-
-        findViewById<TextView>(R.id.courseDetail_time_week).text = this@CourseAddActivity.getString(
-            R.string.courseDetail_timeContentWeek
-        ).format(
-            detail.courseWeekBegin,
-            detail.courseWeekEnd,
-        )
+        val pos = (dialog as WeekPickerFragment).position
+        if(pos == -1){
+            detail.courseWeekBegin = (dialog as WeekPickerFragment).weekBegin
+            detail.courseWeekEnd = (dialog as WeekPickerFragment).weekEnd
+            findViewById<TextView>(R.id.courseDetail_time_week).text = this@CourseAddActivity.getString(
+                R.string.courseDetail_timeContentWeek
+            ).format(
+                detail.courseWeekBegin,
+                detail.courseWeekEnd,
+            )
+        }
+        else{
+            CourseWeek.ITEMS[pos].weekBegin = (dialog as WeekPickerFragment).weekBegin
+            CourseWeek.ITEMS[pos].weekEnd = (dialog as WeekPickerFragment).weekEnd
+            findViewById<RecyclerView>(R.id.course_time_add_list_container)[pos]
+                .findViewById<TextView>(R.id.course_time_add_discription_week).text =
+                this@CourseAddActivity.getString(R.string.courseDetail_timeContentWeek).format(
+                    CourseWeek.ITEMS[pos].weekBegin,
+                    CourseWeek.ITEMS[pos].weekEnd
+                )
+        }
     }
 
-    override fun onDialogNegativeClickForWeek(dialog: DialogFragment) {
-        //Of Course Do noting
+    //选择星期几/第几节的dialog
+    override fun onDialogPositiveClickForTime(dialog: DialogFragment) {
+        val pos = (dialog as TimePickFragment).position
+        if(pos == -1){
+            //表示是从主页传进去的
+            detail.courseTime = (dialog as TimePickFragment).time
+            detail.courseDayOfWeek = (dialog as TimePickFragment).dayOfWeek
+            findViewById<TextView>(R.id.courseDetail_time).text = this@CourseAddActivity.getString(
+                R.string.courseDetail_timeContent
+            ).format(
+                chineseWeek[detail.courseDayOfWeek - 1],
+                detail.courseTime
+            )
+        }
+        else{
+            //表示是从recycleView里面传进去的
+            CourseWeek.ITEMS[pos].dayOfWeek = (dialog as TimePickFragment).dayOfWeek
+            CourseWeek.ITEMS[pos].time = (dialog as TimePickFragment).time
+            Log.d("dayOfWeek",CourseWeek.ITEMS[pos].dayOfWeek.toString())
+            Log.d("time",CourseWeek.ITEMS[pos].time.toString())
+            findViewById<RecyclerView>(R.id.course_time_add_list_container)[pos]
+                .findViewById<TextView>(R.id.courseDetail_time_add_discription_time).text =
+                this@CourseAddActivity.getString(R.string.courseDetail_timeContent).format(
+                    chineseWeek[CourseWeek.ITEMS[pos].dayOfWeek - 1],
+                    CourseWeek.ITEMS[pos].time
+                )
+        }
+
     }
 
-    //TODO 提醒我还要等带庚宝，所以暂时留个坑
+
+
+    //TODO 提醒我 还要等带庚宝，所以暂时留个坑
     override fun onDialogPositiveClickForCourseChangeSelect(dialog: DialogFragment) {
         val select = (dialog as CourseChangeSelectFragment).selectItem
         GlobalScope.launch(Dispatchers.IO){
@@ -389,6 +412,14 @@ class CourseAddActivity : AppCompatActivity(),
                 }
             )
         }
+    }
+
+    override fun onDialogNegativeClickForTime(dialog: DialogFragment) {
+        //Of Course Do noting
+    }
+
+    override fun onDialogNegativeClickForWeek(dialog: DialogFragment) {
+        //Of Course Do noting
     }
 
 }

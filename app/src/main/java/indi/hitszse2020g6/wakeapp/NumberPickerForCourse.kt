@@ -115,6 +115,7 @@ class WeekPickerFragment(position:Int) :DialogFragment(){
         builder.setView(view)
             .setPositiveButton(R.string.dialog_ok,
                 DialogInterface.OnClickListener { dialog, id ->
+
                     weekBegin = npWeekBegin.value
                     weekEnd = npWeekEnd.value
                     listener.onDialogPositiveClickForWeek (this)
