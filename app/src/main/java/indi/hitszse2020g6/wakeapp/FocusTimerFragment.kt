@@ -59,109 +59,6 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initNumberPicker(hourpicker, minuteipcker)
-
-        startBtn.setOnClickListener {
-            if (condition_flag == 0) {
-                //获得设置的时间
-                total_time = (hourpicker.value * 3600 + minuteipcker.value * 60).toLong()
-                if (total_time > 0) {
-                    setButtonAni(true)
-                    //设置动画时长
-                    myCircle.setCountdownTime(total_time * 1000)
-                    myCircle.setAnimation(0f)
-
-                    setMyCountDownTimer(total_time)
-                } else {
-                    Toast.makeText(context, "Unable to start a 0 minute focus.", Toast.LENGTH_SHORT)
-                        .show()
-                }
-            } else if (condition_flag == -1) {
-                condition_flag = 0
-
-                storeTime()
-                val mt = MyFocusEntry(
-                    uid = System.currentTimeMillis(),
-                    totalFocusTime = total_time,
-                    focusDate = System.currentTimeMillis(),
-                    set_focus_title,
-                    false
-                )
-                myDao.addFocusData(mt)
-
-                startBtn.setImageDrawable(
-                    ResourcesCompat.getDrawable(
-                        resources,
-                        R.drawable.startbutton_fill_24,
-                        null
-                    )
-                )
-                toggleDisplay(false)
-                hour.text = "00"
-                minute.text = "00"
-                second.text = "00"
-            }
-        }
-
-        pauseBtn.setOnClickListener {
-            btnFlag = if (!btnFlag) {
-                pauseBtn.setImageDrawable(
-                    ResourcesCompat.getDrawable(
-                        resources,
-                        R.drawable.startbutton_fill_24,
-                        null
-                    )
-                )
-                (activity as MainActivity).binder?.setIsBlocking(false)
-                true
-            } else {
-                pauseBtn.setImageDrawable(
-                    ResourcesCompat.getDrawable(
-                        resources,
-                        R.drawable.pausebutton_fill_24,
-                        null
-                    )
-                )
-                (activity as MainActivity).binder?.setIsBlocking(true)
-                false
-            }
-        }
-
-        cancelBtn.setOnClickListener {
-            val mt = MyFocusEntry(
-                uid = System.currentTimeMillis(),
-                totalFocusTime = total_time,
-                focusDate = System.currentTimeMillis(),
-                set_focus_title,
-                true
-            )
-            myDao.addFocusData(mt)
-            var items = myDao.findFocusData(System.currentTimeMillis() - 100000000)
-            for (item in items) {
-                Log.d("${item.focusDate}", "${item.totalFocusTime} ${item.focusTitle}")
-            }
-            condition_flag = 0
-
-            storeTime()
-            setButtonAni(false)
-            myCountDownTimer?.cancel()
-            (activity as MainActivity).binder?.setIsStored(false)
-            (activity as MainActivity).binder?.stopCountDownTimer()
-            myCircle.setAnimation(1f)
-            myCircle.setCountdownTime(0)
-            toggleDisplay(false)
-            (activity as MainActivity).binder?.setIsBlocking(false)
-        }
-
-        getPreviousCondition()
-
-        mySharedPreferences =
-            requireContext().getSharedPreferences("new_user", Context.MODE_PRIVATE)
-        if (mySharedPreferences.getBoolean("isNew", true)) {
-            myCircle.post { showGuideView() }
-            var editor = mySharedPreferences.edit()
-            editor.putBoolean("isNew", false)
-            editor.apply()
-        }
     }
 
 
@@ -328,6 +225,108 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
         super.onActivityCreated(savedInstanceState)
         Log.d(TAG, "onActivityCreated")
 
+        startBtn.setOnClickListener {
+            if (condition_flag == 0) {
+                //获得设置的时间
+                total_time = (hourpicker.value * 3600 + minuteipcker.value * 60).toLong()
+                if (total_time > 0) {
+                    setButtonAni(true)
+                    //设置动画时长
+                    myCircle.setCountdownTime(total_time * 1000)
+                    myCircle.setAnimation(0f)
+
+                    setMyCountDownTimer(total_time)
+                } else {
+                    Toast.makeText(context, "Unable to start a 0 minute focus.", Toast.LENGTH_SHORT)
+                        .show()
+                }
+            } else if (condition_flag == -1) {
+                condition_flag = 0
+
+                storeTime()
+                val mt = MyFocusEntry(
+                    uid = System.currentTimeMillis(),
+                    totalFocusTime = total_time,
+                    focusDate = System.currentTimeMillis(),
+                    set_focus_title,
+                    false
+                )
+                myDao.addFocusData(mt)
+
+                startBtn.setImageDrawable(
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.startbutton_fill_24,
+                        null
+                    )
+                )
+                toggleDisplay(false)
+                hour.text = "00"
+                minute.text = "00"
+                second.text = "00"
+            }
+        }
+
+        pauseBtn.setOnClickListener {
+            btnFlag = if (!btnFlag) {
+                pauseBtn.setImageDrawable(
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.startbutton_fill_24,
+                        null
+                    )
+                )
+                (activity as MainActivity).binder?.setIsBlocking(false)
+                true
+            } else {
+                pauseBtn.setImageDrawable(
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.pausebutton_fill_24,
+                        null
+                    )
+                )
+                (activity as MainActivity).binder?.setIsBlocking(true)
+                false
+            }
+        }
+
+        cancelBtn.setOnClickListener {
+            val mt = MyFocusEntry(
+                uid = System.currentTimeMillis(),
+                totalFocusTime = total_time,
+                focusDate = System.currentTimeMillis(),
+                set_focus_title,
+                true
+            )
+            myDao.addFocusData(mt)
+            var items = myDao.findFocusData(System.currentTimeMillis() - 100000000)
+            for (item in items) {
+                Log.d("${item.focusDate}", "${item.totalFocusTime} ${item.focusTitle}")
+            }
+            condition_flag = 0
+
+            storeTime()
+            setButtonAni(false)
+            myCountDownTimer?.cancel()
+            (activity as MainActivity).binder?.setIsStored(false)
+            (activity as MainActivity).binder?.stopCountDownTimer()
+            myCircle.setAnimation(1f)
+            myCircle.setCountdownTime(0)
+            toggleDisplay(false)
+            (activity as MainActivity).binder?.setIsBlocking(false)
+        }
+
+        getPreviousCondition()
+
+        mySharedPreferences =
+            requireContext().getSharedPreferences("new_user", Context.MODE_PRIVATE)
+        if (mySharedPreferences.getBoolean("isNew", true)) {
+            myCircle.post { showGuideView() }
+            var editor = mySharedPreferences.edit()
+            editor.putBoolean("isNew", false)
+            editor.apply()
+        }
     }
 
     private fun setMyCountDownTimer(setTime: Long) {
