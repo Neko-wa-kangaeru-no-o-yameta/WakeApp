@@ -202,15 +202,13 @@ class FocusStatisticFragment : Fragment() {
                 counter++
             }
         }
-        val donutChartCreator = requireView().findViewById<LinearLayout>(R.id.donutChartLayout)
-        val chartItem = LayoutInflater.from(donutChartCreator.context)
-            .inflate((R.layout.focus_statistic_donutchart_item), donutChartCreator, false)
-        val donutChart = chartItem.findViewById<DonutChartView>(R.id.donutChart)
+        val donutChart = requireView().findViewById<DonutChartView>(R.id.donutChart)
         donutChart.animation.duration = animationDuration
         donutChart.donutColors = ColorSet
         donutChart.donutTotal = setDonutTotal(donutSet)
+        val height = donutChart.measuredHeight
+        //donutChart.donutThickness = height.toFloat()/2
         donutChart.animate(donutSet)
-        donutChartCreator.addView(chartItem)
     }
 
 
