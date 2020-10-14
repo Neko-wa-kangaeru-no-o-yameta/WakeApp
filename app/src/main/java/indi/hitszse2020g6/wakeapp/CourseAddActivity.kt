@@ -1,5 +1,6 @@
 package indi.hitszse2020g6.wakeapp
 
+import android.app.ProgressDialog.show
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -46,7 +47,9 @@ class CourseDetails {
 }
 
 class CourseAddActivity : AppCompatActivity(),
-        TimePickFragment.TimePickerDialogListener,WeekPickerFragment.WeekPickerDialogListner{
+        TimePickFragment.TimePickerDialogListener,
+        WeekPickerFragment.WeekPickerDialogListner,
+        CourseChangeSelectFragment.CourseChangeSelectDailogListner{
     private var isNewCourse = true
     private var courseId: Long? = null
     private val chineseWeek = arrayOf("星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日")
@@ -66,6 +69,7 @@ class CourseAddActivity : AppCompatActivity(),
         this.lifecycleScope.launch(Dispatchers.Main) {
             if (intent.extras != null) {
                 //是老事件
+                //对于老事件，只能够进行修改备注，时间不能被修改
                 isNewCourse = false
                 courseId = intent.getLongExtra(UNIQUE_COURSE_DETAIL, -1)
                 //将其设置为不可见
@@ -84,6 +88,8 @@ class CourseAddActivity : AppCompatActivity(),
                 detail.alarm = courseDetail.notice
                 detail.focus = courseDetail.focus
                 detail.mute = courseDetail.mute
+                EventDetailList.ITEMS = courseDetail.detail.toMutableList()
+
                 //修改显示
                 findViewById<EditText>(R.id.addCourseDetail_courseName).setText(detail.courseName)
                 findViewById<EditText>(R.id.addCourseDetail_courseAddress).setText(detail.courseAddress)
@@ -127,7 +133,8 @@ class CourseAddActivity : AppCompatActivity(),
                                     getColor(R.color.CourseTableColor1),
                                     detail.alarm,
                                     detail.focus,
-                                    detail.mute
+                                    detail.mute,
+                                    EventDetailList.ITEMS.toList()
                                 )
                                 withContext(Dispatchers.IO) {
                                     AppRoomDB.getDataBase(it.context).getDAO().insertCourse(course)
@@ -138,6 +145,7 @@ class CourseAddActivity : AppCompatActivity(),
                             finish()
                         }
                     } else {
+                        CourseChangeSelectFragment().show(supportFragmentManager,"WeekPickerFragment")
                         //不是一个新的课程
                         detail.courseName =
                             findViewById<EditText>(R.id.addCourseDetail_courseName).text.toString()
@@ -162,7 +170,8 @@ class CourseAddActivity : AppCompatActivity(),
                                             getColor(R.color.CourseTableColor1),
                                             detail.alarm,
                                             detail.focus,
-                                            detail.mute
+                                            detail.mute,
+                                            EventDetailList.ITEMS.toList()
                                         )
                                         withContext(Dispatchers.IO) {
                                             AppRoomDB.getDataBase(it.context).getDAO().insertCourse(course)
@@ -171,9 +180,9 @@ class CourseAddActivity : AppCompatActivity(),
                                 }
                             }
                         }
-                        val data = Intent()
-                        setResult(RESULT_ADD_NEW_COURSE, data)
-                        finish()
+//                        val data = Intent()
+//                        setResult(RESULT_ADD_NEW_COURSE, data)
+//                        finish()
                     }
                 }
             }
@@ -241,14 +250,14 @@ class CourseAddActivity : AppCompatActivity(),
                 }
             }
             //修改时间第几周
-            findViewById<CardView>(R.id.courseDetail_timeAddCard_week).apply {
+            findViewById<TextView>(R.id.courseDetail_time_week).apply {
                 setOnClickListener{
                     WeekPickerFragment(-1).show(supportFragmentManager,"WeekPickerFragment")
 
                 }
             }
             //修改时间信息：星期几，第几节
-            findViewById<CardView>(R.id.courseDetail_timeAddCard).apply {
+            findViewById<TextView>(R.id.courseDetail_time).apply {
                 setOnClickListener {
                     TimePickFragment(-1).show(supportFragmentManager, "TimePickFragment")
 
@@ -267,7 +276,9 @@ class CourseAddActivity : AppCompatActivity(),
 
             }
             findViewById<ImageButton>(R.id.CourseDescription_Add).setOnClickListener {
+                Log.d("setOnClickListener","get in details")
                 if(EventDetailList.ITEMS.size < 10) {
+                    Log.d("setOnClickListener","get in details22222222")
                     EventDetailList.ITEMS.add(Detail("", ""))
                     findViewById<RecyclerView>(R.id.eventDetail_descriptionListContainer).adapter?.notifyItemInserted(EventDetailList.ITEMS.size)
                 }
@@ -321,6 +332,14 @@ class CourseAddActivity : AppCompatActivity(),
 
     override fun onDialogNegativeClickForWeek(dialog: DialogFragment) {
         //Of Course Do noting
+    }
+
+    override fun onDialogPositiveClickForCourseChangeSelect(dialog: DialogFragment) {
+        Log.d("onDialogPositiveClickForCourseChangeSelect","back from onDialogPositiveClickForCourseChangeSelect")
+    }
+
+    override fun onDialogNegativeClickForCourseChangeSelect(dialog: DialogFragment) {
+
     }
 
     private fun toggleImageDrawable(btn: ImageButton, on: Boolean, onID: Int, offID: Int) {

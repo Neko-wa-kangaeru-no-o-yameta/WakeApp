@@ -143,3 +143,46 @@ class WeekPickerFragment(position:Int) :DialogFragment(){
         window.attributes = params
     }
 }
+
+//选择界面
+class CourseChangeSelectFragment :DialogFragment(){
+    var selectItem:Int = -1
+    internal lateinit var listener:CourseChangeSelectDailogListner
+    interface CourseChangeSelectDailogListner{
+        fun onDialogPositiveClickForCourseChangeSelect(dialog: DialogFragment)
+        fun onDialogNegativeClickForCourseChangeSelect(dialog: DialogFragment)
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        try{
+            listener = context as CourseChangeSelectDailogListner
+        }catch (e: ClassCastException) {
+            throw ClassCastException(
+                (context.toString() +
+                        " must implement CourseChangeSelectFragment")
+            )
+        }
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val builder = AlertDialog.Builder(activity)
+        val infalter = requireActivity().layoutInflater;
+        builder.setTitle(R.string.pick_topic)
+            .setSingleChoiceItems(R.array.selectChoice,-1,
+                DialogInterface.OnClickListener { dialog, which ->
+                    selectItem = which
+                }
+            )
+            .setPositiveButton(R.string.dialog_ok,
+                DialogInterface.OnClickListener { dialog, which ->
+                    listener.onDialogPositiveClickForCourseChangeSelect(this)
+                })
+            .setNegativeButton(R.string.dialog_cancel,
+                DialogInterface.OnClickListener { dialog, which ->
+                    listener.onDialogNegativeClickForCourseChangeSelect(this)
+                })
+        builder.create()
+        return builder.create()
+    }
+}

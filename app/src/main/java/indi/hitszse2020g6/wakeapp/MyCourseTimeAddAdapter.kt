@@ -51,8 +51,8 @@ class MyCourseTimeAddAdapter(
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val weekView : CardView = view.findViewById(R.id.course_time_add_discription)
-        val timeView :CardView = view.findViewById(R.id.courseDetail_timeAddCard)
+        val weekView : TextView = view.findViewById(R.id.course_time_add_discription_week)
+        val timeView : TextView = view.findViewById(R.id.courseDetail_time_add_discription_time)
 //        override fun toString(): String {
 //            return super.toString() + " '" + contentView.text + "'"
 //        }

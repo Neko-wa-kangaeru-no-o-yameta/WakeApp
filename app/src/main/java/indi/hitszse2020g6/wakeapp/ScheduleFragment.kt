@@ -230,9 +230,8 @@ class ScheduleFragment : Fragment() {
                         //是一个星期段
                         val start = element.first().toInt()
                         val end = element.last().toInt()
+                        val detail = arrayListOf<Detail>(Detail("",""))
 
-                        Log.d("start", start.toString())
-                        Log.d("end", end.toString())
                         for (week in start..end) {
                             val course = Course(
                                 0,
@@ -244,12 +243,14 @@ class ScheduleFragment : Fragment() {
                                 null,
                                 courseNotice,
                                 courseFocus,
-                                courseMute
+                                courseMute,
+                                detail.toList()
                             )
                             resultList.add(course)
                         }
                     } else {
                         //是单个星期
+                        val detail = arrayListOf<Detail>(Detail("",""))
                         val course = Course(
                             0,
                             courseName,
@@ -260,7 +261,8 @@ class ScheduleFragment : Fragment() {
                             null,
                             courseNotice,
                             courseFocus,
-                            courseMute
+                            courseMute,
+                            detail.toList()
                         )
                         resultList.add(course)
                     }

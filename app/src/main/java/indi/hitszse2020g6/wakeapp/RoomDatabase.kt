@@ -116,7 +116,8 @@ data class Course(
     @ColumnInfo(name = "course_color")      var color: Int?,
     @ColumnInfo(name = "course_notice")     var notice: Boolean,
     @ColumnInfo(name = "course_focus")      var focus: Boolean,
-    @ColumnInfo(name = "course_mute")       var mute: Boolean
+    @ColumnInfo(name = "course_mute")       var mute: Boolean,
+    @ColumnInfo(name = "course_detail")     var detail: List<Detail>
 )
 
 

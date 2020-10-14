@@ -29,6 +29,7 @@
     <string name="confirm">Confirm</string>
     <string name="eventDetail_hint_addReminder">Add reminder</string>
     <string name="eventDetail_remindTitleText">提醒我…</string>
+    <string name="pick_topic">选一下想应用到哪儿啦</string>
     <string name="eventDetail_addDetail">Add detail</string>
     <string name="eventDetail_detailTitleText">备注信息</string>
     <string name="scheduleDetail_noStartTimeHint">点击修改开始时间</string>
