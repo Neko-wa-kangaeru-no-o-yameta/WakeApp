@@ -12,6 +12,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -20,7 +21,11 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import com.binioter.guideview.Component
+import com.binioter.guideview.GuideBuilder
 import com.leinardi.android.speeddial.SpeedDialView
+import kotlinx.android.synthetic.main.fragment_main_page.*
+import kotlinx.android.synthetic.main.fragment_schedule.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -126,6 +131,14 @@ class ScheduleFragment : Fragment() {
                     }
                 }
             }
+        }
+        var mySharedPreferences =
+            requireContext().getSharedPreferences("new_user", Context.MODE_PRIVATE)
+        if (mySharedPreferences.getBoolean("isNewScheduleFragment", true)) {
+            addCourseBotton.post { showGuideView() }
+            var editor = mySharedPreferences.edit()
+            editor.putBoolean("isNewScheduleFragment", false)
+            editor.apply()
         }
     }
 
@@ -281,6 +294,42 @@ class ScheduleFragment : Fragment() {
                     putString(ARG_PARAM2, param2)
                 }
             }
+    }
+
+    private fun showGuideView(){
+        val builder = GuideBuilder()
+        builder.setTargetView(addCourseBotton).setAlpha(150).setHighTargetPadding(-20).setHighTargetGraphStyle(Component.CIRCLE)
+        builder.setOnVisibilityChangedListener(object : GuideBuilder.OnVisibilityChangedListener{
+            override fun onDismiss() {}
+            override fun onShown() {}
+        })
+        builder.addComponent(addCourseBtnComponent())
+        val guide = builder.createGuide()
+        guide.show((activity as MainActivity))
+    }
+
+    class addCourseBtnComponent:Component{
+        override fun getView(inflater: LayoutInflater?): View {
+            val ll:LinearLayout = inflater?.inflate(R.layout.layer_addcourse_btn,null) as LinearLayout
+            return ll
+        }
+
+        override fun getAnchor(): Int {
+            return Component.ANCHOR_TOP
+        }
+
+        override fun getFitPosition(): Int {
+            return Component.FIT_END
+        }
+
+        override fun getXOffset(): Int {
+            return 0
+        }
+
+        override fun getYOffset(): Int {
+            return -10
+        }
+
     }
 }
 

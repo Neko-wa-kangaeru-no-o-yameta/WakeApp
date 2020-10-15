@@ -321,10 +321,10 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
 
         mySharedPreferences =
             requireContext().getSharedPreferences("new_user", Context.MODE_PRIVATE)
-        if (mySharedPreferences.getBoolean("isNew", true)) {
+        if (mySharedPreferences.getBoolean("isNewTimerFragment", true)) {
             myCircle.post { showGuideView() }
             var editor = mySharedPreferences.edit()
-            editor.putBoolean("isNew", false)
+            editor.putBoolean("isNewTimerFragment", false)
             editor.apply()
         }
     }
@@ -512,7 +512,7 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
     private fun showGuideView2() {
         val builder = GuideBuilder()
         builder.setTargetView(startBtn).setAlpha(150).setHighTargetCorner(20)
-            .setHighTargetPadding(10).setHighTargetGraphStyle(Component.CIRCLE)
+            .setHighTargetPadding(20).setHighTargetGraphStyle(Component.CIRCLE)
         builder.setOnVisibilityChangedListener(object : GuideBuilder.OnVisibilityChangedListener {
             override fun onShown() {}
             override fun onDismiss() {}

@@ -1,5 +1,6 @@
 package indi.hitszse2020g6.wakeapp.mainPage
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -12,14 +13,16 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.ItemTouchHelper
+import com.binioter.guideview.Component
+import com.binioter.guideview.GuideBuilder
 import com.leinardi.android.speeddial.SpeedDialView
-import indi.hitszse2020g6.wakeapp.AppRoomDB
+import indi.hitszse2020g6.wakeapp.*
 import indi.hitszse2020g6.wakeapp.eventDetail.AffairDetailActivity
 import indi.hitszse2020g6.wakeapp.eventDetail.ScheduleDetailActivity
-import indi.hitszse2020g6.wakeapp.INTENT_AFFAIR_DETAIL
-import indi.hitszse2020g6.wakeapp.INTENT_SCHEDULE_DETAIL
-import indi.hitszse2020g6.wakeapp.R
+import kotlinx.android.synthetic.main.fragment_focus_timer.*
+import kotlinx.android.synthetic.main.fragment_main_page.*
 import kotlinx.coroutines.Delay
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -91,6 +94,14 @@ class MainPageFragment : Fragment() {
             }
         }
         super.onViewCreated(view, savedInstanceState)
+        var mySharedPreferences =
+            requireContext().getSharedPreferences("new_user", Context.MODE_PRIVATE)
+        if (mySharedPreferences.getBoolean("isNewMainPageFragment", true)) {
+            mainPage_speedDial.post { showGuideView() }
+            var editor = mySharedPreferences.edit()
+            editor.putBoolean("isNewMainPageFragment", false)
+            editor.apply()
+        }
     }
 
     override fun onResume() {
@@ -117,5 +128,40 @@ class MainPageFragment : Fragment() {
                     putInt(ARG_COLUMN_COUNT, columnCount)
                 }
             }
+    }
+
+    private fun showGuideView(){
+        val builder = GuideBuilder()
+        builder.setTargetView(mainPage_speedDial).setAlpha(150).setHighTargetPadding(-20).setHighTargetGraphStyle(Component.CIRCLE)
+        builder.setOnVisibilityChangedListener(object : GuideBuilder.OnVisibilityChangedListener{
+            override fun onDismiss() {}
+            override fun onShown() {}
+        })
+        builder.addComponent(AddThingsComponent())
+        val guide = builder.createGuide()
+        guide.show((activity as MainActivity))
+    }
+
+    class AddThingsComponent:Component{
+        override fun getView(inflater: LayoutInflater?): View {
+            var ll:LinearLayout = inflater?.inflate(R.layout.layer_addthingsbtn,null) as LinearLayout
+            return ll
+        }
+
+        override fun getAnchor(): Int {
+            return Component.ANCHOR_TOP
+        }
+
+        override fun getFitPosition(): Int {
+            return Component.FIT_END
+        }
+
+        override fun getXOffset(): Int {
+            return 0
+        }
+
+        override fun getYOffset(): Int {
+            return -10
+        }
     }
 }
