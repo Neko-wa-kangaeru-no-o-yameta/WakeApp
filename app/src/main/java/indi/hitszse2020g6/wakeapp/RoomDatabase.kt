@@ -96,7 +96,7 @@ class EventTableEntry (
 )
 
 @Entity(tableName = "course_table")
-data class Course(
+class Course(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "course_id")         var courseId: Long = 0,
     @ColumnInfo(name = "course_name")       var courseName: String,
@@ -108,7 +108,8 @@ data class Course(
     @ColumnInfo(name = "course_notice")     var notice: Boolean,
     @ColumnInfo(name = "course_focus")      var focus: Boolean,
     @ColumnInfo(name = "course_mute")       var mute: Boolean,
-    @ColumnInfo(name = "course_detail")     var detail: List<Detail>
+    @ColumnInfo(name = "course_detail")     var detail: List<Detail>,
+    @ColumnInfo(name = "course_reminder")     var reminder: List<Reminder>
 )
 
 
@@ -208,11 +209,15 @@ interface RoomDAO {
     @Insert
     fun insertCourses(courseList: List<Course>) :   List<Long>
 
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertCourse( course: Course) :Long
+
     @Query("UPDATE course_table SET course_color = (:course_color) WHERE course_name = (:course_name)")
     fun insertCourseColorIntoTable(course_color: Int, course_name: String)
 
     //通过id进行更新
-    @Query("UPDATE course_table SET course_name = (:name),class_address = (:address),course_notice = (:notice),course_focus = (:focus), course_mute = (:mute),course_detail=(:detail) WHERE course_id = (:course_id)")
+    @Query("UPDATE course_table SET course_name = (:name),class_address = (:address),course_notice = (:notice),course_focus = (:focus), course_mute = (:mute),course_detail=(:detail),course_reminder = (:reminder) WHERE course_id = (:course_id)")
     fun updateCourseDetailById(
         name: String,
         address: String,
@@ -220,11 +225,12 @@ interface RoomDAO {
         focus: Boolean,
         mute: Boolean,
         detail: List<Detail>,
+        reminder: List<Reminder>,
         course_id: Long
     )
 
     //修改这一时间段的courseDetails
-    @Query("UPDATE course_table SET course_name = (:name),class_address = (:address),course_notice = (:notice),course_focus = (:focus), course_mute = (:mute),course_detail=(:detail) WHERE (class_time = (:time) and course_name = (:oldName))")
+    @Query("UPDATE course_table SET course_name = (:name),class_address = (:address),course_notice = (:notice),course_focus = (:focus), course_mute = (:mute),course_detail=(:detail),course_reminder = (:reminder) WHERE (class_time = (:time) and course_name = (:oldName))")
     fun updateCourseDetailByTime(
         name: String,
         address: String,
@@ -232,12 +238,13 @@ interface RoomDAO {
         focus: Boolean,
         mute: Boolean,
         detail: List<Detail>,
+        reminder: List<Reminder>,
         time :Int,
         oldName :String
     )
 
     //修改这门课所有时间的CourseDetails
-    @Query("UPDATE course_table SET course_name = (:name),class_address = (:address),course_notice = (:notice),course_focus = (:focus), course_mute = (:mute),course_detail=(:detail) WHERE  course_name = (:oldName)")
+    @Query("UPDATE course_table SET course_name = (:name),class_address = (:address),course_notice = (:notice),course_focus = (:focus), course_mute = (:mute),course_detail=(:detail),course_reminder = (:reminder) WHERE  course_name = (:oldName)")
     fun updateCourseDetailByName(
         name: String,
         address: String,
@@ -245,6 +252,7 @@ interface RoomDAO {
         focus: Boolean,
         mute: Boolean,
         detail: List<Detail>,
+        reminder: List<Reminder>,
         oldName: String
     )
 
@@ -264,8 +272,6 @@ interface RoomDAO {
         course_id: Long
     )
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertCourse(vararg course: Course)
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     fun updateCourse(course: Course)

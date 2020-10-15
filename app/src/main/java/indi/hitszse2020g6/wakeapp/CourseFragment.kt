@@ -20,7 +20,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-// TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 
@@ -30,7 +29,6 @@ private const val ARG_PARAM1 = "param1"
  * create an instance of this fragment.
  */
 class CourseFragment : Fragment() {
-    // TODO: Rename and change types of parameters
     private var param1: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,29 +54,22 @@ class CourseFragment : Fragment() {
         val tabLayout = view.findViewById<TabLayout>(R.id.tab_layout) ?: return
         val viewPager2 = view.findViewById<ViewPager2>(R.id.viewPager2) ?: return
 
-        // todo 读入课程数据库Room
 
 
         //为ViewPager2设置适配器
         Log.d("CourseFragment", "got view")
-
-        GlobalScope.launch (Dispatchers.IO){
-            var maxWeek = context?.let { AppRoomDB.getDataBase(it).getDAO().getMaxWeek() }
-            Handler(Looper.getMainLooper()).post {
-                val myAdapter =  MyViewPageAdapter(this@CourseFragment)
-                if (maxWeek != null) {
-                    myAdapter.maxWeek = maxWeek
-                }
-                viewPager2.adapter = myAdapter
-//                viewPager2.offscreenPageLimit = 1
-                // todo 根据具体课程表初始化周次tab
-                TabLayoutMediator(tabLayout, viewPager2) { tab, position ->
-                    tab.text = "第${position + 1}周"
-                }.attach()
+            val maxWeek = 17
+            val myAdapter =  MyViewPageAdapter(this@CourseFragment)
+            if (maxWeek != null) {
+                myAdapter.maxWeek = maxWeek
             }
-        }
+            viewPager2.adapter = myAdapter
+            //TODO 这个适配器好像有点毛病那个，设置了currentItem之后有点问题
+            viewPager2.currentItem = 1
+            TabLayoutMediator(tabLayout, viewPager2) { tab, position ->
+                tab.text = "第${position + 1}周"
+            }.attach()
     }
-
 
     companion object {
         /**
@@ -89,7 +80,6 @@ class CourseFragment : Fragment() {
          * @param param2 Parameter 2.
          * @return A new instance of fragment showFragment.
          */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance() =
             CourseFragment().apply {

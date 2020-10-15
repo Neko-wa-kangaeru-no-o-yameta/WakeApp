@@ -57,9 +57,8 @@ class ScheduleFragment : Fragment() {
 
     private val getCourseFile =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-            this.lifecycleScope.launch(Dispatchers.IO) {
-                parseCourse(uri)
-            }
+            parseCourse(uri)
+
         }
 
     // TODO: Rename and change types of parameters
@@ -140,24 +139,18 @@ class ScheduleFragment : Fragment() {
         Log.d("get in", "On resultActivity")
 //        val mainHolder = findViewById<GridLayout>(R.id.content_holder)
 //        val context = mainHolder.context
-        this.lifecycleScope.launch(Dispatchers.Default) {
             if (requestCode == INTENT_ADD_COURSE) {
                 //直接更新
                 requireActivity().setPerCourseColor()
-                withContext(Dispatchers.Main) {
                     val courseFragment = CourseFragment.newInstance()
                     childFragmentManager.beginTransaction()
                         .replace(R.id.fragment2, courseFragment)
                         .commit()
                     Toast.makeText(context,"小猫咪帮你更新课程表啦", Toast.LENGTH_SHORT).show()
-                }
             }
-        }
-
-
     }
 
-    private suspend fun parseCourse(uri: Uri) {
+    private  fun parseCourse(uri: Uri) {
 
         val resultList = arrayListOf<Course>()
         FileInputStream(
@@ -180,19 +173,13 @@ class ScheduleFragment : Fragment() {
             }
         }
 
-        context?.let { it1 ->
-            val dao = AppRoomDB.getDataBase(it1).getDAO()
-
-            dao.importClass(resultList)
-        }
+        CourseList.importClass(resultList)
         requireActivity().setPerCourseColor()
+        val courseFragment = CourseFragment.newInstance()
+        childFragmentManager.beginTransaction()
+            .replace(R.id.fragment2, courseFragment)
+            .commit()
 
-        withContext(Dispatchers.Main) {
-            val courseFragment = CourseFragment.newInstance()
-            childFragmentManager.beginTransaction()
-                .replace(R.id.fragment2, courseFragment)
-                .commit()
-        }
     }
 
     private fun parseCell(cellText: String, col: Int, row: Int): List<Course> {
@@ -232,7 +219,7 @@ class ScheduleFragment : Fragment() {
                         val start = element.first().toInt()
                         val end = element.last().toInt()
                         val detail = arrayListOf<Detail>(Detail("",""))
-
+                        val reminder = arrayListOf<Reminder>(Reminder(-1,true,true,true,""))
                         for (week in start..end) {
                             val course = Course(
                                 0,
@@ -245,13 +232,15 @@ class ScheduleFragment : Fragment() {
                                 courseNotice,
                                 courseFocus,
                                 courseMute,
-                                detail.toList()
+                                detail.toList(),
+                                reminder
                             )
                             resultList.add(course)
                         }
                     } else {
                         //是单个星期
                         val detail = arrayListOf<Detail>(Detail("",""))
+                        val reminder = arrayListOf<Reminder>(Reminder(-1,true,true,true,""))
                         val course = Course(
                             0,
                             courseName,
@@ -263,7 +252,8 @@ class ScheduleFragment : Fragment() {
                             courseNotice,
                             courseFocus,
                             courseMute,
-                            detail.toList()
+                            detail.toList(),
+                            reminder
                         )
                         resultList.add(course)
                     }
@@ -308,13 +298,13 @@ fun Activity.setPerCourseColor() {
         getColor(R.color.CourseTableColor7),
         getColor(R.color.CourseTableColor8)
     )
-    val courseAll = AppRoomDB.getDataBase(this).getDAO().getAllCourse()
+    val courseAll = CourseList.getAllCourse()
     for (i in courseAll.indices) {
         Log.d("ele", i.toString())
         val courseName = courseAll[i]
         //8是预设的颜色的数量，可以随便定义
         val courseColor = colorList[i % 8]
-        AppRoomDB.getDataBase(this).getDAO().insertCourseColorIntoTable(courseColor, courseName)
+        CourseList.insertCourseColorIntoTable(courseColor,courseName)
     }
 
 }
@@ -322,7 +312,7 @@ fun Activity.setPerCourseColor() {
 fun Context.getCourseOfTheWeek(search: Int): List<Course> {
     val courseForPerWeek = arrayListOf<Course>()
 
-    val classALL = AppRoomDB.getDataBase(this).getDAO().findWeekCourse(search)
+    val classALL = CourseList.findWeekCourse(search)
     for (ele in classALL) {
         courseForPerWeek.add(ele)
     }
