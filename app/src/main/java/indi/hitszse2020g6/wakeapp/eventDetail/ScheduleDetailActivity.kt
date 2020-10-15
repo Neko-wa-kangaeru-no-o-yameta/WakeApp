@@ -11,6 +11,7 @@ import android.util.Log
 import android.widget.*
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.RecyclerView
 import indi.hitszse2020g6.wakeapp.*
@@ -176,8 +177,8 @@ class ScheduleDetailActivity :
             if(EventReminderList.ITEMS.size < 10) {
                 EventReminderList.ITEMS.add(Reminder(0, ring = false, vibration = false, notification = false, ""))
                 findViewById<RecyclerView>(R.id.eventDetail_reminderListContainer).adapter?.notifyItemInserted(EventReminderList.ITEMS.size)
-                findViewById<ScrollView>(R.id.scheduleDetail_mainContainer).apply { post {
-                    fullScroll(ScrollView.FOCUS_DOWN)
+                findViewById<NestedScrollView>(R.id.scheduleDetail_mainContainer).apply { post {
+                    fullScroll(NestedScrollView.FOCUS_DOWN)
                 } }
             }
         }

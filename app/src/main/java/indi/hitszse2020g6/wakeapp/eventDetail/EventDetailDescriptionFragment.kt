@@ -47,7 +47,7 @@ class EventDetailDescriptionFragment() : Fragment() {
                 adapter = MyDescriptionRecyclerViewAdapter(EventDetailList.ITEMS).apply {
                     notifyDataSetChanged()
                 }
-                Log.d("Detail", "adapter attached")
+                Log.d("Detail", "adapter attached, ${EventDetailList.ITEMS}")
             }
         }
         return view

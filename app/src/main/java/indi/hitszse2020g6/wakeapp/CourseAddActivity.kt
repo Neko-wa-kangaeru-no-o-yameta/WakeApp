@@ -11,12 +11,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import indi.hitszse2020g6.wakeapp.dummy.CourseWeek
 import indi.hitszse2020g6.wakeapp.eventDetail.EventDetailList
 import indi.hitszse2020g6.wakeapp.eventDetail.EventReminderList
+import indi.hitszse2020g6.wakeapp.eventDetail.MyDescriptionRecyclerViewAdapter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -96,6 +98,10 @@ class CourseAddActivity : AppCompatActivity(),
                 detail.focus = courseDetail.focus
                 detail.mute = courseDetail.mute
                 EventDetailList.ITEMS = courseDetail.detail.toMutableList()
+                Log.d("Course onCreate", "${EventDetailList.ITEMS}")
+                findViewById<RecyclerView>(R.id.eventDetail_descriptionListContainer).adapter = MyDescriptionRecyclerViewAdapter(EventDetailList.ITEMS).apply {
+                    notifyDataSetChanged()
+                }
 
                 //修改显示
                 findViewById<EditText>(R.id.addCourseDetail_courseName).setText(detail.courseName)
@@ -347,15 +353,15 @@ class CourseAddActivity : AppCompatActivity(),
             findViewById<ImageButton>(R.id.CourseDescription_Add).setOnClickListener {
                 if(EventDetailList.ITEMS.size < 10) {
                     EventDetailList.ITEMS.add(Detail("", ""))
+                    Log.d("add detail", "${EventDetailList.ITEMS}")
                     findViewById<RecyclerView>(R.id.eventDetail_descriptionListContainer).adapter?.notifyItemInserted(EventDetailList.ITEMS.size)
                 }
             }
             findViewById<ImageButton>(R.id.CourseReminder_Add).setOnClickListener {
                 if(EventReminderList.ITEMS.size < 10) {
-                    EventReminderList.ITEMS.
-                    add(Reminder(0, ring = false, vibration = false, notification = false, ""))
+                    EventReminderList.ITEMS.add(Reminder(0, ring = false, vibration = false, notification = false, ""))
                     findViewById<RecyclerView>(R.id.eventDetail_reminderListContainer).adapter?.notifyItemInserted(EventReminderList.ITEMS.size)
-                    findViewById<ScrollView>(R.id.addCourseDetail_mainContainer).apply { post {
+                    findViewById<NestedScrollView>(R.id.addCourseDetail_mainContainer).apply { post {
                         fullScroll(ScrollView.FOCUS_DOWN)
                     } }
                 }

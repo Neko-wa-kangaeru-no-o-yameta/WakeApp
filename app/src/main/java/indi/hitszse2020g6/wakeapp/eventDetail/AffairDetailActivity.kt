@@ -12,6 +12,7 @@ import android.widget.*
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.RecyclerView
 import indi.hitszse2020g6.wakeapp.*
 import indi.hitszse2020g6.wakeapp.mainPage.MainPageEventList
@@ -162,8 +163,8 @@ class AffairDetailActivity :
                     ""
                 ))
                 findViewById<RecyclerView>(R.id.eventDetail_reminderListContainer).adapter?.notifyItemInserted(EventReminderList.ITEMS.size)
-                findViewById<ScrollView>(R.id.affairDetail_mainContainer).apply { post {
-                    fullScroll(ScrollView.FOCUS_DOWN)
+                findViewById<NestedScrollView>(R.id.affairDetail_mainContainer).apply { post {
+                    fullScroll(NestedScrollView.FOCUS_DOWN)
                 } }
             }
         }
