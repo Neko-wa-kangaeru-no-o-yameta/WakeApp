@@ -1,6 +1,8 @@
 package indi.hitszse2020g6.wakeapp
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.ViewGroup
@@ -62,6 +64,7 @@ class CourseAddActivity : AppCompatActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        ThemeColors(this)
         setContentView(R.layout.course_add_activity)
 
         EventDetailList.ITEMS.clear()
@@ -493,4 +496,19 @@ class CourseAddActivity : AppCompatActivity(),
         //Of Course Do noting
     }
 
+    override fun onResume() {
+        super.onResume()
+        val sharedPreferences: SharedPreferences =
+            getSharedPreferences("changeTheme", Context.MODE_PRIVATE)
+        if(sharedPreferences.getBoolean("changed",false)){
+            val tmp = getSharedPreferences("redGreenBlue", Context.MODE_PRIVATE)
+            val red = tmp.getInt("red",43)
+            val green = tmp.getInt("green",44)
+            val blue = tmp.getInt("blue",48)
+            val editor = sharedPreferences.edit()
+            editor.putBoolean("changed",false)
+            editor.apply()
+            ThemeColors.setNewThemeColor(this,red,green,blue)
+        }
+    }
 }

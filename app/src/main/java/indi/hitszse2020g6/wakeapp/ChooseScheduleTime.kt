@@ -18,21 +18,28 @@ class ChooseScheduleTime : AppCompatActivity() {
     private var endYear:Int = 2020
     private var endMonth:Int = 12
     private var endDay:Int = 31
+    private var startTime:Long = System.currentTimeMillis()
+    private var endTime:Long = System.currentTimeMillis()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         ThemeColors(this)
         setContentView(R.layout.activity_choose_schedule_time)
 
-        var mySharedPreferences:SharedPreferences = getSharedPreferences("schedule_start_time",
-            Context.MODE_PRIVATE)
-        if(mySharedPreferences.getInt("startYear",-1)!=-1){
-            startYear = mySharedPreferences.getInt("startYear",-1)
-            startMonth = mySharedPreferences.getInt("startMonth",-1)
-            startDay = mySharedPreferences.getInt("startDay",-1)
-            endYear = mySharedPreferences.getInt("endYear",-1)
-            endMonth = mySharedPreferences.getInt("endMonth",-1)
-            endDay = mySharedPreferences.getInt("endDay",-1)
+        var mySharedPreferences:SharedPreferences = getSharedPreferences(
+            "schedule_time",
+            Context.MODE_PRIVATE
+        )
+        if(mySharedPreferences.getLong("startTime", -1).toInt() !=-1){
+            val calendar = Calendar.getInstance()
+            calendar.time = Date(mySharedPreferences.getLong("startTime", -1))
+            startYear = calendar.get(Calendar.YEAR)
+            startMonth = calendar.get(Calendar.MONTH)+1
+            startDay = calendar.get(Calendar.DAY_OF_MONTH)
+            calendar.time = Date(mySharedPreferences.getLong("endTime", -1))
+            endYear = calendar.get(Calendar.YEAR)
+            endMonth = calendar.get(Calendar.MONTH)+1
+            endDay = calendar.get(Calendar.DAY_OF_MONTH)
             schedule_start_time.text = "${startYear}-${startMonth}-${startDay}"
             schedule_end_time.text = "${endYear}-${endMonth}-${endDay}"
         }
@@ -42,16 +49,16 @@ class ChooseScheduleTime : AppCompatActivity() {
         }
 
         schedule_confirm.setOnClickListener {
-            var mySharedPreferences:SharedPreferences = getSharedPreferences("schedule_start_time",
-                Context.MODE_PRIVATE)
+            var mySharedPreferences:SharedPreferences = getSharedPreferences(
+                "schedule_time",
+                Context.MODE_PRIVATE
+            )
             var editor = mySharedPreferences.edit()
-            editor.putInt("startYear",startYear)
-            editor.putInt("startMonth",startMonth)
-            editor.putInt("startDay",startDay)
-            editor.putInt("endYear",endYear)
-            editor.putInt("endMonth",endMonth)
-            editor.putInt("endDay",endDay)
-            editor.commit()
+            startTime = getTimeInMills(startYear,startMonth,startDay)
+            endTime = getTimeInMills(endYear,endMonth,endDay)
+            editor.putLong("startTime",startTime)
+            editor.putLong("endTime",endTime)
+            editor.apply()
             finish()
         }
 
@@ -69,7 +76,7 @@ class ChooseScheduleTime : AppCompatActivity() {
         dateStartPickerDialog.setOnDateSetListener { view, year, month, dayOfMonth ->
             schedule_start_time.text = "${year}-${month+1}-${dayOfMonth}"
             startYear = year
-            startMonth = month+1
+            startMonth = month
             startDay = dayOfMonth
         }
 
@@ -87,7 +94,7 @@ class ChooseScheduleTime : AppCompatActivity() {
         dateEndPickerDialog.setOnDateSetListener { view, year, month, dayOfMonth ->
             schedule_end_time.text = "${year}-${month+1}-${dayOfMonth}"
             endYear = year
-            endMonth = month+1
+            endMonth = month
             endDay = dayOfMonth
         }
 
@@ -98,5 +105,11 @@ class ChooseScheduleTime : AppCompatActivity() {
         edit_end_time.setOnClickListener {
             dateEndPickerDialog.show()
         }
+    }
+
+    private fun getTimeInMills(year: Int, month: Int, day: Int): Long {
+        val calendar = Calendar.getInstance()
+        calendar[year, month] = day
+        return calendar.timeInMillis
     }
 }
