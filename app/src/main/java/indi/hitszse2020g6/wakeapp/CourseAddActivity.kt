@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
@@ -349,10 +350,9 @@ class CourseAddActivity : AppCompatActivity(),
             }
             findViewById<ImageButton>(R.id.CourseReminder_Add).setOnClickListener {
                 if(EventReminderList.ITEMS.size < 10) {
-                    EventReminderList.ITEMS.
-                    add(Reminder(0, ring = false, vibration = false, notification = false, ""))
+                    EventReminderList.ITEMS.add(Reminder(0, ring = false, vibration = false, notification = false, ""))
                     findViewById<RecyclerView>(R.id.eventDetail_reminderListContainer).adapter?.notifyItemInserted(EventReminderList.ITEMS.size)
-                    findViewById<ScrollView>(R.id.addCourseDetail_mainContainer).apply { post {
+                    findViewById<NestedScrollView>(R.id.addCourseDetail_mainContainer).apply { post {
                         fullScroll(ScrollView.FOCUS_DOWN)
                     } }
                 }

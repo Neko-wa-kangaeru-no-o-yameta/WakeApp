@@ -5,7 +5,9 @@
     android:id="@+id/eventDetail_reminderListContainer"
     android:name="indi.hitszse2020g6.wakeapp.EventDetailReminderFragment"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
+    android:clipChildren="false"
+    android:clipToPadding="false"
     app:layoutManager="LinearLayoutManager"
     tools:context=".eventDetail.EventDetailReminderFragment"
     tools:listitem="@layout/fragment_event_detail_reminder" />
