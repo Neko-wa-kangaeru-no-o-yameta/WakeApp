@@ -16,6 +16,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.RecyclerView
 import indi.hitszse2020g6.wakeapp.*
 import indi.hitszse2020g6.wakeapp.mainPage.MainPageEventList
+import kotlinx.android.synthetic.main.activity_schedule_detail.*
 import java.util.*
 import kotlin.collections.ArrayList
 
