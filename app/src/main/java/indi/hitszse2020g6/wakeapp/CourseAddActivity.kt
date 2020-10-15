@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import indi.hitszse2020g6.wakeapp.dummy.CourseWeek
 import indi.hitszse2020g6.wakeapp.eventDetail.EventDetailList
 import indi.hitszse2020g6.wakeapp.eventDetail.EventReminderList
+import indi.hitszse2020g6.wakeapp.eventDetail.MyDescriptionRecyclerViewAdapter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -94,6 +95,10 @@ class CourseAddActivity : AppCompatActivity(),
                 detail.focus = courseDetail.focus
                 detail.mute = courseDetail.mute
                 EventDetailList.ITEMS = courseDetail.detail.toMutableList()
+                Log.d("Course onCreate", "${EventDetailList.ITEMS}")
+                findViewById<RecyclerView>(R.id.eventDetail_descriptionListContainer).adapter = MyDescriptionRecyclerViewAdapter(EventDetailList.ITEMS).apply {
+                    notifyDataSetChanged()
+                }
 
                 //修改显示
                 findViewById<EditText>(R.id.addCourseDetail_courseName).setText(detail.courseName)
@@ -345,6 +350,7 @@ class CourseAddActivity : AppCompatActivity(),
             findViewById<ImageButton>(R.id.CourseDescription_Add).setOnClickListener {
                 if(EventDetailList.ITEMS.size < 10) {
                     EventDetailList.ITEMS.add(Detail("", ""))
+                    Log.d("add detail", "${EventDetailList.ITEMS}")
                     findViewById<RecyclerView>(R.id.eventDetail_descriptionListContainer).adapter?.notifyItemInserted(EventDetailList.ITEMS.size)
                 }
             }
