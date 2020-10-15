@@ -23,7 +23,7 @@
     <action android:id="@+id/action_global_focusFragment" app:destination="@id/focusFragment" />
     <fragment
         android:id="@+id/scheduleFragment"
-        android:name="indi.hitszse2020g6.wakeapp.Schedule"
+        android:name="indi.hitszse2020g6.wakeapp.ScheduleFragment"
         android:label="fragment_schedule"
         tools:layout="@layout/fragment_schedule" />
     <action android:id="@+id/action_global_scheduleFragment" app:destination="@id/scheduleFragment" />

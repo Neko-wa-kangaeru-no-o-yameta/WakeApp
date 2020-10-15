@@ -8,6 +8,10 @@ android {
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
 
+    buildFeatures{
+        viewBinding true
+    }
+
     defaultConfig {
         applicationId "indi.hitszse2020g6.wakeapp"
         minSdkVersion 26

@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CourseAddActivity">
+
+    <ScrollView
+        android:id="@+id/addCourseDetail_mainContainer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/courseDetail_actionBar"
+        app:layout_constraintVertical_bias="0.0">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_margin="8dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <EditText
+                    android:id="@+id/addCourseDetail_courseName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:autofillHints="课程名称"
+                    android:ems="10"
+                    android:hint="@string/courseDetail_courseNameInputField"
+                    android:inputType="text"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+                <ImageButton
+                    android:id="@+id/course_alarm"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/eventDetail_alarm"
+                    android:padding="12dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/alarm_on_24" />
+                <ImageButton
+                    android:id="@+id/course_focus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/scheduleDetail_focus"
+                    android:padding="12dp"
+                    app:layout_constraintEnd_toStartOf="@+id/course_alarm"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/focus_on_24" />
+                <ImageButton
+                    android:id="@+id/course_mute"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/scheduleDetail_mute"
+                    android:padding="12dp"
+                    app:layout_constraintEnd_toStartOf="@+id/course_focus"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/mute_on_24" />
+                <EditText
+                    android:id="@+id/addCourseDetail_courseAddress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:autofillHints="地点信息"
+                    android:ems="8"
+                    android:hint="@string/courseDetail_AddressTitleText"
+                    android:inputType="text"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/addCourseDetail_courseName" />
+                <View
+                    android:id="@+id/course_divider3"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginVertical="16dp"
+                    android:background="?android:attr/listDivider"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/addCourseDetail_courseAddress" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/canBeHide"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/timeDetailsTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="16dp"
+                    android:text="@string/eventDetail_timeTitleText"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/courseDetail_timeAddCard_week"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="8dp"
+                    app:cardCornerRadius="5dp"
+                    app:contentPadding="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/timeDetailsTitle">
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/constrainlayoutCard"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:id="@+id/courseDetail_time_week"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/courseDetail_timeAddWeekHint"
+                            android:textSize="16sp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/courseDetail_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="24dp"
+                            android:textSize="16sp"
+                            android:text="@string/courseDetail_timeAddHint"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/courseDetail_time_week" />
+
+
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.cardview.widget.CardView>
+
+
+
+                <androidx.fragment.app.FragmentContainerView
+                    android:id="@+id/ItemFragment"
+                    android:name="indi.hitszse2020g6.wakeapp.ItemFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="8dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/courseDetail_timeAddCard_week" />
+
+                <ImageButton
+                    android:id="@+id/CourseAddDetail_addCourseTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="16dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/eventDetail_addDetail"
+                    android:padding="12dp"
+                    android:src="@drawable/add_circle_outline_24"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ItemFragment" />
+
+                <View
+                    android:id="@+id/course_divider4"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginVertical="16dp"
+                    android:background="?android:attr/listDivider"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/CourseAddDetail_addCourseTime" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/BeizhuXinXI"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/beizhuTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="16dp"
+                    android:text="@string/eventDetail_detailTitleText"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+
+                <androidx.fragment.app.FragmentContainerView
+                    android:id="@+id/CourseDescription"
+                    android:name="indi.hitszse2020g6.wakeapp.eventDetail.EventDetailDescriptionFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="16dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/beizhuTitle" />
+
+                <ImageButton
+                    android:id="@+id/CourseDescription_Add"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="16dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/eventDetail_addDetail"
+                    android:padding="12dp"
+                    android:src="@drawable/add_circle_outline_24"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/CourseDescription" />
+
+                <View
+                    android:id="@+id/course_divider5"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginVertical="16dp"
+                    android:background="?android:attr/listDivider"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/CourseDescription_Add" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/TiXingWo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/TiXingWo_Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="16dp"
+                    android:text="@string/eventDetail_remindTitleText"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+
+                <androidx.fragment.app.FragmentContainerView
+                    android:id="@+id/CourseReminder"
+                    android:name="indi.hitszse2020g6.wakeapp.eventDetail.EventDetailReminderFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="16dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/TiXingWo_Title" />
+
+                <ImageButton
+                    android:id="@+id/CourseReminder_Add"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="16dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/eventDetail_addDetail"
+                    android:padding="12dp"
+                    android:src="@drawable/add_circle_outline_24"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/CourseReminder" />
+
+                <View
+                    android:id="@+id/course_divider6"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginVertical="16dp"
+                    android:layout_marginTop="8dp"
+                    android:background="?android:attr/listDivider"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/CourseReminder_Add" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/deleteCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="5dp"
+                    app:contentPadding="3dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:gravity="center"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:id="@+id/ShanChuKeCheng"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginVertical="8dp"
+                        android:layout_gravity="center"
+                        android:text="@string/DeleteCourse"
+                        android:layout_centerHorizontal="true"
+                        android:textAlignment="center"
+                        android:textColor="#FF0000" />
+
+                </androidx.cardview.widget.CardView>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/courseDetail_actionBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:contentInsetEnd="0dp"
+        app:contentInsetLeft="0dp"
+        app:contentInsetRight="0dp"
+        app:contentInsetStart="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <ImageButton
+                android:id="@+id/courseDetail_confirm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:padding="12dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/check_24"
+                android:contentDescription="@string/confirm" />
+
+            <ImageButton
+                android:id="@+id/courseDetail_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:padding="12dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/close_24"
+                android:contentDescription="@string/cancel" />
+
+            <TextView
+                android:id="@+id/CourseDetailChange_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                android:textSize="24sp"
+                android:text="@string/courseDetailChange"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/courseDetail_confirm"
+                app:layout_constraintStart_toEndOf="@+id/courseDetail_cancel"
+                app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/CourseDetailAdd_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                android:textSize="24sp"
+                android:text="@string/courseDetailAdd"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/courseDetail_confirm"
+                app:layout_constraintStart_toEndOf="@+id/courseDetail_cancel"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+    </androidx.appcompat.widget.Toolbar>
+</androidx.constraintlayout.widget.ConstraintLayout>

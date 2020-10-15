@@ -3,8 +3,6 @@ package indi.hitszse2020g6.wakeapp
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,13 +11,16 @@ import android.view.ViewGroup
 import android.widget.GridLayout
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import androidx.viewpager2.widget.ViewPager2
+import kotlinx.android.synthetic.main.fragment_course.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -41,6 +42,7 @@ class WeekCourseFragment : Fragment() {
         arguments?.let {
             param1 = it.getInt(ARG_PARAM1)
         }
+        Log.d("这是第几周:",param1.toString())
 
     }
 
@@ -56,113 +58,138 @@ class WeekCourseFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setCardViewMessage()
+        updateCourseCardView()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        Log.d("get in","get in")
+        Log.d("get in", "get in")
         super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode == INTENT_ADD_COURSE){
+        if (requestCode == INTENT_ADD_COURSE) {
             //直接更新
-            Log.d("get in2","get in")
-            setCardViewMessage()
+            Log.d("get in2", "get in")
+            updateCourseCardView()
+            Toast.makeText(context,"小猫咪帮你更新课程表啦", Toast.LENGTH_SHORT).show()
         }
+        param1?.toInt()?.let {
+            requireActivity().findViewById<ViewPager2>(R.id.viewPager2).adapter?.notifyItemChanged(
+                it
+            )
+        }
+
     }
 
-    private fun WeekCourseFragment.setCardViewMessage() {
-        view?.findViewById<GridLayout>(R.id.GridLayout).apply {
-            GlobalScope.launch(Dispatchers.IO) {
-                val weekCourse = activity?.getPerWeekCourse(param1!!)!!
-                Handler(Looper.getMainLooper()).post {
-                    for (ele in weekCourse) {
-                        val couseName = ele.courseName
-                        val courseTime = ele.time
-                        val couseDayOfWeek = ele.dayOfWeek
-                        val courseAddress = ele.address
-                        var courseColor = ele.color
-                        val cardTag = "${couseDayOfWeek.toString()}${courseTime.toString()}"
-                        Log.d("cardTag", cardTag)
-                        val cardView = view?.findViewWithTag<CardView>(cardTag)
+    override fun onResume() {
+        super.onResume()
+        Log.d("onResume",param1.toString())
+    }
 
-                        if (cardView == null) {
-                            Log.d("cardView", "is empty")
-                        }
-                        Log.d("cardView", "cardView is getted")
-                        //TODO 字体的调整问题
-                        //TODO 在cardView中加入LinearLayout
-                        with(cardView) {
-                            //对于一个CardView，先设置其颜色
-                            this?.removeAllViews()
-                            if (courseColor != null) {
-                                this?.setCardBackgroundColor(courseColor)
-                            } else {
-                                this?.setCardBackgroundColor(
-                                    resources.getColor(
-                                        R.color.colorPrimary, context.theme
-                                    )
-                                )
-                            }
-                            //然后对这个CardView，创建Linearlayout
-                            val layout = LinearLayout(context)
-                            layout.setLayoutParams(
-                                LinearLayout.LayoutParams(
-                                    ViewGroup.LayoutParams.MATCH_PARENT,
-                                    ViewGroup.LayoutParams.WRAP_CONTENT
+    fun updateCourseCardView() {
+        view?.findViewById<GridLayout>(R.id.GridLayout).apply {
+            this@WeekCourseFragment.lifecycleScope.launch(Dispatchers.Main) {
+
+                val weekCourse = withContext(Dispatchers.IO) {
+                    this@WeekCourseFragment.requireContext().getCourseOfTheWeek(param1!!)
+                }
+
+                for (courseDayOfWeek in 1..7) {
+                    for (courseTime in 1..6) {
+                        val cardTag = "$courseDayOfWeek$courseTime"
+                        val cardView = view?.findViewWithTag<CardView>(cardTag)!!
+                        cardView.removeAllViews()
+                        cardView.setCardBackgroundColor(resources.getColor(R.color.colorBackground,
+                            context?.theme
+                        ))
+                    }
+                }
+
+                for (ele in weekCourse) {
+                    val courseName = ele.courseName
+                    val courseTime = ele.time
+                    val courseDayOfWeek = ele.dayOfWeek
+                    val courseAddress = ele.address
+                    val courseColor = ele.color
+                    val cardTag = "$courseDayOfWeek$courseTime"
+                    Log.d("cardTag", cardTag)
+                    val cardView = view?.findViewWithTag<CardView>(cardTag)
+
+                    if (cardView == null) {
+                        Log.d("cardView", "not found cardView of tag $cardTag")
+                        continue
+                    } else {
+                        Log.d("cardView", "cardView is gotten")
+                    }
+                    //TODO 字体的调整问题
+                    //TODO 在cardView中加入LinearLayout
+                    with(cardView) {
+                        //对于一个CardView，先设置其颜色
+                        this.removeAllViews()
+                        if (courseColor != null) {
+                            this.setCardBackgroundColor(courseColor)
+                        } else {
+                            this.setCardBackgroundColor(
+                                resources.getColor(
+                                    R.color.colorPrimary, context.theme
                                 )
                             )
-                            layout.orientation = LinearLayout.VERTICAL // 所有组件垂直摆放
-                            val textCourse = LinearLayout.LayoutParams(
-                                ViewGroup.LayoutParams.MATCH_PARENT,
-                                ViewGroup.LayoutParams.WRAP_CONTENT
-                            ) // 定义文本显示组件
-                            val textViewCourse = TextView(context)
-                            with(textViewCourse) {
-                                Log.d("textViewCourse", "get in textViewCourse")
+                        }
+                        //然后对这个CardView，创建LinearLayout
+                        val layout = LinearLayout(context)
+                        layout.layoutParams = LinearLayout.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT
+                        )
+                        layout.orientation = LinearLayout.VERTICAL // 所有组件垂直摆放
+                        val textCourse = LinearLayout.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT
+                        ) // 定义文本显示组件
+                        val textViewCourse = TextView(context)
+                        with(textViewCourse) {
+                            Log.d("textViewCourse", "get in textViewCourse")
 
-                                text = couseName
-                                Log.d("text", couseName)
-                                setLines(3)
-                                layoutParams = textCourse
-                                setEllipsize(TextUtils.TruncateAt.valueOf("END"))
-                                setEms(1)
-                                setTextColor(
-                                    resources.getColor(
-                                        R.color.design_default_color_on_primary,
-                                        context.theme
-                                    )
+                            text = courseName
+                            Log.d("text", courseName)
+                            setLines(3)
+                            layoutParams = textCourse
+                            ellipsize = TextUtils.TruncateAt.valueOf("END")
+                            setEms(1)
+                            setTextColor(
+                                resources.getColor(
+                                    R.color.design_default_color_on_primary,
+                                    context.theme
                                 )
-                            }
-                            layout.addView(textViewCourse)
-                            val textViewCourseAddress = TextView(context)
-                            with(textViewCourseAddress) {
-                                text = courseAddress
-                                setLines(2)
-                                layoutParams = textCourse
-                                setEllipsize(TextUtils.TruncateAt.valueOf("END"))
-                                setEms(1)
-                                setTextColor(
-                                    resources.getColor(
-                                        R.color.design_default_color_on_primary,
-                                        context.theme
-                                    )
+                            )
+                        }
+                        layout.addView(textViewCourse)
+                        val textViewCourseAddress = TextView(context)
+                        with(textViewCourseAddress) {
+                            text = courseAddress
+                            setLines(2)
+                            layoutParams = textCourse
+                            ellipsize = TextUtils.TruncateAt.valueOf("END")
+                            setEms(1)
+                            setTextColor(
+                                resources.getColor(
+                                    R.color.design_default_color_on_primary,
+                                    context.theme
                                 )
-                            }
-                            layout.addView(textViewCourseAddress)
-                            this?.addView(layout)
-                            val height = this?.height
-                            Log.d("height", height.toString())
-                            this?.setOnClickListener {
-                                val courseId = ele.courseId
-                                val intent = Intent(
-                                    this@WeekCourseFragment.context,
-                                    CourseAddActivity::class.java
-                                )
-                                intent.putExtra(UNIQUE_COURSE_DETAIL, courseId)
-                                startActivityForResult(intent, INTENT_ADD_COURSE)
-                            }
+                            )
+                        }
+                        layout.addView(textViewCourseAddress)
+                        this.addView(layout)
+                        Log.d("height", this.height.toString())
+                        this.setOnClickListener {
+                            val courseId = ele.courseId
+                            val intent = Intent(
+                                this@WeekCourseFragment.context,
+                                CourseAddActivity::class.java
+                            )
+                            intent.putExtra(UNIQUE_COURSE_DETAIL, courseId)
+                            startActivityForResult(intent, INTENT_ADD_COURSE)
                         }
                     }
                 }
+
             }
         }
     }

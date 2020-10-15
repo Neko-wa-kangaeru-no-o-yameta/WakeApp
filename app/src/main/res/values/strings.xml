@@ -29,10 +29,16 @@
     <string name="confirm">Confirm</string>
     <string name="eventDetail_hint_addReminder">Add reminder</string>
     <string name="eventDetail_remindTitleText">提醒我…</string>
+    <string name="DeleteCourse">删除课程</string>
+    <string name="LittleCatSays">小猫咪说你的课程时间的设置错了，检查一下噢</string>
+    <string name="pick_topic">选一下想应用到哪儿啦</string>
+    <string name="courseDetailChange">课程修改</string>
+    <string name="courseDetailAdd">课程新增</string>
     <string name="eventDetail_addDetail">Add detail</string>
     <string name="eventDetail_detailTitleText">备注信息</string>
     <string name="scheduleDetail_noStartTimeHint">点击修改开始时间</string>
     <string name="courseDetail_timeAddHint">点击修改所在节数</string>
+    <string name="courseDetail_timeAddWeekHint">点击修改所在周次</string>
     <string name="eventDetail_noStopTimeHint">点击修改结束时间</string>
     <string name="eventDetail_eventTitleInputField">事件标题</string>
     <string name="courseDetail_courseNameInputField">课程名称</string>
@@ -61,7 +67,8 @@
     <string name="eventList_toggleMute">Toggle Mute</string>
     <string name="eventList_startTimeTVContent">开始于%02d月%02d日 %02d:%02d</string>
     <string name="eventList_stopTimeTVContent">结束于%02d月%02d日 %02d:%02d</string>
-    <string name="courseDetail_timeContent">第%01d大节</string>
+    <string name="courseDetail_timeContent">%1$s，第%2$d大节</string>
+    <string name="courseDetail_timeContentWeek">第%d周至第%d周</string>
     <string name="节次">节次</string>
     <string name="第一大节">第一大节</string>
     <string name="第二大节">第二大节</string>
@@ -76,6 +83,18 @@
     <string name="星期五">星期五</string>
     <string name="星期六">星期六</string>
     <string name="星期日">星期日</string>
+    <string name="dialog_ok">选好啦</string>
+    <string name="dialog_cancel">不要了</string>
+    <string name="WeekChoose">星期/节数</string>
+    <string name="WeekChoose2">周次</string>
+    <string name="Xing">星</string>
+    <string name="Qi">期</string>
+    <string name="Di">第</string>
+    <string name="zhou">周</string>
+    <string name="jie">节</string>
+    <string name="Zhi">至</string>
+    <string name="week_time_pick">星期/周次选择</string>
+
     <string name="title_activity_add_course_detail">AddCourseDetailActivity</string>
     <!--
     This string is used for square devices and overridden by hello_world in

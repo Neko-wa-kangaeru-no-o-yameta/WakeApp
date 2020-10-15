@@ -97,20 +97,20 @@ class EventTableEntry (
 
 @Entity(tableName = "course_table")
 data class Course(
-    @ColumnInfo(name = "course_name") var courseName: String,
-    @ColumnInfo(name = "week") var week: Int,
-    @ColumnInfo(name = "day_of_week") var dayOfWeek: Int,
-    @ColumnInfo(name = "class_address") var address: String,
-    @ColumnInfo(name = "class_time") var time: Int,
-    @ColumnInfo(name = "course_color") var color: Int?,
-    @ColumnInfo(name = "course_notice") var notice: Boolean,
-    @ColumnInfo(name = "course_focus") var focus: Boolean,
-    @ColumnInfo(name = "course_mute") var mute: Boolean
-) {
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "course_id")
-    var courseId: Long = 0
-}
+    @ColumnInfo(name = "course_id")         var courseId: Long = 0,
+    @ColumnInfo(name = "course_name")       var courseName: String,
+    @ColumnInfo(name = "week")              var week: Int,
+    @ColumnInfo(name = "day_of_week")       var dayOfWeek: Int,
+    @ColumnInfo(name = "class_address")     var address: String,
+    @ColumnInfo(name = "class_time")        var time: Int,
+    @ColumnInfo(name = "course_color")      var color: Int?,
+    @ColumnInfo(name = "course_notice")     var notice: Boolean,
+    @ColumnInfo(name = "course_focus")      var focus: Boolean,
+    @ColumnInfo(name = "course_mute")       var mute: Boolean,
+    @ColumnInfo(name = "course_detail")     var detail: List<Detail>
+)
+
 
 @Database(entities = [EventTableEntry::class, Course::class,MyFocusEntry::class], version = 1, exportSchema = false)
 @TypeConverters(Converters::class)
@@ -171,13 +171,20 @@ interface RoomDAO {
 
     //SceduleTable
     @Query("SELECT * FROM course_table WHERE course_id = (:courseId)")
-    fun getCourseWithId(courseId:Long) :List<Course>
+    fun getCourseById(courseId: Long): List<Course>
 
     @Query("SELECT * FROM course_table")
     fun getAll(): List<Course>
 
     @Query("SELECT * FROM course_table WHERE course_name IN (:course_name)")
     fun loadAllCourseNames(course_name: String): List<Course>
+
+    @Query("SELECT * FROM course_table WHERE (week = (:week) and day_of_week = (:dayOfWeek) and class_time =(:time))")
+    fun selectCourseByTime(
+        week: Int,
+        dayOfWeek: Int,
+        time: Int
+    ):List<Course>
 
     @Query("SELECT * FROM course_table WHERE week = :weekNo order by class_time, day_of_week")
     fun findWeekCourse(weekNo: Int): List<Course>
@@ -188,14 +195,74 @@ interface RoomDAO {
     @Query("SELECT DISTINCT course_name FROM course_table")
     fun getAllCourse(): List<String>
 
+    @Transaction
+    fun importClass(courseList: List<Course>) :List<Long> {
+        deleteAllCourse()
+        return insertCourses(courseList)
+    }
+
+
     @Query("DELETE FROM course_table")
     fun deleteAllCourse()
 
-    @Query("UPDATE course_table SET course_color = (:course_color) WHERE course_name = (:course_name)")
-    fun InsertCourseColorIntoTable(course_color:Int,course_name: String)
+    @Insert
+    fun insertCourses(courseList: List<Course>) :   List<Long>
 
-    @Query("UPDATE course_table SET course_name = (:course_name),class_address = (:course_address),course_notice = :alarm,course_focus = :focus ,course_mute = :mute WHERE course_id = (:course_id)")
-    fun updateCourseDetails(course_name:String,course_address:String,alarm:Boolean,focus:Boolean,mute:Boolean,course_id:Long)
+    @Query("UPDATE course_table SET course_color = (:course_color) WHERE course_name = (:course_name)")
+    fun insertCourseColorIntoTable(course_color: Int, course_name: String)
+
+    //通过id进行更新
+    @Query("UPDATE course_table SET course_name = (:name),class_address = (:address),course_notice = (:notice),course_focus = (:focus), course_mute = (:mute),course_detail=(:detail) WHERE course_id = (:course_id)")
+    fun updateCourseDetailById(
+        name: String,
+        address: String,
+        notice: Boolean,
+        focus: Boolean,
+        mute: Boolean,
+        detail: List<Detail>,
+        course_id: Long
+    )
+
+    //修改这一时间段的courseDetails
+    @Query("UPDATE course_table SET course_name = (:name),class_address = (:address),course_notice = (:notice),course_focus = (:focus), course_mute = (:mute),course_detail=(:detail) WHERE (class_time = (:time) and course_name = (:oldName))")
+    fun updateCourseDetailByTime(
+        name: String,
+        address: String,
+        notice: Boolean,
+        focus: Boolean,
+        mute: Boolean,
+        detail: List<Detail>,
+        time :Int,
+        oldName :String
+    )
+
+    //修改这门课所有时间的CourseDetails
+    @Query("UPDATE course_table SET course_name = (:name),class_address = (:address),course_notice = (:notice),course_focus = (:focus), course_mute = (:mute),course_detail=(:detail) WHERE  course_name = (:oldName)")
+    fun updateCourseDetailByName(
+        name: String,
+        address: String,
+        notice: Boolean,
+        focus: Boolean,
+        mute: Boolean,
+        detail: List<Detail>,
+        oldName: String
+    )
+
+    @Query("DELETE FROM course_table WHERE course_id = (:course_id)")
+    fun deleteCourseById(course_id: Long)
+
+    @Query("UPDATE course_table SET course_name = (:course_name),class_address = (:course_address),week = (:course_week) ,day_of_week = (:course_dayOFWeek),class_time = (:course_time),course_notice = :alarm,course_focus = :focus ,course_mute = :mute WHERE course_id = (:course_id)")
+    fun updateCourseDetails(
+        course_name: String,
+        course_address: String,
+        course_week : Int,
+        course_dayOFWeek :Int,
+        course_time :Int,
+        alarm: Boolean,
+        focus: Boolean,
+        mute: Boolean,
+        course_id: Long
+    )
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertCourse(vararg course: Course)
@@ -207,9 +274,9 @@ interface RoomDAO {
     fun deleteCourse(vararg course: Course)
 
     @Query("SELECT * FROM focusTable WHERE focusDate>=:d ORDER BY focusDate ASC")
-    fun findFocusData(d:Long):List<MyFocusEntry>
+    fun findFocusData(d: Long): List<MyFocusEntry>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun addFocusData(mf:MyFocusEntry)
+    fun addFocusData(mf: MyFocusEntry)
 
 }

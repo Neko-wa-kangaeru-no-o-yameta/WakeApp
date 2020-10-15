@@ -6,6 +6,7 @@
     <color name="colorPrimary">#6200EE</color>
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
+    <color name="colorBackground">#FFFFFF</color>
     <color name="CourseTableColor1">#23036A</color>
     <color name="CourseTableColor2">#3700B3</color>
     <color name="CourseTableColor3">#005457</color>
