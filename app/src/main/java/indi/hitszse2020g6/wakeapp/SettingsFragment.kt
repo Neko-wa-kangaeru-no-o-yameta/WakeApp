@@ -23,9 +23,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             true
         }
         findPreference<Preference>("clear_course_table")?.setOnPreferenceClickListener {
-            GlobalScope.launch(Dispatchers.IO){
-                this@SettingsFragment.context?.let { it1 -> AppRoomDB.getDataBase(it1).getDAO().deleteAllCourse() }
-            }
+            CourseList.deleteAllCourse()
             true
         }
 

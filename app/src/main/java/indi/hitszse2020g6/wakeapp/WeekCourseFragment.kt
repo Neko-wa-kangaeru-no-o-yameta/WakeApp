@@ -85,24 +85,22 @@ class WeekCourseFragment : Fragment() {
 
     fun updateCourseCardView() {
         view?.findViewById<GridLayout>(R.id.GridLayout).apply {
-            this@WeekCourseFragment.lifecycleScope.launch(Dispatchers.Main) {
 
-                val weekCourse = withContext(Dispatchers.IO) {
-                    this@WeekCourseFragment.requireContext().getCourseOfTheWeek(param1!!)
-                }
 
-                for (courseDayOfWeek in 1..7) {
-                    for (courseTime in 1..6) {
-                        val cardTag = "$courseDayOfWeek$courseTime"
-                        val cardView = view?.findViewWithTag<CardView>(cardTag)!!
-                        cardView.removeAllViews()
-                        cardView.setCardBackgroundColor(resources.getColor(R.color.colorBackground,
-                            context?.theme
-                        ))
-                    }
-                }
+        val weekCourse = this@WeekCourseFragment.requireContext().getCourseOfTheWeek(param1!!)
 
-                for (ele in weekCourse) {
+        for (courseDayOfWeek in 1..7) {
+            for (courseTime in 1..6) {
+                val cardTag = "$courseDayOfWeek$courseTime"
+                val cardView = view?.findViewWithTag<CardView>(cardTag)!!
+                cardView.removeAllViews()
+                cardView.setCardBackgroundColor(resources.getColor(R.color.colorBackground,
+                    context?.theme
+                ))
+            }
+        }
+
+        for (ele in weekCourse) {
                     val courseName = ele.courseName
                     val courseTime = ele.time
                     val courseDayOfWeek = ele.dayOfWeek
@@ -190,7 +188,7 @@ class WeekCourseFragment : Fragment() {
                     }
                 }
 
-            }
+
         }
     }
 

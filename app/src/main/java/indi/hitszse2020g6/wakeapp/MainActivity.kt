@@ -63,6 +63,11 @@ class MainActivity() : AppCompatActivity() {
         MainPageEventList.context = this
         MainPageEventList.alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
+        //加载课程表数据
+        CourseList.DAO = AppRoomDB.getDataBase(this).getDAO()
+        CourseList.getDatefromDB()
+        CourseList.context = this
+
         receiveBroadCast()
 
         bottomNavigationView.setOnNavigationItemSelectedListener { item ->
