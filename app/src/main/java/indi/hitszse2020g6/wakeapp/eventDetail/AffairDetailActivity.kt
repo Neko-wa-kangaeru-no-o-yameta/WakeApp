@@ -200,10 +200,10 @@ class AffairDetailActivity :
         }
 
         var mySharedPreferences = getSharedPreferences("new_user", Context.MODE_PRIVATE)
-        if (mySharedPreferences.getBoolean("isNewAffairFragment", true)) {
+        if (mySharedPreferences.getBoolean("isNewAddAffairFragment", true)) {
             affairDetail_eventTitle.post { showTitleGuideView() }
             var editor = mySharedPreferences.edit()
-            editor.putBoolean("isNewAffairFragment", false)
+            editor.putBoolean("isNewAddAffairFragment", false)
             editor.apply()
         }
     }
@@ -297,12 +297,12 @@ class AffairDetailActivity :
                 showAffairAlarmGuideView()
             }
         })
-        builder.addComponent(affairTitleComponent())
+        builder.addComponent(titleComponent())
         val guide = builder.createGuide()
         guide.show(this)
     }
 
-    class affairTitleComponent : Component {
+    class titleComponent : Component {
         override fun getView(inflater: LayoutInflater?): View {
             var ll: LinearLayout = inflater?.inflate(R.layout.layer_affair_title, null) as LinearLayout
             return ll
@@ -328,7 +328,7 @@ class AffairDetailActivity :
 
     private fun showAffairAlarmGuideView(){
         val builder = GuideBuilder()
-        builder.setTargetView(affairDetail_alarm).setAlpha(150).setHighTargetPadding(10)
+        builder.setTargetView(affairDetail_alarm).setAlpha(150).setHighTargetPadding(5)
             .setHighTargetGraphStyle(Component.CIRCLE)
         builder.setOnVisibilityChangedListener(object : GuideBuilder.OnVisibilityChangedListener {
             override fun onShown() {}
@@ -374,12 +374,12 @@ class AffairDetailActivity :
                 showAddAffairDetailGuideView()
             }
         })
-        builder.addComponent(setAffairEndTimeComponent())
+        builder.addComponent(setEndTimeComponent())
         val guide = builder.createGuide()
         guide.show(this)
     }
 
-    class setAffairEndTimeComponent:Component{
+    class setEndTimeComponent:Component{
         override fun getView(inflater: LayoutInflater?): View {
             var ll: LinearLayout = inflater?.inflate(R.layout.layer_set_endtime, null) as LinearLayout
             return ll
@@ -404,7 +404,7 @@ class AffairDetailActivity :
 
     private fun showAddAffairDetailGuideView(){
         val builder = GuideBuilder()
-        builder.setTargetView(affairDetail_addDetail).setAlpha(150).setHighTargetPadding(10)
+        builder.setTargetView(affairDetail_addDetail).setAlpha(150).setHighTargetPadding(5)
             .setHighTargetGraphStyle(Component.CIRCLE)
         builder.setOnVisibilityChangedListener(object : GuideBuilder.OnVisibilityChangedListener {
             override fun onShown() {}
@@ -412,12 +412,12 @@ class AffairDetailActivity :
                 showAddAffairReminderGuideView()
             }
         })
-        builder.addComponent(addAffairDetailComponent())
+        builder.addComponent(addDetailComponent())
         val guide = builder.createGuide()
         guide.show(this)
     }
 
-    class addAffairDetailComponent:Component{
+    class addDetailComponent:Component{
         override fun getView(inflater: LayoutInflater?): View {
             var ll: LinearLayout = inflater?.inflate(R.layout.layer_add_detail, null) as LinearLayout
             return ll
@@ -442,7 +442,7 @@ class AffairDetailActivity :
 
     private fun showAddAffairReminderGuideView(){
         val builder = GuideBuilder()
-        builder.setTargetView(affairDetail_addReminder).setAlpha(150).setHighTargetPadding(10)
+        builder.setTargetView(affairDetail_addReminder).setAlpha(150).setHighTargetPadding(5)
             .setHighTargetGraphStyle(Component.CIRCLE)
         builder.setOnVisibilityChangedListener(object : GuideBuilder.OnVisibilityChangedListener {
             override fun onShown() {}
@@ -450,12 +450,12 @@ class AffairDetailActivity :
                 showAffairRepeatGuideView()
             }
         })
-        builder.addComponent(addAffairReminderComponent())
+        builder.addComponent(addReminderComponent())
         val guide = builder.createGuide()
         guide.show(this)
     }
 
-    class addAffairReminderComponent:Component{
+    class addReminderComponent:Component{
         override fun getView(inflater: LayoutInflater?): View {
             var ll: LinearLayout = inflater?.inflate(R.layout.layer_add_reminder, null) as LinearLayout
             return ll
@@ -480,18 +480,18 @@ class AffairDetailActivity :
 
     private fun showAffairRepeatGuideView(){
         val builder = GuideBuilder()
-        builder.setTargetView(affairDetail_repeatCard).setAlpha(150).setHighTargetPadding(10)
+        builder.setTargetView(affairDetail_repeatCard).setAlpha(150).setHighTargetPadding(5)
             .setHighTargetGraphStyle(Component.ROUNDRECT)
         builder.setOnVisibilityChangedListener(object : GuideBuilder.OnVisibilityChangedListener {
             override fun onShown() {}
             override fun onDismiss() {}
         })
-        builder.addComponent(addAffairRepeatComponent())
+        builder.addComponent(addRepeatComponent())
         val guide = builder.createGuide()
         guide.show(this)
     }
 
-    class addAffairRepeatComponent:Component{
+    class addRepeatComponent:Component{
         override fun getView(inflater: LayoutInflater?): View {
             var ll: LinearLayout = inflater?.inflate(R.layout.layer_add_repeat, null) as LinearLayout
             return ll

@@ -8,14 +8,19 @@ import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
 import android.widget.*
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.RecyclerView
+import com.binioter.guideview.Component
+import com.binioter.guideview.GuideBuilder
 import indi.hitszse2020g6.wakeapp.*
 import indi.hitszse2020g6.wakeapp.mainPage.MainPageEventList
+import kotlinx.android.synthetic.main.activity_affair_detail.*
 import kotlinx.android.synthetic.main.activity_schedule_detail.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -242,6 +247,14 @@ class ScheduleDetailActivity :
                 toggleImageDrawable(this, mute, R.drawable.mute_on_24, R.drawable.mute_off_24)
             }
         }
+
+        var mySharedPreferences = getSharedPreferences("new_user", Context.MODE_PRIVATE)
+        if (mySharedPreferences.getBoolean("isNewAddScheduleFragment", true)) {
+            scheduleDetail_eventTitle.post { showTitleGuideView() }
+            var editor = mySharedPreferences.edit()
+            editor.putBoolean("isNewAddScheduleFragment", false)
+            editor.apply()
+        }
     }
 
     override fun onResume() {
@@ -343,5 +356,207 @@ class ScheduleDetailActivity :
     override fun onRepeatWeekdaySet(repeatAt: Int) {
         this.repeatAt = repeatAt
         setRepeatList()
+    }
+
+    private fun showTitleGuideView(){
+        val builder = GuideBuilder()
+        builder.setTargetView(scheduleDetail_eventTitle).setAlpha(150).setHighTargetPadding(10)
+            .setHighTargetGraphStyle(Component.ROUNDRECT)
+        builder.setOnVisibilityChangedListener(object : GuideBuilder.OnVisibilityChangedListener {
+            override fun onShown() {}
+            override fun onDismiss() {
+                showScheduleMuteGuideView()
+            }
+        })
+        builder.addComponent(AffairDetailActivity.titleComponent())
+        val guide = builder.createGuide()
+        guide.show(this)
+    }
+
+    private fun showScheduleMuteGuideView(){
+        val builder = GuideBuilder()
+        builder.setTargetView(scheduleDetail_mute).setAlpha(150).setHighTargetPadding(5)
+            .setHighTargetGraphStyle(Component.CIRCLE)
+        builder.setOnVisibilityChangedListener(object : GuideBuilder.OnVisibilityChangedListener {
+            override fun onShown() {}
+            override fun onDismiss() {
+                showScheduleFocusGuideView()
+            }
+        })
+        builder.addComponent(muteComponent())
+        val guide = builder.createGuide()
+        guide.show(this)
+    }
+
+    class muteComponent:Component{
+        override fun getView(inflater: LayoutInflater?): View {
+            var ll: LinearLayout = inflater?.inflate(R.layout.layer_mute, null) as LinearLayout
+            return ll
+        }
+
+        override fun getAnchor(): Int {
+            return Component.ANCHOR_LEFT
+        }
+
+        override fun getFitPosition(): Int {
+            return Component.FIT_END
+        }
+
+        override fun getXOffset(): Int {
+            return -20
+        }
+
+        override fun getYOffset(): Int {
+            return -20
+        }
+    }
+
+    private fun showScheduleFocusGuideView(){
+        val builder = GuideBuilder()
+        builder.setTargetView(scheduleDetail_focus).setAlpha(150).setHighTargetPadding(5)
+            .setHighTargetGraphStyle(Component.CIRCLE)
+        builder.setOnVisibilityChangedListener(object : GuideBuilder.OnVisibilityChangedListener {
+            override fun onShown() {}
+            override fun onDismiss() {
+                showScheduleAlarmGuideView()
+            }
+        })
+        builder.addComponent(scheduleFocusComponent())
+        val guide = builder.createGuide()
+        guide.show(this)
+    }
+
+    class scheduleFocusComponent:Component{
+        override fun getView(inflater: LayoutInflater?): View {
+            var ll: LinearLayout = inflater?.inflate(R.layout.layer_focus, null) as LinearLayout
+            return ll
+        }
+
+        override fun getAnchor(): Int {
+            return Component.ANCHOR_LEFT
+        }
+
+        override fun getFitPosition(): Int {
+            return Component.FIT_END
+        }
+
+        override fun getXOffset(): Int {
+            return -20
+        }
+
+        override fun getYOffset(): Int {
+            return -20
+        }
+    }
+
+    private fun showScheduleAlarmGuideView(){
+        val builder = GuideBuilder()
+        builder.setTargetView(scheduleDetail_alarm).setAlpha(150).setHighTargetPadding(5)
+            .setHighTargetGraphStyle(Component.CIRCLE)
+        builder.setOnVisibilityChangedListener(object : GuideBuilder.OnVisibilityChangedListener {
+            override fun onShown() {}
+            override fun onDismiss() {
+                showSetStartTimeGuideView()
+            }
+        })
+        builder.addComponent(AffairDetailActivity.alarmComponent())
+        val guide = builder.createGuide()
+        guide.show(this)
+    }
+
+    private fun showSetStartTimeGuideView(){
+        val builder = GuideBuilder()
+        builder.setTargetView(scheduleDetail_startTimeCard).setAlpha(150).setHighTargetPadding(5)
+            .setHighTargetGraphStyle(Component.ROUNDRECT)
+        builder.setOnVisibilityChangedListener(object : GuideBuilder.OnVisibilityChangedListener {
+            override fun onShown() {}
+            override fun onDismiss() {
+                showSetEndTimeGuideView()
+            }
+        })
+        builder.addComponent(setStartTimeComponent())
+        val guide = builder.createGuide()
+        guide.show(this)
+    }
+
+    class setStartTimeComponent:Component{
+        override fun getView(inflater: LayoutInflater?): View {
+            var ll: LinearLayout = inflater?.inflate(R.layout.layer_starttime, null) as LinearLayout
+            return ll
+        }
+
+        override fun getAnchor(): Int {
+            return Component.ANCHOR_TOP
+        }
+
+        override fun getFitPosition(): Int {
+            return Component.FIT_END
+        }
+
+        override fun getXOffset(): Int {
+            return 0
+        }
+
+        override fun getYOffset(): Int {
+            return -10
+        }
+    }
+
+    private fun showSetEndTimeGuideView(){
+        val builder = GuideBuilder()
+        builder.setTargetView(scheduleDetail_stopTimeCard).setAlpha(150).setHighTargetPadding(5)
+            .setHighTargetGraphStyle(Component.ROUNDRECT)
+        builder.setOnVisibilityChangedListener(object : GuideBuilder.OnVisibilityChangedListener {
+            override fun onShown() {}
+            override fun onDismiss() {
+                showAddScheduleDetailGuideView()
+            }
+        })
+        builder.addComponent(AffairDetailActivity.setEndTimeComponent())
+        val guide = builder.createGuide()
+        guide.show(this)
+    }
+
+    private fun showAddScheduleDetailGuideView(){
+        val builder = GuideBuilder()
+        builder.setTargetView(scheduleDetail_addDetail).setAlpha(150).setHighTargetPadding(5)
+            .setHighTargetGraphStyle(Component.CIRCLE)
+        builder.setOnVisibilityChangedListener(object : GuideBuilder.OnVisibilityChangedListener {
+            override fun onShown() {}
+            override fun onDismiss() {
+                showAddScheduleReminderGuideView()
+            }
+        })
+        builder.addComponent(AffairDetailActivity.addDetailComponent())
+        val guide = builder.createGuide()
+        guide.show(this)
+    }
+
+    private fun showAddScheduleReminderGuideView(){
+        val builder = GuideBuilder()
+        builder.setTargetView(scheduleDetail_addReminder).setAlpha(150).setHighTargetPadding(5)
+            .setHighTargetGraphStyle(Component.CIRCLE)
+        builder.setOnVisibilityChangedListener(object : GuideBuilder.OnVisibilityChangedListener {
+            override fun onShown() {}
+            override fun onDismiss() {
+                showScheduleRepeatGuideView()
+            }
+        })
+        builder.addComponent(AffairDetailActivity.addReminderComponent())
+        val guide = builder.createGuide()
+        guide.show(this)
+    }
+
+    private fun showScheduleRepeatGuideView(){
+        val builder = GuideBuilder()
+        builder.setTargetView(scheduleDetail_repeatCard).setAlpha(150).setHighTargetPadding(5)
+            .setHighTargetGraphStyle(Component.ROUNDRECT)
+        builder.setOnVisibilityChangedListener(object : GuideBuilder.OnVisibilityChangedListener {
+            override fun onShown() {}
+            override fun onDismiss() {}
+        })
+        builder.addComponent(AffairDetailActivity.addRepeatComponent())
+        val guide = builder.createGuide()
+        guide.show(this)
     }
 }
