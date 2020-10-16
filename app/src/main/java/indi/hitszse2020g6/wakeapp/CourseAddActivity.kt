@@ -207,6 +207,10 @@ class CourseAddActivity : AppCompatActivity(),
                                     Toast.LENGTH_SHORT).show()
                             } else if(HaveFlag == 0){
                                 //表示没有找到跟设置时间段冲突的课程
+                                detail.courseName =
+                                    findViewById<EditText>(R.id.addCourseDetail_courseName).text.toString()
+                                detail.courseAddress =
+                                    findViewById<EditText>(R.id.addCourseDetail_courseAddress).text.toString()
                                 for(ele in resultList){
                                     for(week in ele.weekBegin..ele.weekEnd){
                                         val course = Course(
