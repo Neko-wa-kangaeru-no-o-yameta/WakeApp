@@ -1,7 +1,6 @@
 package indi.hitszse2020g6.wakeapp.eventDetail
 
 import android.app.DatePickerDialog
-import android.app.Dialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.content.SharedPreferences
@@ -14,13 +13,11 @@ import android.widget.*
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.widget.NestedScrollView
-import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.RecyclerView
 import com.binioter.guideview.Component
 import com.binioter.guideview.GuideBuilder
 import indi.hitszse2020g6.wakeapp.*
 import indi.hitszse2020g6.wakeapp.mainPage.MainPageEventList
-import kotlinx.android.synthetic.main.activity_affair_detail.*
 import kotlinx.android.synthetic.main.activity_schedule_detail.*
 import java.util.*
 import kotlin.collections.ArrayList

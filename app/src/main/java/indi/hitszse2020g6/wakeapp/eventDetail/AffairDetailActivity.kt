@@ -13,7 +13,6 @@ import android.view.View
 import android.widget.*
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.RecyclerView
 import com.binioter.guideview.Component
@@ -21,7 +20,6 @@ import com.binioter.guideview.GuideBuilder
 import indi.hitszse2020g6.wakeapp.*
 import indi.hitszse2020g6.wakeapp.mainPage.MainPageEventList
 import kotlinx.android.synthetic.main.activity_affair_detail.*
-import kotlinx.android.synthetic.main.fragment_focus_timer.*
 import java.util.*
 
 const val UNIQUE_ID_TO_AFFAIR_DETAIL = "indi.hitszse2020g6.wakeapp.UNIQUE_ID_FOR_MAIN_TO_AFFAIR_DETAIL"

@@ -7,6 +7,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#ffffff"
-        android:text="设置事件结束时间" />
+        android:text="@string/set_thing_end_time" />
 
 </LinearLayout>

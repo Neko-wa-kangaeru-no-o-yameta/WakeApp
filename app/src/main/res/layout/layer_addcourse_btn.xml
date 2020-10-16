@@ -8,6 +8,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#000000"
-        android:text="新建课程或导入课程表"/>
+        android:text="@string/import_schedule"/>
 </LinearLayout>
 

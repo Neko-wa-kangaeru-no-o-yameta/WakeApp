@@ -4,7 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -13,16 +14,13 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
+import com.binioter.guideview.Component
+import com.binioter.guideview.GuideBuilder
 import indi.hitszse2020g6.wakeapp.dummy.CourseWeek
-import indi.hitszse2020g6.wakeapp.eventDetail.EventDetailList
-import indi.hitszse2020g6.wakeapp.eventDetail.EventReminderList
-import indi.hitszse2020g6.wakeapp.eventDetail.MyDescriptionRecyclerViewAdapter
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import indi.hitszse2020g6.wakeapp.eventDetail.*
+import kotlinx.android.synthetic.main.activity_schedule_detail.*
+import kotlinx.android.synthetic.main.course_add_activity.*
 
 const val RESULT_ADD_NEW_COURSE = 5
 const val UNIQUE_COURSE_DETAIL = "indi.hitszse2020g6.wakeapp.UNIQUE_COURSE_DETAIL"
@@ -362,6 +360,14 @@ class CourseAddActivity : AppCompatActivity(),
             setResult(RESULT_ADD_NEW_COURSE, data)
             finish()
         }
+
+        var mySharedPreferences = getSharedPreferences("new_user", Context.MODE_PRIVATE)
+        if (mySharedPreferences.getBoolean("isNewAddCourse", true)) {
+            addCourseDetail_courseName.post { showCouseNameGuideView() }
+            var editor = mySharedPreferences.edit()
+            editor.putBoolean("isNewAddCourse", false)
+            editor.apply()
+        }
     }
     //选择星期的dialog
     override fun onDialogPositiveClickForWeek(dialog: DialogFragment) {
@@ -497,6 +503,271 @@ class CourseAddActivity : AppCompatActivity(),
             editor.putBoolean("changed",false)
             editor.apply()
             ThemeColors.setNewThemeColor(this,red,green,blue)
+        }
+    }
+
+    private fun showCouseNameGuideView(){
+        val builder = GuideBuilder()
+        builder.setTargetView(addCourseDetail_courseName).setAlpha(150).setHighTargetPadding(10)
+            .setHighTargetGraphStyle(Component.ROUNDRECT)
+        builder.setOnVisibilityChangedListener(object : GuideBuilder.OnVisibilityChangedListener {
+            override fun onShown() {}
+            override fun onDismiss() {
+                showCourseMuteGuideView()
+            }
+        })
+        builder.addComponent(CourseTitleComponent())
+        val guide = builder.createGuide()
+        guide.show(this)
+    }
+
+    class CourseTitleComponent:Component{
+        override fun getView(inflater: LayoutInflater?): View {
+            var ll: LinearLayout = inflater?.inflate(R.layout.layer_course_title, null) as LinearLayout
+            return ll
+        }
+
+        override fun getAnchor(): Int {
+            return Component.ANCHOR_RIGHT
+        }
+
+        override fun getFitPosition(): Int {
+            return Component.FIT_END
+        }
+
+        override fun getXOffset(): Int {
+            return 20
+        }
+
+        override fun getYOffset(): Int {
+            return -20
+        }
+    }
+
+    private fun showCourseMuteGuideView(){
+        val builder = GuideBuilder()
+        builder.setTargetView(course_mute).setAlpha(150).setHighTargetPadding(5)
+            .setHighTargetGraphStyle(Component.CIRCLE)
+        builder.setOnVisibilityChangedListener(object : GuideBuilder.OnVisibilityChangedListener {
+            override fun onShown() {}
+            override fun onDismiss() {
+                showCourseFocusGuideView()
+            }
+        })
+        builder.addComponent(ScheduleDetailActivity.muteComponent())
+        val guide = builder.createGuide()
+        guide.show(this)
+    }
+
+    private fun showCourseFocusGuideView(){
+        val builder = GuideBuilder()
+        builder.setTargetView(course_focus).setAlpha(150).setHighTargetPadding(5)
+            .setHighTargetGraphStyle(Component.CIRCLE)
+        builder.setOnVisibilityChangedListener(object : GuideBuilder.OnVisibilityChangedListener {
+            override fun onShown() {}
+            override fun onDismiss() {
+                showCourseAlarmGuideView()
+            }
+        })
+        builder.addComponent(ScheduleDetailActivity.scheduleFocusComponent())
+        val guide = builder.createGuide()
+        guide.show(this)
+    }
+
+    private fun showCourseAlarmGuideView(){
+        val builder = GuideBuilder()
+        builder.setTargetView(course_alarm).setAlpha(150).setHighTargetPadding(5)
+            .setHighTargetGraphStyle(Component.CIRCLE)
+        builder.setOnVisibilityChangedListener(object : GuideBuilder.OnVisibilityChangedListener {
+            override fun onShown() {}
+            override fun onDismiss() {
+                showLocationInfoGuideView()
+            }
+        })
+        builder.addComponent(AffairDetailActivity.alarmComponent())
+        val guide = builder.createGuide()
+        guide.show(this)
+    }
+
+    private fun showLocationInfoGuideView(){
+        val builder = GuideBuilder()
+        builder.setTargetView(addCourseDetail_courseAddress).setAlpha(150).setHighTargetPadding(5)
+            .setHighTargetGraphStyle(Component.ROUNDRECT)
+        builder.setOnVisibilityChangedListener(object : GuideBuilder.OnVisibilityChangedListener {
+            override fun onShown() {}
+            override fun onDismiss() {
+                showChangeCourseTimeGuideView()
+            }
+        })
+        builder.addComponent(locationInfoComponent())
+        val guide = builder.createGuide()
+        guide.show(this)
+    }
+
+    class locationInfoComponent:Component{
+        override fun getView(inflater: LayoutInflater?): View {
+            var ll: LinearLayout = inflater?.inflate(R.layout.layer_course_loc, null) as LinearLayout
+            return ll
+        }
+
+        override fun getAnchor(): Int {
+            return Component.ANCHOR_RIGHT
+        }
+
+        override fun getFitPosition(): Int {
+            return Component.FIT_END
+        }
+
+        override fun getXOffset(): Int {
+            return 20
+        }
+
+        override fun getYOffset(): Int {
+            return -10
+        }
+    }
+
+    private fun showChangeCourseTimeGuideView(){
+        val builder = GuideBuilder()
+        builder.setTargetView(courseDetail_timeAddCard_week).setAlpha(150).setHighTargetPadding(5)
+            .setHighTargetGraphStyle(Component.ROUNDRECT)
+        builder.setOnVisibilityChangedListener(object : GuideBuilder.OnVisibilityChangedListener {
+            override fun onShown() {}
+            override fun onDismiss() {
+                showAddCourseTimeGuideView()
+            }
+        })
+        builder.addComponent(changeCourseTimeComponent())
+        val guide = builder.createGuide()
+        guide.show(this)
+    }
+
+    class changeCourseTimeComponent:Component{
+        override fun getView(inflater: LayoutInflater?): View {
+            var ll: LinearLayout = inflater?.inflate(R.layout.layer_set_course_time, null) as LinearLayout
+            return ll
+        }
+
+        override fun getAnchor(): Int {
+            return Component.ANCHOR_TOP
+        }
+
+        override fun getFitPosition(): Int {
+            return Component.FIT_END
+        }
+
+        override fun getXOffset(): Int {
+            return 0
+        }
+
+        override fun getYOffset(): Int {
+            return -10
+        }
+    }
+
+    private fun showAddCourseTimeGuideView(){
+        val builder = GuideBuilder()
+        builder.setTargetView(CourseAddDetail_addCourseTime).setAlpha(150).setHighTargetPadding(5)
+            .setHighTargetGraphStyle(Component.CIRCLE)
+        builder.setOnVisibilityChangedListener(object : GuideBuilder.OnVisibilityChangedListener {
+            override fun onShown() {}
+            override fun onDismiss() {
+                showAddDetailGuideView()
+            }
+        })
+        builder.addComponent(addCourseTimeComponent())
+        val guide = builder.createGuide()
+        guide.show(this)
+    }
+
+    class addCourseTimeComponent:Component{
+        override fun getView(inflater: LayoutInflater?): View {
+            var ll: LinearLayout = inflater?.inflate(R.layout.layer_add_course_time, null) as LinearLayout
+            return ll
+        }
+
+        override fun getAnchor(): Int {
+            return Component.ANCHOR_LEFT
+        }
+
+        override fun getFitPosition(): Int {
+            return Component.FIT_END
+        }
+
+        override fun getXOffset(): Int {
+            return -20
+        }
+
+        override fun getYOffset(): Int {
+            return -20
+        }
+    }
+
+    private fun showAddDetailGuideView(){
+        val builder = GuideBuilder()
+        builder.setTargetView(CourseDescription_Add).setAlpha(150).setHighTargetPadding(5)
+            .setHighTargetGraphStyle(Component.CIRCLE)
+        builder.setOnVisibilityChangedListener(object : GuideBuilder.OnVisibilityChangedListener {
+            override fun onShown() {}
+            override fun onDismiss() {
+                showAddReminderGuideView()
+            }
+        })
+        builder.addComponent(AffairDetailActivity.addDetailComponent())
+        val guide = builder.createGuide()
+        guide.show(this)
+    }
+
+    private fun showAddReminderGuideView(){
+        val builder = GuideBuilder()
+        builder.setTargetView(CourseReminder_Add).setAlpha(150).setHighTargetPadding(5)
+            .setHighTargetGraphStyle(Component.CIRCLE)
+        builder.setOnVisibilityChangedListener(object : GuideBuilder.OnVisibilityChangedListener {
+            override fun onShown() {}
+            override fun onDismiss() {
+                showDeleteCourseGuideView()
+            }
+        })
+        builder.addComponent(AffairDetailActivity.addReminderComponent())
+        val guide = builder.createGuide()
+        guide.show(this)
+    }
+
+    private fun showDeleteCourseGuideView(){
+//        scrollView.fullScroll(ScrollView.FOCUS_DOWN)
+
+        val builder = GuideBuilder()
+        builder.setTargetView(deleteCard).setAlpha(150).setHighTargetPadding(5)
+            .setHighTargetGraphStyle(Component.ROUNDRECT)
+        builder.setOnVisibilityChangedListener(object : GuideBuilder.OnVisibilityChangedListener {
+            override fun onShown() {}
+            override fun onDismiss() {}
+        })
+        builder.addComponent(deleteCourseComponent())
+        val guide = builder.createGuide()
+        guide.show(this)
+    }
+
+    class deleteCourseComponent:Component{
+        override fun getView(inflater: LayoutInflater?): View {
+            var ll: LinearLayout = inflater?.inflate(R.layout.layer_delete_course, null) as LinearLayout
+            return ll
+        }
+
+        override fun getAnchor(): Int {
+            return Component.ANCHOR_TOP
+        }
+
+        override fun getFitPosition(): Int {
+            return Component.FIT_END
+        }
+
+        override fun getXOffset(): Int {
+            return 0
+        }
+
+        override fun getYOffset(): Int {
+            return -40
         }
     }
 }

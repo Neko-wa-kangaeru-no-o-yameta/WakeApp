@@ -113,4 +113,21 @@
     <string name="RepeatTypeDialogTitle">选择重复类型</string>
     <string name="eventDetail_repeatTitleText">重复方式</string>
     <string name="eventDetail_repeatTextNoRepeat">不重复</string>
+    <string name="add_course_time">新增课程时间</string>
+    <string name="add_thing_detail">新增事件备注</string>
+    <string name="add_thing_reminder">添加事件提醒</string>
+    <string name="set_thing_repeat">设置事件重复方式</string>
+    <string name="import_schedule">新建课程或导入课程表</string>
+    <string name="add_new_thing">新建事务或日程</string>
+    <string name="add_thing_title">设置事件标题</string>
+    <string name="set_alarm">是否开启闹铃提醒</string>
+    <string name="add_course_loc">添加课程地点</string>
+    <string name="set_course_name">设置课程名称</string>
+    <string name="choose_delete">下拉点击删除按钮可删除课程喔</string>
+    <string name="set_open_focuse">是否开启专注</string>
+    <string name="scroll_set_time">滑动选择计时时长</string>
+    <string name="set_course_time">设置课程时间</string>
+    <string name="set_thing_end_time">设置事件结束时间</string>
+    <string name="click_start_focus">点击此处开始一次计时</string>
+    <string name="set_thing_start_time">设置事件开始时间</string>
 </resources>
