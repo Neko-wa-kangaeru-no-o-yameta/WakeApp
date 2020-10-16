@@ -2,6 +2,7 @@ package indi.hitszse2020g6.wakeapp
 
 import android.Manifest
 import android.app.Activity
+import android.app.Activity.RESULT_CANCELED
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -114,7 +115,15 @@ class ScheduleFragment : Fragment() {
             setOnActionSelectedListener { actionItems ->
                 when (actionItems.id) {
                     R.id.scheduleFragment_speedDialNewExcel -> {
-                        getCourseFile.launch("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+                        val chooseFile = Intent(Intent.ACTION_GET_CONTENT).apply {
+                            addCategory(Intent.CATEGORY_OPENABLE)
+                            type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                        }
+                        startActivityForResult(
+                            chooseFile,
+                            INTENT_ID_GET_FILE
+                        )
+//                        getCourseFile.launch("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
                         close()
                         true
                     }
@@ -160,7 +169,15 @@ class ScheduleFragment : Fragment() {
                         .replace(R.id.fragment2, courseFragment)
                         .commit()
                     Toast.makeText(context,"小猫咪帮你更新课程表啦", Toast.LENGTH_SHORT).show()
+            }else if(data == null || resultCode == RESULT_CANCELED){
+                return
+            }else{
+                val uri = data?.data
+                if (uri != null) {
+                    parseCourse(uri)
+                }
             }
+
     }
 
     private  fun parseCourse(uri: Uri) {
