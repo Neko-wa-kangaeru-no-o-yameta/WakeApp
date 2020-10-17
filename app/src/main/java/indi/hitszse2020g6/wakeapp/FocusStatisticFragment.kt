@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.graphics.Color
 import android.text.Layout
 import android.widget.LinearLayout
+import android.widget.Switch
 import android.widget.TextView
 import com.db.williamchart.view.DonutChartView
 import com.db.williamchart.view.HorizontalBarChartView
@@ -20,6 +21,7 @@ import kotlin.collections.LinkedHashMap
 
 //@ExperimentalFeature
 class FocusStatisticFragment : Fragment() {
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,9 +39,25 @@ class FocusStatisticFragment : Fragment() {
         showTodayStatistic(focusFrequency, breakTimes, focusTime)
         val lineSet = linkedMapOf<String,Float>()
         val donutPairSet = linkedMapOf<String,Float>()
-        getChartDataWeek(myDao,lineSet,donutPairSet)
+        getChart(myDao,7L,lineSet,donutPairSet)
         setLineChart(lineSet)
         setDonutChart(donutPairSet, donutColorSet)
+        switch1.setOnCheckedChangeListener {_ , isChecked ->
+            if(isChecked){
+                val lineSetSw = linkedMapOf<String,Float>()
+                val donutPairSetSw = linkedMapOf<String,Float>()
+                getChart(myDao,31L,lineSetSw,donutPairSetSw)
+                lineChart.animate(lineSetSw)
+                setDonutChart(donutPairSetSw, donutColorSet)
+            }
+            else{
+                val lineSetSw = linkedMapOf<String,Float>()
+                val donutPairSetSw = linkedMapOf<String,Float>()
+                getChart(myDao,7L,lineSetSw,donutPairSetSw)
+                lineChart.animate(lineSetSw)
+                setDonutChart(donutPairSetSw, donutColorSet)
+            }
+        }
     }
 
 
@@ -95,24 +113,44 @@ class FocusStatisticFragment : Fragment() {
 
     //chart week statistic
     //产生近7天统计数据列表
-    private fun getChartDataWeek(myDao: RoomDAO,lineSet: LinkedHashMap<String,Float>,donutPairSet: LinkedHashMap<String, Float>) {
+    private fun getChart(myDao: RoomDAO, days:Long ,lineSet: LinkedHashMap<String,Float>,donutPairSet: LinkedHashMap<String, Float>) {
+        lineChartTitle.text = "近 $days 天专注时长统计(分钟)"
         val dayTime = (24 * 60 * 60000).toLong()
         val beginDate = Calendar.getInstance().apply {
             set(Calendar.HOUR_OF_DAY, 0)
             set(Calendar.MINUTE, 0)
             set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)
-        }.timeInMillis - 6 * dayTime
+        }.timeInMillis - (days-1) * dayTime
         val statisticList: List<MyFocusEntry> = myDao.findFocusData(beginDate)
         //计算计时取消的次数和总共的时长,对lineChart使用
         var index = 0
-        for (count in 1..7) {
-            var totalTime = 0L
-            while (index < statisticList.size && statisticList[index].focusDate < beginDate + count * dayTime) {
-                if (!statisticList[index].isCanceled) totalTime += statisticList[index].totalFocusTime
-                index++
+        if(days == 7L){
+            for (count in 1..7) {
+                var totalTime = 0L
+                while (index < statisticList.size && statisticList[index].focusDate < beginDate + count * dayTime) {
+                    if (!statisticList[index].isCanceled) totalTime += statisticList[index].totalFocusTime
+                    index++
+                }
+                lineSet[String.format("%d", count)] = (totalTime.toFloat() / 60)
             }
-            lineSet[String.format("%d", count)] = (totalTime.toFloat() / 60)
+        }
+        else{
+            var tempString = " "
+            for (count in 1..31) {
+                var totalTime = 0L
+                while (index < statisticList.size && statisticList[index].focusDate < beginDate + count * dayTime) {
+                    if (!statisticList[index].isCanceled) totalTime += statisticList[index].totalFocusTime
+                    index++
+                }
+                if(count%2 == 1){
+                    lineSet[String.format("%d", count)] = (totalTime.toFloat() / 60)
+                }
+                else{
+                    lineSet[tempString] = (totalTime.toFloat() / 60)
+                    tempString = "$tempString "
+                }
+            }
         }
         //先统计各标题时长，对donutChart使用
         val donutSet = linkedMapOf<String,Float>()
@@ -206,13 +244,8 @@ class FocusStatisticFragment : Fragment() {
         donutChart.animation.duration = animationDuration
         donutChart.donutColors = ColorSet
         donutChart.donutTotal = setDonutTotal(donutSet)
-        val height = donutChart.measuredHeight
-        //donutChart.donutThickness = height.toFloat()/2
         donutChart.animate(donutSet)
     }
-
-
-
 
     companion object {
         //constant DAO
@@ -234,15 +267,5 @@ class FocusStatisticFragment : Fragment() {
         private var focusFrequency = 0
         private var breakTimes = 0
         private var focusTime = 0
-//        private var donutPairSet = linkedMapOf<String, Float>(
-//            "A" to 100f,
-//            "B" to 100f,
-//            "C" to 200f,
-//            "D" to 200f,
-//            "E" to 300f,
-//            "F" to 400f,
-//            "G" to 500f
-//        )
-
     }
 }
