@@ -1,5 +1,7 @@
 package indi.hitszse2020g6.wakeapp
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -15,10 +17,12 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import indi.hitszse2020g6.wakeapp.AppRoomDB
 import indi.hitszse2020g6.wakeapp.R
+import kotlinx.android.synthetic.main.activity_choose_schedule_time.*
 import kotlinx.android.synthetic.main.fragment_course.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.util.*
 
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
@@ -53,22 +57,43 @@ class CourseFragment : Fragment() {
 
         val tabLayout = view.findViewById<TabLayout>(R.id.tab_layout) ?: return
         val viewPager2 = view.findViewById<ViewPager2>(R.id.viewPager2) ?: return
-
+        var week:Int = 0
 
 
         //为ViewPager2设置适配器
         Log.d("CourseFragment", "got view")
-            val maxWeek = 17
-            val myAdapter =  MyViewPageAdapter(this@CourseFragment)
-            if (maxWeek != null) {
-                myAdapter.maxWeek = maxWeek
-            }
-            viewPager2.adapter = myAdapter
-//            requireActivity().findViewById<ViewPager2>(R.id.viewPager2).currentItem = 2
+        val maxWeek = 17
+        val myAdapter =  MyViewPageAdapter(this@CourseFragment)
+        if (maxWeek != null) {
+            myAdapter.maxWeek = maxWeek
+        }
+        var mySharedPreferences: SharedPreferences = requireActivity().getSharedPreferences(
+            "schedule_time",
+            Context.MODE_PRIVATE
+        )
+
+
+        if(mySharedPreferences.getLong("startTime", -1).toInt() !=-1){
+            val calendar = Calendar.getInstance()
+
+            val startTime = mySharedPreferences.getLong("startTime", -1)
+            val stopTime = System.currentTimeMillis()
+            calendar.firstDayOfWeek = Calendar.MONDAY
+            calendar.time = Date(startTime)
+            val startWeekMonday = calendar.timeInMillis
+            week = ((stopTime - startWeekMonday)/7/(24*60*60*1000)).toInt()
+            Log.d("get in week",week.toString())
+
+        }
+        Log.d("=====week=============",week.toString())
+        viewPager2.adapter = myAdapter
+        requireActivity().findViewById<ViewPager2>(R.id.viewPager2).currentItem = week
+
             //TODO 这个适配器好像有点毛病那个，设置了currentItem之后有点问题
 
             TabLayoutMediator(tabLayout, viewPager2) { tab, position ->
                 tab.text = "第${position + 1}周"
+
             }.attach()
     }
 

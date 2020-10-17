@@ -67,6 +67,12 @@ class WeekCourseFragment : Fragment() {
         if (requestCode == INTENT_ADD_COURSE) {
             //直接更新
             Log.d("get in2", "get in")
+            param1?.toInt()?.let {
+                requireActivity().findViewById<ViewPager2>(R.id.viewPager2).adapter?.notifyItemChanged(
+                    it
+                )
+//                requireActivity().findViewById<ViewPager2>(R.id.viewPager2).currentItem = it
+            }
             updateCourseCardView()
             if(resultCode == RESULT_ADD_NEW_COURSE){
                 Toast.makeText(context,"小猫咪帮你更新课程表啦", Toast.LENGTH_SHORT).show()
@@ -75,12 +81,7 @@ class WeekCourseFragment : Fragment() {
             }
 
         }
-        param1?.toInt()?.let {
-            requireActivity().findViewById<ViewPager2>(R.id.viewPager2).adapter?.notifyItemChanged(
-                it
-            )
-        }
-        requireActivity().findViewById<ViewPager2>(R.id.viewPager2).currentItem = 2
+
 
     }
 
