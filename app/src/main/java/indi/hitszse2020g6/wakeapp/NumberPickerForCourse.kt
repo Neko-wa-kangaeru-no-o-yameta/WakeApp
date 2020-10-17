@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Log
+import android.view.ViewGroup
 import android.widget.NumberPicker
 import androidx.fragment.app.DialogFragment
 
@@ -50,9 +51,9 @@ class TimePickFragment(position: Int): DialogFragment(){
             .setPositiveButton(R.string.dialog_ok,
                 DialogInterface.OnClickListener { dialog, id ->
                     dayOfWeek = npDayOfWeek.value
-                    Log.d("dialog",dayOfWeek.toString())
+                    Log.d("dialog", dayOfWeek.toString())
                     time = npTime.value
-                    listener.onDialogPositiveClickForTime (this)
+                    listener.onDialogPositiveClickForTime(this)
                 })
             .setNegativeButton(R.string.dialog_cancel,
                 DialogInterface.OnClickListener { dialog, id ->
@@ -71,16 +72,16 @@ class TimePickFragment(position: Int): DialogFragment(){
         super.onResume()
         val window = dialog!!.window ?: return
         val params = window.attributes
-//        params.width = ViewGroup.LayoutParams.WRAP_CONTENT
-//        params.height = ViewGroup.LayoutParams.WRAP_CONTENT
+        params.width = ViewGroup.LayoutParams.WRAP_CONTENT
+        params.height = ViewGroup.LayoutParams.WRAP_CONTENT
 
-        params.width = 900
-        params.height = 900
+//        params.width = 900
+//        params.height = 900
         window.attributes = params
     }
 }
 
-class WeekPickerFragment(position:Int) :DialogFragment(){
+class WeekPickerFragment(position: Int) :DialogFragment(){
     var weekBegin: Int = -1
     var weekEnd : Int = -1
     var position :Int = position
@@ -103,11 +104,11 @@ class WeekPickerFragment(position:Int) :DialogFragment(){
         }
     }
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        Log.d("get in--------------------------------------------------","weekPickFragment")
+        Log.d("get in--------------------------------------------------", "weekPickFragment")
         val builder = AlertDialog.Builder(activity)
         val infalter = requireActivity().layoutInflater;
-        builder.context.theme.applyStyle(R.style.MyAlertDialog,true)
-        val view = infalter.inflate(R.layout.week_picker_dailog,null)
+        builder.context.theme.applyStyle(R.style.MyAlertDialog, true)
+        val view = infalter.inflate(R.layout.week_picker_dailog, null)
         val npWeekBegin = view.findViewById<NumberPicker>(R.id.weekPicker1)
         val npWeekEnd = view.findViewById<NumberPicker>(R.id.weekPicker2)
         npWeekBegin.maxValue = 20
@@ -120,14 +121,14 @@ class WeekPickerFragment(position:Int) :DialogFragment(){
 
                     weekBegin = npWeekBegin.value
                     weekEnd = npWeekEnd.value
-                    listener.onDialogPositiveClickForWeek (this)
+                    listener.onDialogPositiveClickForWeek(this)
                 })
             .setNegativeButton(R.string.dialog_cancel,
-            DialogInterface.OnClickListener { dialog, id ->
+                DialogInterface.OnClickListener { dialog, id ->
 
 
-                listener.onDialogNegativeClickForWeek(this)
-            })
+                    listener.onDialogNegativeClickForWeek(this)
+                })
         builder.create()
 
         return builder.create()
@@ -138,11 +139,11 @@ class WeekPickerFragment(position:Int) :DialogFragment(){
         super.onResume()
         val window = dialog!!.window ?: return
         val params = window.attributes
-//        params.width = ViewGroup.LayoutParams.WRAP_CONTENT
-//        params.height = ViewGroup.LayoutParams.WRAP_CONTENT
+        params.width = ViewGroup.LayoutParams.WRAP_CONTENT
+        params.height = ViewGroup.LayoutParams.WRAP_CONTENT
 
-        params.width = 900
-        params.height = 900
+//        params.width = 900
+//        params.height = 900
         window.attributes = params
     }
 }
@@ -172,14 +173,14 @@ class CourseChangeSelectFragment :DialogFragment(){
         val builder = AlertDialog.Builder(activity)
         val infalter = requireActivity().layoutInflater;
         builder.setTitle(R.string.pick_topic)
-            .setSingleChoiceItems(R.array.selectChoice,-1,
+            .setSingleChoiceItems(R.array.selectChoice, -1,
                 DialogInterface.OnClickListener { dialog, which ->
                     selectItem = which
                 }
             )
             .setPositiveButton(R.string.dialog_ok,
                 DialogInterface.OnClickListener { dialog, which ->
-                    Log.d("selectItem",selectItem.toString())
+                    Log.d("selectItem", selectItem.toString())
                     listener.onDialogPositiveClickForCourseChangeSelect(this)
                 })
             .setNegativeButton(R.string.dialog_cancel,
@@ -189,4 +190,49 @@ class CourseChangeSelectFragment :DialogFragment(){
         builder.create()
         return builder.create()
     }
+}
+
+class SelectCoursePickFragment(repeatList: List<Course>): DialogFragment(){
+    val repeatList:List<Course> = repeatList
+    var selectItem :Int = 0
+    internal lateinit var listener:SelectCoursePickDailogListner
+    interface SelectCoursePickDailogListner{
+        fun onDialogPositiveClickForSelectCoursePick(dialog: DialogFragment)
+        fun onDialogNegativeClickForSelectCoursePick(dialog: DialogFragment)
+    }
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        try {
+            listener = context as SelectCoursePickDailogListner
+        }catch (e: ClassCastException) {
+            throw ClassCastException(
+                (context.toString() +
+                        " must implement SelectCoursePickFragment")
+            )
+        }
+    }
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val course = repeatList.first()
+        val builder = AlertDialog.Builder(activity)
+        val infalter = requireActivity().layoutInflater;
+        builder.setTitle(this.getString(R.string.pick_topic2).format(
+            course.week,
+            course.dayOfWeek,
+            course.time,
+            course.courseName
+        ))
+            .setSingleChoiceItems(R.array.selectChoice,-1,
+                DialogInterface.OnClickListener { dialog, which ->
+                selectItem = which
+            })
+            .setPositiveButton(R.string.dialog_ok,DialogInterface.OnClickListener { dialog, which ->
+                listener.onDialogPositiveClickForSelectCoursePick(this)
+            })
+            .setNegativeButton(R.string.dialog_cancel,DialogInterface.OnClickListener { dialog, which ->
+                listener.onDialogNegativeClickForSelectCoursePick(this)
+            })
+        builder.create()
+        return builder.create()
+    }
+
 }

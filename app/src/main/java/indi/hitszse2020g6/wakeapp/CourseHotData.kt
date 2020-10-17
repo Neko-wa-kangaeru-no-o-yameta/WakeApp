@@ -30,14 +30,20 @@ object CourseList{
         }
     }
 
-    fun importClass(resultList: List<Course>){
+    fun importClassWithoutRepeat(resultList: List<Course>,repeatList : List<Course>){
+        //将重复的删掉
+        val resultList = resultList.toMutableList()
+        courseList.removeAll(repeatList)
+        resultList.addAll(courseList)
         courseList.clear()
-        courseList = resultList.toMutableList()
+        courseList = resultList
         GlobalScope.launch(Dispatchers.IO){
             val idList = DAO.importClass(resultList)
-            for(i in idList.indices){
+            for (i in idList.indices){
                 courseList[i].courseId = idList[i]
+
             }
+
         }
     }
 
@@ -82,7 +88,7 @@ object CourseList{
         return courseFindById
     }
 
-    fun selectCourseByTime(week: Int, dayOfWeek: Int, time: Int):List<Course>{
+      fun selectCourseByTime(week: Int, dayOfWeek: Int, time: Int):List<Course>{
         val courseFindByTime = arrayListOf<Course>()
         for(item in courseList){
             if((item.time == time)&&(item.dayOfWeek == dayOfWeek)&&(item.week == week)){
@@ -93,19 +99,24 @@ object CourseList{
     }
 
     fun insertCourse(course: Course){
-        Log.d("courseName=========",course.courseName)
         courseList.add(course)
         GlobalScope.launch(Dispatchers.IO){
             courseList.last().courseId =  DAO.insertCourse(course)
+            Log.d("insetCourseId",courseList.last().courseId.toString())
         }
-
-
     }
+
     fun deleteCourseById(courseId: Long){
         var pos = -1
         for(i in 0 until courseList.size){
             if(courseList[i].courseId == courseId){
                 pos = i
+                Log.d("=====3pos3=====",pos.toString())
+                Log.d("courseId", courseList[i].courseId.toString())
+                Log.d("courseNamge", courseList[i].courseName)
+                Log.d("courseWeek", courseList[i].week.toString())
+                Log.d("dayOfWeek", courseList[i].dayOfWeek.toString())
+                Log.d("time", courseList[i].time.toString())
             }
         }
 
