@@ -86,7 +86,7 @@ class CourseFragment : Fragment() {
 
         }
         Log.d("=====week=============",week.toString())
-        requireActivity().findViewById<ViewPager2>(R.id.viewPager2).adapter = myAdapter
+        viewPager2.adapter = myAdapter
         requireActivity().findViewById<ViewPager2>(R.id.viewPager2).currentItem = week
 
             //TODO 这个适配器好像有点毛病那个，设置了currentItem之后有点问题
