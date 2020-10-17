@@ -3,6 +3,7 @@ package indi.hitszse2020g6.wakeapp.eventDetail
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -19,10 +20,19 @@ import com.binioter.guideview.GuideBuilder
 import indi.hitszse2020g6.wakeapp.*
 import indi.hitszse2020g6.wakeapp.mainPage.MainPageEventList
 import kotlinx.android.synthetic.main.activity_schedule_detail.*
+import kotlinx.coroutines.selects.select
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 import java.util.*
 import kotlin.collections.ArrayList
 
 const val UNIQUE_ID_TO_SCHEDULE_DETAIL = "indi.hitszse2020g6.wakeapp.UNIQUE_ID_FOR_MAIN_TO_SCHEDULE_DETAIL"
+
+const val REQUEST_SCHEDULE_DETAIL_TO_WHITELIST = 1001
+
+const val PARAM_SCHEDULE_DETAIL_TO_WHITELIST_JSON = "indi.hitszse2020g6.wakeapp.PARAM_SCHEDULE_DETAIL_TO_WHITELIST_JSON"
+const val PARAM_WHITELIST_TO_SCHEDULE_DETAIL_JSON = "indi.hitszse2020g6.wakeapp.PARAM_WHITELIST_TO_SCHEDULE_DETAIL_JSON"
 
 class MyTime {
     var year    : Int
@@ -245,12 +255,37 @@ class ScheduleDetailActivity :
             }
         }
 
+        findViewById<Button>(R.id.scheduleDetail_EditWhiteList).setOnClickListener {
+            Log.d("ScheduleDetailActivity", "Starting White list selection")
+            Log.d("ScheduleDetailActivity", "Initial value: $whiteList")
+            val str = Json.encodeToString(whiteList)
+            Log.d("ScheduleDetailActivity", "Json value: $str")
+            val intent = Intent(this, ChooseWhiteListActivity::class.java)
+            intent.putExtra(PARAM_SCHEDULE_DETAIL_TO_WHITELIST_JSON, str)
+            startActivityForResult(intent, REQUEST_SCHEDULE_DETAIL_TO_WHITELIST)
+        }
+
         var mySharedPreferences = getSharedPreferences("new_user", Context.MODE_PRIVATE)
         if (mySharedPreferences.getBoolean("isNewAddScheduleFragment", true)) {
             scheduleDetail_eventTitle.post { showTitleGuideView() }
             var editor = mySharedPreferences.edit()
             editor.putBoolean("isNewAddScheduleFragment", false)
             editor.apply()
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        Log.d("ScheduleDetailActivity", "onActivityResult for requestCode = $requestCode and resultCode = $resultCode.")
+        if(requestCode == REQUEST_SCHEDULE_DETAIL_TO_WHITELIST && resultCode == RESULT_OK) {
+            val selected = intent.getStringExtra(PARAM_WHITELIST_TO_SCHEDULE_DETAIL_JSON)
+            if(selected != null) {
+                Log.d("ScheduleDetailActivity", "Got $selected.")
+                whiteList = Json.decodeFromString(selected)
+                Log.d("ScheduleDetailActivity", "Parse result: $whiteList.")
+            } else {
+                Log.d("ScheduleDetailActivity", "EMPTY RETURN FOR $REQUEST_SCHEDULE_DETAIL_TO_WHITELIST.")
+            }
         }
     }
 

@@ -233,7 +233,6 @@
                     android:layout_marginVertical="16dp"
                     app:cardCornerRadius="5dp"
                     app:contentPadding="8dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/scheduleDetail_repeatTitleText">
 
@@ -242,7 +241,29 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical" />
+
+
                 </androidx.cardview.widget.CardView>
+
+                <View
+                    android:id="@+id/divider6"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginVertical="16dp"
+                    android:background="?android:attr/listDivider"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/scheduleDetail_repeatCard" />
+
+                <Button
+                    android:id="@+id/scheduleDetail_EditWhiteList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:text="@string/set_white_list"
+                    android:gravity="left|center_vertical"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/divider6" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
