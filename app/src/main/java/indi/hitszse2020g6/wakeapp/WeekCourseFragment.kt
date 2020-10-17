@@ -80,7 +80,7 @@ class WeekCourseFragment : Fragment() {
                 it
             )
         }
-        requireActivity().findViewById<ViewPager2>(R.id.viewPager2).currentItem = 2
+        requireActivity().findViewById<ViewPager2>(R.id.viewPager2).currentItem = param1!!
 
     }
 
