@@ -32,6 +32,7 @@
     <string name="DeleteCourse">删除课程</string>
     <string name="LittleCatSays">小猫咪说你的课程时间的设置错了，检查一下噢</string>
     <string name="pick_topic">选一下想应用到哪儿啦</string>
+    <string name="pick_topic2">小猫咪检测到导入课程表中有课程与第%1$d周，%2$s，第%3$d大节,%4$s等课程冲突了噢</string>
     <string name="courseDetailChange">课程修改</string>
     <string name="courseDetailAdd">课程新增</string>
     <string name="eventDetail_addDetail">Add detail</string>
@@ -68,6 +69,7 @@
     <string name="eventList_startTimeTVContent">开始于%02d月%02d日 %02d:%02d</string>
     <string name="eventList_stopTimeTVContent">结束于%02d月%02d日 %02d:%02d</string>
     <string name="courseDetail_timeContent">%1$s，第%2$d大节</string>
+    <string name="repeatCourseDetail_forDialog">第%1$d周，%2$s，第%3$d大节,%4$s</string>
     <string name="courseDetail_timeContentWeek">第%d周至第%d周</string>
     <string name="节次">节次</string>
     <string name="第一大节">第一大节</string>

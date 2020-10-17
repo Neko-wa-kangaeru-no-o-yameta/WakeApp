@@ -58,6 +58,7 @@ class CourseAddActivity : AppCompatActivity(),
     private var repeatCourse:String = ""
     private var repeatCourseDate = CourseDate()
     private val resultList = arrayListOf<CourseDate>()
+    private val resultCoruseList = ArrayList<Course>()
     companion object {
         var detail = CourseDetails()
     }
@@ -227,9 +228,11 @@ class CourseAddActivity : AppCompatActivity(),
                                             EventDetailList.ITEMS.toList(),
                                             EventReminderList.ITEMS.toList()
                                         )
-                                        CourseList.insertCourse(course)
+                                        resultCoruseList.add(course)
                                     }
                                 }
+                                val repeatList = ArrayList<Course>()
+                                CourseList.importClassWithoutRepeat(resultCoruseList,repeatList)
                                 val data = Intent()
                                 setResult(RESULT_ADD_NEW_COURSE, data)
                                 finish()

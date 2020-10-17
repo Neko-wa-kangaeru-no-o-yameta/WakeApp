@@ -32,4 +32,11 @@
         <item>只应用于这个时间段的这节课噢</item>
         <item>应用到所有时间段的这节课噢</item>
     </string-array>
+
+    <string-array name="selectChoice2">
+        <item>等一等，让我瞅瞅是啥情况，先不导入了</item>
+        <item>管他呢，覆盖掉好了        </item>
+    </string-array>
+
+
 </resources>

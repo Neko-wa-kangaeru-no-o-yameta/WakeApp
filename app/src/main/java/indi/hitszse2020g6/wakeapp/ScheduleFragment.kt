@@ -15,21 +15,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import com.binioter.guideview.Component
 import com.binioter.guideview.GuideBuilder
 import com.leinardi.android.speeddial.SpeedDialView
-import kotlinx.android.synthetic.main.fragment_main_page.*
 import kotlinx.android.synthetic.main.fragment_schedule.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import java.io.FileInputStream
 
@@ -59,13 +53,16 @@ val courseTime = Regex("第.*节")
 val courseRegex = Regex("""[^,].*?\[.*?周]\[.*?]""")
 val weekPattern = Regex("[0-9]*-[0-9]*|[0-9]*")
 
-class ScheduleFragment : Fragment() {
-
-    private val getCourseFile =
-        registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-            parseCourse(uri)
-
-        }
+class ScheduleFragment : Fragment(),
+    SelectCoursePickFragment.SelectCoursePickDailogListner{
+    private val repeatList = arrayListOf<Course>()
+    private var resultCourse = ArrayList<Course>()
+    private val chineseWeek = arrayOf("星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日")
+//    private val getCourseFile =
+//        registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+//            parseCourse(uri)
+//
+//        }
 
     // TODO: Rename and change types of parameters
     private var param1: String? = null
@@ -168,7 +165,12 @@ class ScheduleFragment : Fragment() {
                     childFragmentManager.beginTransaction()
                         .replace(R.id.fragment2, courseFragment)
                         .commit()
+                if(resultCode == RESULT_ADD_NEW_COURSE){
                     Toast.makeText(context,"小猫咪帮你更新课程表啦", Toast.LENGTH_SHORT).show()
+                }else{
+                    Toast.makeText(context,"小猫咪没敢动你的课表噢", Toast.LENGTH_SHORT).show()
+                }
+
             }else if(data == null || resultCode == RESULT_CANCELED){
                 return
             }else{
@@ -202,13 +204,28 @@ class ScheduleFragment : Fragment() {
                 }
             }
         }
+        repeatList.clear()
+        //对resultList做是否冲突排查
+        resultCourse = resultList
+        for (item in resultList){
+            val repeat= CourseList.selectCourseByTime(item.week,item.dayOfWeek,item.time)
+            repeatList.addAll(repeat)
+        }
+        if(repeatList.isNotEmpty()){
+            Toast.makeText(context,
+                "小猫咪说你已经有已经有" +
+                        "第${repeatList.first().week}周${chineseWeek[repeatList.first().dayOfWeek - 1]}" +
+                        "第${repeatList.first().time}节的${repeatList.first().courseName}等${repeatList.size}门课程啦，" +
+                        "请检查无误后再添加噢",Toast.LENGTH_LONG).show()
+        }else{
+            CourseList.importClassWithoutRepeat(resultList,repeatList)
+            requireActivity().setPerCourseColor()
+            val courseFragment = CourseFragment.newInstance()
+            childFragmentManager.beginTransaction()
+                .replace(R.id.fragment2, courseFragment)
+                .commit()
+        }
 
-        CourseList.importClass(resultList)
-        requireActivity().setPerCourseColor()
-        val courseFragment = CourseFragment.newInstance()
-        childFragmentManager.beginTransaction()
-            .replace(R.id.fragment2, courseFragment)
-            .commit()
 
     }
 
@@ -348,11 +365,28 @@ class ScheduleFragment : Fragment() {
         }
 
     }
+
+    override fun onDialogPositiveClickForSelectCoursePick(dialog: DialogFragment) {
+        val pos = (dialog as SelectCoursePickFragment).selectItem
+        if(pos == 1){
+            //决定将它覆盖掉
+            CourseList.importClassWithoutRepeat(resultCourse,repeatList)
+        }
+        requireActivity().setPerCourseColor()
+        val courseFragment = CourseFragment.newInstance()
+        childFragmentManager.beginTransaction()
+            .replace(R.id.fragment2, courseFragment)
+            .commit()
+    }
+
+    override fun onDialogNegativeClickForSelectCoursePick(dialog: DialogFragment) {
+
+    }
 }
 
 fun Activity.setPerCourseColor() {
     //得到课程表中所有课程所对应的颜色
-    Log.d("get color", "get color")
+    Log.d("===get color===", "===get color===")
     //todo 修改颜色：
     val colorList = arrayOf(
         getColor(R.color.CourseTableColor1),

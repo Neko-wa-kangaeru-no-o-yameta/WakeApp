@@ -64,8 +64,9 @@ class CourseFragment : Fragment() {
                 myAdapter.maxWeek = maxWeek
             }
             viewPager2.adapter = myAdapter
+//            requireActivity().findViewById<ViewPager2>(R.id.viewPager2).currentItem = 2
             //TODO 这个适配器好像有点毛病那个，设置了currentItem之后有点问题
-            viewPager2.currentItem = 1
+
             TabLayoutMediator(tabLayout, viewPager2) { tab, position ->
                 tab.text = "第${position + 1}周"
             }.attach()
