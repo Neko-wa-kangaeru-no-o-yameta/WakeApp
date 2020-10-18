@@ -19,7 +19,6 @@ import com.binioter.guideview.Component
 import com.binioter.guideview.GuideBuilder
 import indi.hitszse2020g6.wakeapp.dummy.CourseWeek
 import indi.hitszse2020g6.wakeapp.eventDetail.*
-import kotlinx.android.synthetic.main.activity_schedule_detail.*
 import kotlinx.android.synthetic.main.course_add_activity.*
 
 const val RESULT_ADD_NEW_COURSE = 5
@@ -368,10 +367,10 @@ class CourseAddActivity : AppCompatActivity(),
             finish()
         }
 
-        var mySharedPreferences = getSharedPreferences("new_user", Context.MODE_PRIVATE)
+        val mySharedPreferences = getSharedPreferences("new_user", Context.MODE_PRIVATE)
         if (mySharedPreferences.getBoolean("isNewAddCourse", true)) {
             addCourseDetail_courseName.post { showCouseNameGuideView() }
-            var editor = mySharedPreferences.edit()
+            val editor = mySharedPreferences.edit()
             editor.putBoolean("isNewAddCourse", false)
             editor.apply()
         }
@@ -530,8 +529,7 @@ class CourseAddActivity : AppCompatActivity(),
 
     class CourseTitleComponent:Component{
         override fun getView(inflater: LayoutInflater?): View {
-            var ll: LinearLayout = inflater?.inflate(R.layout.layer_course_title, null) as LinearLayout
-            return ll
+            return inflater?.inflate(R.layout.layer_course_title, null) as LinearLayout
         }
 
         override fun getAnchor(): Int {
@@ -561,7 +559,7 @@ class CourseAddActivity : AppCompatActivity(),
                 showCourseFocusGuideView()
             }
         })
-        builder.addComponent(ScheduleDetailActivity.muteComponent())
+        builder.addComponent(ScheduleDetailActivity.MuteComponent())
         val guide = builder.createGuide()
         guide.show(this)
     }
@@ -576,7 +574,7 @@ class CourseAddActivity : AppCompatActivity(),
                 showCourseAlarmGuideView()
             }
         })
-        builder.addComponent(ScheduleDetailActivity.scheduleFocusComponent())
+        builder.addComponent(ScheduleDetailActivity.ScheduleFocusComponent())
         val guide = builder.createGuide()
         guide.show(this)
     }
@@ -591,7 +589,7 @@ class CourseAddActivity : AppCompatActivity(),
                 showLocationInfoGuideView()
             }
         })
-        builder.addComponent(AffairDetailActivity.alarmComponent())
+        builder.addComponent(AffairDetailActivity.AlarmComponent())
         val guide = builder.createGuide()
         guide.show(this)
     }
@@ -613,8 +611,7 @@ class CourseAddActivity : AppCompatActivity(),
 
     class locationInfoComponent:Component{
         override fun getView(inflater: LayoutInflater?): View {
-            var ll: LinearLayout = inflater?.inflate(R.layout.layer_course_loc, null) as LinearLayout
-            return ll
+            return inflater?.inflate(R.layout.layer_course_loc, null) as LinearLayout
         }
 
         override fun getAnchor(): Int {
@@ -644,15 +641,14 @@ class CourseAddActivity : AppCompatActivity(),
                 showAddCourseTimeGuideView()
             }
         })
-        builder.addComponent(changeCourseTimeComponent())
+        builder.addComponent(ChangeCourseTimeComponent())
         val guide = builder.createGuide()
         guide.show(this)
     }
 
-    class changeCourseTimeComponent:Component{
+    class ChangeCourseTimeComponent:Component{
         override fun getView(inflater: LayoutInflater?): View {
-            var ll: LinearLayout = inflater?.inflate(R.layout.layer_set_course_time, null) as LinearLayout
-            return ll
+            return inflater?.inflate(R.layout.layer_set_course_time, null) as LinearLayout
         }
 
         override fun getAnchor(): Int {
@@ -682,15 +678,14 @@ class CourseAddActivity : AppCompatActivity(),
                 showAddDetailGuideView()
             }
         })
-        builder.addComponent(addCourseTimeComponent())
+        builder.addComponent(AddCourseTimeComponent())
         val guide = builder.createGuide()
         guide.show(this)
     }
 
-    class addCourseTimeComponent:Component{
+    class AddCourseTimeComponent:Component{
         override fun getView(inflater: LayoutInflater?): View {
-            var ll: LinearLayout = inflater?.inflate(R.layout.layer_add_course_time, null) as LinearLayout
-            return ll
+            return inflater?.inflate(R.layout.layer_add_course_time, null) as LinearLayout
         }
 
         override fun getAnchor(): Int {
@@ -720,7 +715,7 @@ class CourseAddActivity : AppCompatActivity(),
                 showAddReminderGuideView()
             }
         })
-        builder.addComponent(AffairDetailActivity.addDetailComponent())
+        builder.addComponent(AffairDetailActivity.AddDetailComponent())
         val guide = builder.createGuide()
         guide.show(this)
     }
@@ -735,7 +730,7 @@ class CourseAddActivity : AppCompatActivity(),
                 showDeleteCourseGuideView()
             }
         })
-        builder.addComponent(AffairDetailActivity.addReminderComponent())
+        builder.addComponent(AffairDetailActivity.AddReminderComponent())
         val guide = builder.createGuide()
         guide.show(this)
     }
@@ -750,15 +745,14 @@ class CourseAddActivity : AppCompatActivity(),
             override fun onShown() {}
             override fun onDismiss() {}
         })
-        builder.addComponent(deleteCourseComponent())
+        builder.addComponent(DeleteCourseComponent())
         val guide = builder.createGuide()
         guide.show(this)
     }
 
-    class deleteCourseComponent:Component{
+    class DeleteCourseComponent:Component{
         override fun getView(inflater: LayoutInflater?): View {
-            var ll: LinearLayout = inflater?.inflate(R.layout.layer_delete_course, null) as LinearLayout
-            return ll
+            return inflater?.inflate(R.layout.layer_delete_course, null) as LinearLayout
         }
 
         override fun getAnchor(): Int {

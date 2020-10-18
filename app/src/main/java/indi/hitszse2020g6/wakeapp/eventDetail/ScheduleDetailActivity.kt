@@ -20,7 +20,6 @@ import com.binioter.guideview.GuideBuilder
 import indi.hitszse2020g6.wakeapp.*
 import indi.hitszse2020g6.wakeapp.mainPage.MainPageEventList
 import kotlinx.android.synthetic.main.activity_schedule_detail.*
-import kotlinx.coroutines.selects.select
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
@@ -265,10 +264,10 @@ class ScheduleDetailActivity :
             startActivityForResult(intent, REQUEST_SCHEDULE_DETAIL_TO_WHITELIST)
         }
 
-        var mySharedPreferences = getSharedPreferences("new_user", Context.MODE_PRIVATE)
+        val mySharedPreferences = getSharedPreferences("new_user", Context.MODE_PRIVATE)
         if (mySharedPreferences.getBoolean("isNewAddScheduleFragment", true)) {
             scheduleDetail_eventTitle.post { showTitleGuideView() }
-            var editor = mySharedPreferences.edit()
+            val editor = mySharedPreferences.edit()
             editor.putBoolean("isNewAddScheduleFragment", false)
             editor.apply()
         }
@@ -298,10 +297,10 @@ class ScheduleDetailActivity :
             getSharedPreferences("changeTheme", Context.MODE_PRIVATE)
         if(sharedPreferences.getBoolean("changed",false)){
             val tmp = getSharedPreferences("redGreenBlue", Context.MODE_PRIVATE)
-            var red = tmp.getInt("red",43)
-            var green = tmp.getInt("green",44)
-            var blue = tmp.getInt("blue",48)
-            var editor = sharedPreferences.edit()
+            val red = tmp.getInt("red",43)
+            val green = tmp.getInt("green",44)
+            val blue = tmp.getInt("blue",48)
+            val editor = sharedPreferences.edit()
             editor.putBoolean("changed",false)
             editor.apply()
             ThemeColors.setNewThemeColor(this,red,green,blue)
@@ -403,7 +402,7 @@ class ScheduleDetailActivity :
                 showScheduleMuteGuideView()
             }
         })
-        builder.addComponent(AffairDetailActivity.titleComponent())
+        builder.addComponent(AffairDetailActivity.TitleComponent())
         val guide = builder.createGuide()
         guide.show(this)
     }
@@ -418,15 +417,14 @@ class ScheduleDetailActivity :
                 showScheduleFocusGuideView()
             }
         })
-        builder.addComponent(muteComponent())
+        builder.addComponent(MuteComponent())
         val guide = builder.createGuide()
         guide.show(this)
     }
 
-    class muteComponent:Component{
+    class MuteComponent:Component{
         override fun getView(inflater: LayoutInflater?): View {
-            var ll: LinearLayout = inflater?.inflate(R.layout.layer_mute, null) as LinearLayout
-            return ll
+            return inflater?.inflate(R.layout.layer_mute, null) as LinearLayout
         }
 
         override fun getAnchor(): Int {
@@ -456,15 +454,14 @@ class ScheduleDetailActivity :
                 showScheduleAlarmGuideView()
             }
         })
-        builder.addComponent(scheduleFocusComponent())
+        builder.addComponent(ScheduleFocusComponent())
         val guide = builder.createGuide()
         guide.show(this)
     }
 
-    class scheduleFocusComponent:Component{
+    class ScheduleFocusComponent:Component{
         override fun getView(inflater: LayoutInflater?): View {
-            var ll: LinearLayout = inflater?.inflate(R.layout.layer_focus, null) as LinearLayout
-            return ll
+            return inflater?.inflate(R.layout.layer_focus, null) as LinearLayout
         }
 
         override fun getAnchor(): Int {
@@ -494,7 +491,7 @@ class ScheduleDetailActivity :
                 showSetStartTimeGuideView()
             }
         })
-        builder.addComponent(AffairDetailActivity.alarmComponent())
+        builder.addComponent(AffairDetailActivity.AlarmComponent())
         val guide = builder.createGuide()
         guide.show(this)
     }
@@ -509,15 +506,14 @@ class ScheduleDetailActivity :
                 showSetEndTimeGuideView()
             }
         })
-        builder.addComponent(setStartTimeComponent())
+        builder.addComponent(SetStartTimeComponent())
         val guide = builder.createGuide()
         guide.show(this)
     }
 
-    class setStartTimeComponent:Component{
+    class SetStartTimeComponent:Component{
         override fun getView(inflater: LayoutInflater?): View {
-            var ll: LinearLayout = inflater?.inflate(R.layout.layer_starttime, null) as LinearLayout
-            return ll
+            return inflater?.inflate(R.layout.layer_starttime, null) as LinearLayout
         }
 
         override fun getAnchor(): Int {
@@ -547,7 +543,7 @@ class ScheduleDetailActivity :
                 showAddScheduleDetailGuideView()
             }
         })
-        builder.addComponent(AffairDetailActivity.setEndTimeComponent())
+        builder.addComponent(AffairDetailActivity.SetEndTimeComponent())
         val guide = builder.createGuide()
         guide.show(this)
     }
@@ -562,7 +558,7 @@ class ScheduleDetailActivity :
                 showAddScheduleReminderGuideView()
             }
         })
-        builder.addComponent(AffairDetailActivity.addDetailComponent())
+        builder.addComponent(AffairDetailActivity.AddDetailComponent())
         val guide = builder.createGuide()
         guide.show(this)
     }
@@ -577,7 +573,7 @@ class ScheduleDetailActivity :
                 showScheduleRepeatGuideView()
             }
         })
-        builder.addComponent(AffairDetailActivity.addReminderComponent())
+        builder.addComponent(AffairDetailActivity.AddReminderComponent())
         val guide = builder.createGuide()
         guide.show(this)
     }
@@ -588,10 +584,47 @@ class ScheduleDetailActivity :
             .setHighTargetGraphStyle(Component.ROUNDRECT)
         builder.setOnVisibilityChangedListener(object : GuideBuilder.OnVisibilityChangedListener {
             override fun onShown() {}
-            override fun onDismiss() {}
+            override fun onDismiss() {
+                showEditWhiteListGuideView()
+            }
         })
-        builder.addComponent(AffairDetailActivity.addRepeatComponent())
+        builder.addComponent(AffairDetailActivity.AddRepeatComponent())
         val guide = builder.createGuide()
         guide.show(this)
+    }
+
+    private fun showEditWhiteListGuideView(){
+        val builder = GuideBuilder()
+        builder.setTargetView(scheduleDetail_EditWhiteList).setAlpha(150).setHighTargetPadding(5)
+            .setHighTargetGraphStyle(Component.ROUNDRECT)
+        builder.setOnVisibilityChangedListener(object : GuideBuilder.OnVisibilityChangedListener {
+            override fun onShown() {}
+            override fun onDismiss() {}
+        })
+        builder.addComponent(EditWhiteListComponent())
+        val guide = builder.createGuide()
+        guide.show(this)
+    }
+
+    class EditWhiteListComponent:Component{
+        override fun getView(inflater: LayoutInflater?): View {
+            return inflater?.inflate(R.layout.layer_edit_whitelist, null) as LinearLayout
+        }
+
+        override fun getAnchor(): Int {
+            return Component.ANCHOR_TOP
+        }
+
+        override fun getFitPosition(): Int {
+            return Component.FIT_END
+        }
+
+        override fun getXOffset(): Int {
+            return 0
+        }
+
+        override fun getYOffset(): Int {
+            return -10
+        }
     }
 }

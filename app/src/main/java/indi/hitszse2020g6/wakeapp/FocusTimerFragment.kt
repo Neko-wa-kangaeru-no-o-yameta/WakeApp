@@ -243,7 +243,8 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
                 }
             } else if (condition_flag == -1) {
                 condition_flag = 0
-
+                myCircle.setCountdownTime(0)
+                myCircle.setAnimation(0f)
                 storeTime()
                 val mt = MyFocusEntry(
                     uid = System.currentTimeMillis(),
@@ -355,6 +356,8 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
             //计时结束的操作
             override fun onFinish() {
                 if (startBtn != null) {
+                    myCircle.setCountdownTime(0)
+                    myCircle.setAnimation(0f)
                     startBtn.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.ic_baseline_check_circle_24))
                     setButtonAni(false)
                     Toast.makeText(context, "计时结束", Toast.LENGTH_SHORT).show()
@@ -372,7 +375,7 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
 
     private fun getPreviousCondition() {
         Log.d(TAG, "getPreviousConditon")
-        var distance: Long
+        val distance: Long
         if ((activity as MainActivity).binder != null && (activity as MainActivity).binder?.getConditon()!! > 0 && !(activity as MainActivity).binder?.getIsStored()!!) {
             //第一次进来，后台已经开始计时了
             Log.d(TAG, "Background Service is Timing")

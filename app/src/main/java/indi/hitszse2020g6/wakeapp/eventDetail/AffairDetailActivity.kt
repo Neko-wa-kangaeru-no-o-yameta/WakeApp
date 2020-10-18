@@ -197,10 +197,10 @@ class AffairDetailActivity :
             RepeatTypeDialog().show(supportFragmentManager, "RepeatTypeDialog")
         }
 
-        var mySharedPreferences = getSharedPreferences("new_user", Context.MODE_PRIVATE)
+        val mySharedPreferences = getSharedPreferences("new_user", Context.MODE_PRIVATE)
         if (mySharedPreferences.getBoolean("isNewAddAffairFragment", true)) {
             affairDetail_eventTitle.post { showTitleGuideView() }
-            var editor = mySharedPreferences.edit()
+            val editor = mySharedPreferences.edit()
             editor.putBoolean("isNewAddAffairFragment", false)
             editor.apply()
         }
@@ -212,10 +212,10 @@ class AffairDetailActivity :
             getSharedPreferences("changeTheme", Context.MODE_PRIVATE)
         if(sharedPreferences.getBoolean("changed",false)){
             val tmp = getSharedPreferences("redGreenBlue", Context.MODE_PRIVATE)
-            var red = tmp.getInt("red",43)
-            var green = tmp.getInt("green",44)
-            var blue = tmp.getInt("blue",48)
-            var editor = sharedPreferences.edit()
+            val red = tmp.getInt("red",43)
+            val green = tmp.getInt("green",44)
+            val blue = tmp.getInt("blue",48)
+            val editor = sharedPreferences.edit()
             editor.putBoolean("changed",false)
             editor.apply()
             ThemeColors.setNewThemeColor(this,red,green,blue)
@@ -295,15 +295,14 @@ class AffairDetailActivity :
                 showAffairAlarmGuideView()
             }
         })
-        builder.addComponent(titleComponent())
+        builder.addComponent(TitleComponent())
         val guide = builder.createGuide()
         guide.show(this)
     }
 
-    class titleComponent : Component {
+    class TitleComponent : Component {
         override fun getView(inflater: LayoutInflater?): View {
-            var ll: LinearLayout = inflater?.inflate(R.layout.layer_affair_title, null) as LinearLayout
-            return ll
+            return inflater?.inflate(R.layout.layer_affair_title, null) as LinearLayout
         }
 
         override fun getAnchor(): Int {
@@ -334,15 +333,14 @@ class AffairDetailActivity :
                 showSetTimeGuideView()
             }
         })
-        builder.addComponent(alarmComponent())
+        builder.addComponent(AlarmComponent())
         val guide = builder.createGuide()
         guide.show(this)
     }
 
-    class alarmComponent:Component {
+    class AlarmComponent:Component {
         override fun getView(inflater: LayoutInflater?): View {
-            var ll: LinearLayout = inflater?.inflate(R.layout.layer_alarm, null) as LinearLayout
-            return ll
+            return inflater?.inflate(R.layout.layer_alarm, null) as LinearLayout
         }
 
         override fun getAnchor(): Int {
@@ -372,15 +370,14 @@ class AffairDetailActivity :
                 showAddAffairDetailGuideView()
             }
         })
-        builder.addComponent(setEndTimeComponent())
+        builder.addComponent(SetEndTimeComponent())
         val guide = builder.createGuide()
         guide.show(this)
     }
 
-    class setEndTimeComponent:Component{
+    class SetEndTimeComponent:Component{
         override fun getView(inflater: LayoutInflater?): View {
-            var ll: LinearLayout = inflater?.inflate(R.layout.layer_set_endtime, null) as LinearLayout
-            return ll
+            return inflater?.inflate(R.layout.layer_set_endtime, null) as LinearLayout
         }
 
         override fun getAnchor(): Int {
@@ -410,15 +407,14 @@ class AffairDetailActivity :
                 showAddAffairReminderGuideView()
             }
         })
-        builder.addComponent(addDetailComponent())
+        builder.addComponent(AddDetailComponent())
         val guide = builder.createGuide()
         guide.show(this)
     }
 
-    class addDetailComponent:Component{
+    class AddDetailComponent:Component{
         override fun getView(inflater: LayoutInflater?): View {
-            var ll: LinearLayout = inflater?.inflate(R.layout.layer_add_detail, null) as LinearLayout
-            return ll
+            return inflater?.inflate(R.layout.layer_add_detail, null) as LinearLayout
         }
 
         override fun getAnchor(): Int {
@@ -448,15 +444,14 @@ class AffairDetailActivity :
                 showAffairRepeatGuideView()
             }
         })
-        builder.addComponent(addReminderComponent())
+        builder.addComponent(AddReminderComponent())
         val guide = builder.createGuide()
         guide.show(this)
     }
 
-    class addReminderComponent:Component{
+    class AddReminderComponent:Component{
         override fun getView(inflater: LayoutInflater?): View {
-            var ll: LinearLayout = inflater?.inflate(R.layout.layer_add_reminder, null) as LinearLayout
-            return ll
+            return inflater?.inflate(R.layout.layer_add_reminder, null) as LinearLayout
         }
 
         override fun getAnchor(): Int {
@@ -484,15 +479,14 @@ class AffairDetailActivity :
             override fun onShown() {}
             override fun onDismiss() {}
         })
-        builder.addComponent(addRepeatComponent())
+        builder.addComponent(AddRepeatComponent())
         val guide = builder.createGuide()
         guide.show(this)
     }
 
-    class addRepeatComponent:Component{
+    class AddRepeatComponent:Component{
         override fun getView(inflater: LayoutInflater?): View {
-            var ll: LinearLayout = inflater?.inflate(R.layout.layer_add_repeat, null) as LinearLayout
-            return ll
+            return inflater?.inflate(R.layout.layer_add_repeat, null) as LinearLayout
         }
 
         override fun getAnchor(): Int {
