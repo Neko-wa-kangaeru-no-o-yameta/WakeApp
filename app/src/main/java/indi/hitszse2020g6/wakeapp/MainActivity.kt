@@ -19,6 +19,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.util.*
 
 
 const val INTENT_AFFAIR_DETAIL = 1
@@ -36,6 +37,7 @@ class MainActivity() : AppCompatActivity() {
     lateinit var blockAppService: BackgroundService
     var binder: BackgroundService.MyBinder? = null
     var jumped = false
+    private lateinit var sharedPreferences: SharedPreferences
 
     private val connection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
@@ -107,6 +109,20 @@ class MainActivity() : AppCompatActivity() {
                 }, 500)
             }
         }
+        //之前课程表没有设置，默认写一下时间
+        sharedPreferences = getSharedPreferences(
+            "schedule_time",
+            Context.MODE_PRIVATE
+        )
+        //之前啥都没有的话
+        if(sharedPreferences.getLong("startTime", -1).toInt() ==-1){
+            val editor = sharedPreferences.edit()
+            val startTime = getTimeInMills(2020,0,1)
+            val endTime = getTimeInMills(2020,11,31)
+            editor.putLong("startTime",startTime)
+            editor.putLong("endTime",endTime)
+            editor.apply()
+        }
     }
 
     override fun onStart() {
@@ -149,8 +165,7 @@ class MainActivity() : AppCompatActivity() {
         Log.d("MainActivity", "OnResume")
         super.onResume()
 
-        val sharedPreferences: SharedPreferences =
-            getSharedPreferences("changeTheme", Context.MODE_PRIVATE)
+        sharedPreferences = getSharedPreferences("changeTheme", Context.MODE_PRIVATE)
         if(sharedPreferences.getBoolean("changed",false)){
                val tmp = getSharedPreferences("redGreenBlue",Context.MODE_PRIVATE)
             val red = tmp.getInt("red",43)
@@ -220,6 +235,12 @@ class MainActivity() : AppCompatActivity() {
                 bottomNavigationView.selectedItemId = R.id.bottomNavFocusBtn
             }
         }, intentFilter)
+    }
+
+    private fun getTimeInMills(year: Int, month: Int, day: Int): Long {
+        val calendar = Calendar.getInstance()
+        calendar[year, month] = day
+        return calendar.timeInMillis
     }
 }
 

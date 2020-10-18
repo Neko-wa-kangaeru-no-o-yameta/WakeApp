@@ -283,6 +283,9 @@ class ScheduleDetailActivity :
                 Log.d("ScheduleDetailActivity", "Got $selected.")
                 whiteList = Json.decodeFromString(selected)
                 Log.d("ScheduleDetailActivity", "Parse result: $whiteList.")
+                for (item in whiteList){
+                    Log.d("ScheduleDetailActivity",item)
+                }
             } else {
                 Log.d("ScheduleDetailActivity", "EMPTY RETURN FOR $REQUEST_SCHEDULE_DETAIL_TO_WHITELIST.")
             }

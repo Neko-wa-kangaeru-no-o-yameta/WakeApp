@@ -1,6 +1,7 @@
 package indi.hitszse2020g6.wakeapp
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.ApplicationInfo
 import android.graphics.drawable.Drawable
@@ -11,16 +12,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
+import indi.hitszse2020g6.wakeapp.eventDetail.PARAM_SCHEDULE_DETAIL_TO_WHITELIST_JSON
+import indi.hitszse2020g6.wakeapp.eventDetail.PARAM_WHITELIST_TO_SCHEDULE_DETAIL_JSON
+import indi.hitszse2020g6.wakeapp.eventDetail.ScheduleDetailActivity
 import kotlinx.android.synthetic.main.activity_choose_white_list.*
 import kotlinx.android.synthetic.main.my_app_item_layout.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import org.json.JSONArray
 
 const val REQUEST_SELECT_WHITE_LIST = 123
-const val RESULT_OK = 100
 
 class ChooseWhiteListActivity : AppCompatActivity(),CompoundButton.OnCheckedChangeListener {
 
@@ -28,62 +34,75 @@ class ChooseWhiteListActivity : AppCompatActivity(),CompoundButton.OnCheckedChan
     private var myWhiteList:MutableList<String> = mutableListOf()
     private lateinit var mySharedPreferences: SharedPreferences
     private var tmpList:MutableList<String> = mutableListOf()
+    private var openFlag:Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         ThemeColors(this)
         setContentView(R.layout.activity_choose_white_list)
 
-
-        mySharedPreferences = getSharedPreferences("user_default_white_list", Context.MODE_PRIVATE)
-        var jsonArray = JSONArray(mySharedPreferences.getString("default_white_list","[]"))
-        Log.d(TAG,"${jsonArray.length()}")
-        if(jsonArray.length()>0){
-            for(item in 0 until jsonArray.length()){
-                myWhiteList.add(jsonArray.get(item) as String)
-                Log.d(TAG,myWhiteList[item])
+        var myIntent = intent
+        var b:Bundle? = myIntent.extras
+        //庚宝请求的
+        if(b!!.getString(PARAM_SCHEDULE_DETAIL_TO_WHITELIST_JSON)!=null){
+            Log.d(TAG,"GENGBAO!!!")
+            openFlag = true
+            //获得庚宝发送的字符串
+            var jsonStr = b.getString(PARAM_SCHEDULE_DETAIL_TO_WHITELIST_JSON)
+            //解析成list
+            myWhiteList = Json.decodeFromString(jsonStr!!)
+        }else{
+            // 用户自行打开设置的，读之前的默认设置
+            Log.d(TAG,"USER!!!")
+            mySharedPreferences = getSharedPreferences("user_default_white_list", Context.MODE_PRIVATE)
+            var jsonArray = JSONArray(mySharedPreferences.getString("default_white_list","[]"))
+            Log.d(TAG,"${jsonArray.length()}")
+            if(jsonArray.length()>0){
+                for(item in 0 until jsonArray.length()){
+                    myWhiteList.add(jsonArray.get(item) as String)
+                    Log.d(TAG,myWhiteList[item])
+                }
             }
         }
-
+        //读应用列表
         longTimeMethod()
 
         white_list_confirm.setOnClickListener{
             for(item in myWhiteList){
                 Log.d(TAG,item)
             }
-
-
-//            //如果是lgz申请的
-//            var myIntent = intent
-//            var b: Bundle? = myIntent.extras
-//            if(b!!.get("REQUEST_CODE")== REQUEST_SELECT_WHITE_LIST){
-//                myIntent = intent
-//                var gson = Gson()
-//                var myString = gson.toJson(myWhiteList)
-//                b.putString("customized_white_list", myString)
-//                myIntent.putExtras(b)
-//                this.setResult(RESULT_OK,myIntent)
-//                this.finish()
-//            }else{
-//                //用户通过设置页面打开的
-//                var jsonArray = convertIntoJsonArray()
-//                mySharedPreferences = getSharedPreferences("user_default_white_list", Context.MODE_PRIVATE)
-//                var editor = mySharedPreferences.edit()
-//                editor.putString("default_white_list",jsonArray.toString())
-//                editor.commit()
-//                this.finish()
-//            }
-
-            val jsonArray = convertIntoJsonArray()
+            //庚宝申请的，返回给庚宝
+            if(openFlag){
+                Log.d(TAG,"GENGBAO!!!")
+                for (item in myWhiteList){
+                    Log.d(TAG,item)
+                }
+                val str = Json.encodeToString(myWhiteList)
+                val i = Intent(this,ScheduleDetailActivity::class.java)
+                i.putExtra(PARAM_WHITELIST_TO_SCHEDULE_DETAIL_JSON,str)
+                this.setResult(RESULT_OK,i)
+            }else{
+                //用户自己打开的
+                Log.d(TAG,"USER!!!")
+                val jsonArray = convertIntoJsonArray()
                 mySharedPreferences = getSharedPreferences("user_default_white_list", Context.MODE_PRIVATE)
                 val editor = mySharedPreferences.edit()
                 editor.putString("default_white_list",jsonArray.toString())
-                editor.commit()
-                this.finish()
+                editor.apply()
+            }
+            this.finish()
         }
 
         white_list_cancel.setOnClickListener {
-            finish()
+            if(openFlag){
+                //返回给庚宝一个空的
+                var tmpList:List<String> = emptyList()
+                val str = Json.encodeToString(tmpList)
+                val i = Intent(this,ScheduleDetailActivity::class.java)
+                i.putExtra(PARAM_WHITELIST_TO_SCHEDULE_DETAIL_JSON,str)
+               this.setResult(RESULT_OK,i)
+            }
+            this.finish()
         }
     }
 
@@ -93,10 +112,10 @@ class ChooseWhiteListActivity : AppCompatActivity(),CompoundButton.OnCheckedChan
             getSharedPreferences("changeTheme", Context.MODE_PRIVATE)
         if(sharedPreferences.getBoolean("changed",false)){
             val tmp = getSharedPreferences("redGreenBlue",Context.MODE_PRIVATE)
-            var red = tmp.getInt("red",43)
-            var green = tmp.getInt("green",44)
-            var blue = tmp.getInt("blue",48)
-            var editor = sharedPreferences.edit()
+            val red = tmp.getInt("red",43)
+            val green = tmp.getInt("green",44)
+            val blue = tmp.getInt("blue",48)
+            val editor = sharedPreferences.edit()
             editor.putBoolean("changed",false)
             editor.apply()
             ThemeColors.setNewThemeColor(this,red,green,blue)

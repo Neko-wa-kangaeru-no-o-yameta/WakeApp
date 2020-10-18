@@ -18,6 +18,7 @@ import indi.hitszse2020g6.wakeapp.mainPage.MainPageEventList
 import kotlinx.android.synthetic.main.fragment_focus_timer.*
 import android.content.SharedPreferences
 import android.widget.*
+import androidx.core.content.ContextCompat
 import com.binioter.guideview.Component
 import com.binioter.guideview.GuideBuilder
 
@@ -252,14 +253,7 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
                     false
                 )
                 myDao.addFocusData(mt)
-
-                startBtn.setImageDrawable(
-                    ResourcesCompat.getDrawable(
-                        resources,
-                        R.drawable.startbutton_fill_24,
-                        null
-                    )
-                )
+                startBtn.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.ic_baseline_play_circle_filled_24))
                 toggleDisplay(false)
                 hour.text = "00"
                 minute.text = "00"
@@ -269,23 +263,11 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
 
         pauseBtn.setOnClickListener {
             btnFlag = if (!btnFlag) {
-                pauseBtn.setImageDrawable(
-                    ResourcesCompat.getDrawable(
-                        resources,
-                        R.drawable.startbutton_fill_24,
-                        null
-                    )
-                )
+                pauseBtn.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.ic_baseline_play_circle_filled_24))
                 (activity as MainActivity).binder?.setIsBlocking(false)
                 true
             } else {
-                pauseBtn.setImageDrawable(
-                    ResourcesCompat.getDrawable(
-                        resources,
-                        R.drawable.pausebutton_fill_24,
-                        null
-                    )
-                )
+                pauseBtn.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.ic_baseline_pause_circle_filled_24))
                 (activity as MainActivity).binder?.setIsBlocking(true)
                 false
             }
@@ -373,13 +355,7 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
             //计时结束的操作
             override fun onFinish() {
                 if (startBtn != null) {
-                    startBtn.setImageDrawable(
-                        ResourcesCompat.getDrawable(
-                            resources,
-                            R.drawable.coutdown_finished_fill_24,
-                            null
-                        )
-                    )
+                    startBtn.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.ic_baseline_check_circle_24))
                     setButtonAni(false)
                     Toast.makeText(context, "计时结束", Toast.LENGTH_SHORT).show()
                     condition_flag = -1
@@ -428,13 +404,7 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
         if (condition_flag == 1) {
             if ((activity as MainActivity).mBound && (!(activity as MainActivity).binder?.getBlock()!!)) {
                 btnFlag = true
-                pauseBtn.setImageDrawable(
-                    ResourcesCompat.getDrawable(
-                        resources,
-                        R.drawable.startbutton_fill_24,
-                        null
-                    )
-                )
+                pauseBtn.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.ic_baseline_play_circle_filled_24))
             }
             setButtonAni(true)
             toggleDisplay(true)
@@ -449,13 +419,7 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
             second.text = "00"
             myCircle.setCountdownTime(0)
             myCircle.setAnimation(0f)
-            startBtn.setImageDrawable(
-                ResourcesCompat.getDrawable(
-                    resources,
-                    R.drawable.coutdown_finished_fill_24,
-                    null
-                )
-            )
+            startBtn.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.ic_baseline_check_circle_24))
             startBtn.isClickable = true
         }
     }

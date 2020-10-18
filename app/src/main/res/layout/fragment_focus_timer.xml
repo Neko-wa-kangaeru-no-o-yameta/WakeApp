@@ -77,41 +77,38 @@
         tools:layout_conversion_absoluteHeight="19dp"
         tools:layout_conversion_absoluteWidth="14dp" />
 
-    <ImageView
+    <ImageButton
         android:id="@+id/pauseBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="37dp"
         android:clickable="false"
-        android:src="@drawable/pausebutton_fill_24"
+        app:srcCompat="@drawable/ic_baseline_pause_circle_filled_24"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/myCircle"
-        tools:layout_conversion_absoluteHeight="36dp"
-        tools:layout_conversion_absoluteWidth="36dp" />
+        android:background="?attr/selectableItemBackgroundBorderless"/>
 
-    <ImageView
+    <ImageButton
         android:id="@+id/cancelBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="false"
-        android:src="@drawable/cancelbutton_fill_24"
+        app:srcCompat="@drawable/ic_baseline_cancel_24"
         android:visibility="invisible"
         app:layout_constraintStart_toStartOf="@+id/pauseBtn"
         app:layout_constraintTop_toTopOf="@+id/pauseBtn"
-        tools:layout_conversion_absoluteHeight="36dp"
-        tools:layout_conversion_absoluteWidth="36dp" />
+        android:background="?attr/selectableItemBackgroundBorderless"/>
 
-    <ImageView
+    <ImageButton
         android:id="@+id/startBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/startbutton_fill_24"
+        app:srcCompat="@drawable/ic_baseline_play_circle_filled_24"
         app:layout_constraintStart_toStartOf="@+id/pauseBtn"
         app:layout_constraintTop_toTopOf="@+id/pauseBtn"
-        tools:layout_conversion_absoluteHeight="36dp"
-        tools:layout_conversion_absoluteWidth="36dp" />
+        android:background="?attr/selectableItemBackgroundBorderless"/>
 
 
     <TextView

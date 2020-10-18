@@ -13,10 +13,10 @@ class ChooseScheduleTime : AppCompatActivity() {
     private lateinit var dateStartPickerDialog:DatePickerDialog
     private lateinit var dateEndPickerDialog:DatePickerDialog
     private var startYear:Int = 2020
-    private var startMonth:Int = 1
+    private var startMonth:Int = 0
     private var startDay:Int = 1
     private var endYear:Int = 2020
-    private var endMonth:Int = 12
+    private var endMonth:Int = 11
     private var endDay:Int = 31
     private var startTime:Long = System.currentTimeMillis()
     private var endTime:Long = System.currentTimeMillis()
@@ -70,7 +70,7 @@ class ChooseScheduleTime : AppCompatActivity() {
                 startDay = dayOfMonth
                 val data = month.toString() + "月-" + dayOfMonth + "日 "
             },
-            startYear, startMonth, startDay
+            startYear, startMonth-1, startDay
         )
 
         dateStartPickerDialog.setOnDateSetListener { view, year, month, dayOfMonth ->
@@ -88,7 +88,7 @@ class ChooseScheduleTime : AppCompatActivity() {
                 endDay = dayOfMonth
                 val data = month.toString() + "月-" + dayOfMonth + "日 "
             },
-            endYear, endMonth, endDay
+            endYear, endMonth-1, endDay
         )
 
         dateEndPickerDialog.setOnDateSetListener { view, year, month, dayOfMonth ->
