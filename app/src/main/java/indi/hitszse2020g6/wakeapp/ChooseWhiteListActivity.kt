@@ -26,7 +26,6 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.json.JSONArray
 
-const val REQUEST_SELECT_WHITE_LIST = 123
 
 class ChooseWhiteListActivity : AppCompatActivity(),CompoundButton.OnCheckedChangeListener {
 
@@ -74,13 +73,11 @@ class ChooseWhiteListActivity : AppCompatActivity(),CompoundButton.OnCheckedChan
             //庚宝申请的，返回给庚宝
             if(openFlag){
                 Log.d(TAG,"GENGBAO!!!")
-                for (item in myWhiteList){
-                    Log.d(TAG,item)
-                }
                 val str = Json.encodeToString(myWhiteList)
-                val i = Intent(this,ScheduleDetailActivity::class.java)
-                i.putExtra(PARAM_WHITELIST_TO_SCHEDULE_DETAIL_JSON,str)
-                this.setResult(RESULT_OK,i)
+                Log.d(TAG, "$str.")
+                myIntent.putExtra(PARAM_WHITELIST_TO_SCHEDULE_DETAIL_JSON,str)
+                setResult(RESULT_OK,myIntent)
+                this.finish()
             }else{
                 //用户自己打开的
                 Log.d(TAG,"USER!!!")
@@ -90,7 +87,7 @@ class ChooseWhiteListActivity : AppCompatActivity(),CompoundButton.OnCheckedChan
                 editor.putString("default_white_list",jsonArray.toString())
                 editor.apply()
             }
-            this.finish()
+            finish()
         }
 
         white_list_cancel.setOnClickListener {
@@ -98,11 +95,11 @@ class ChooseWhiteListActivity : AppCompatActivity(),CompoundButton.OnCheckedChan
                 //返回给庚宝一个空的
                 var tmpList:List<String> = emptyList()
                 val str = Json.encodeToString(tmpList)
-                val i = Intent(this,ScheduleDetailActivity::class.java)
-                i.putExtra(PARAM_WHITELIST_TO_SCHEDULE_DETAIL_JSON,str)
-               this.setResult(RESULT_OK,i)
+                Log.d(TAG, "$str.")
+                myIntent.putExtra(PARAM_WHITELIST_TO_SCHEDULE_DETAIL_JSON,str)
+                setResult(RESULT_OK,myIntent)
             }
-            this.finish()
+            finish()
         }
     }
 

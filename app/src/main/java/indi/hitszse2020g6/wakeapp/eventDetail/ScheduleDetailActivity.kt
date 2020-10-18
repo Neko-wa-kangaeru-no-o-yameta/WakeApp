@@ -278,7 +278,7 @@ class ScheduleDetailActivity :
         super.onActivityResult(requestCode, resultCode, data)
         Log.d("ScheduleDetailActivity", "onActivityResult for requestCode = $requestCode and resultCode = $resultCode.")
         if(requestCode == REQUEST_SCHEDULE_DETAIL_TO_WHITELIST && resultCode == RESULT_OK) {
-            val selected = intent.getStringExtra(PARAM_WHITELIST_TO_SCHEDULE_DETAIL_JSON)
+            val selected = data?.getStringExtra(PARAM_WHITELIST_TO_SCHEDULE_DETAIL_JSON)
             if(selected != null) {
                 Log.d("ScheduleDetailActivity", "Got $selected.")
                 whiteList = Json.decodeFromString(selected)
