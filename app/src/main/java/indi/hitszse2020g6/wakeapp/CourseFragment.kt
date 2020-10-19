@@ -34,7 +34,7 @@ private const val ARG_PARAM1 = "param1"
  */
 class CourseFragment : Fragment() {
     private var param1: Int? = null
-
+    var weekForVp :Int = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -88,7 +88,7 @@ class CourseFragment : Fragment() {
 
         }
         viewPager2.adapter = myAdapter
-        requireActivity().findViewById<ViewPager2>(R.id.viewPager2).currentItem = week
+        viewPager2.currentItem = week
 
             //TODO 这个适配器好像有点毛病那个，设置了currentItem之后有点问题
 

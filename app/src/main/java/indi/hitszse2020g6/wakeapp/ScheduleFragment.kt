@@ -5,6 +5,7 @@ import android.app.Activity
 import android.app.Activity.RESULT_CANCELED
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
@@ -20,12 +21,16 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import androidx.viewpager2.widget.ViewPager2
 import com.binioter.guideview.Component
 import com.binioter.guideview.GuideBuilder
 import com.leinardi.android.speeddial.SpeedDialView
+import kotlinx.android.synthetic.main.fragment_course.*
 import kotlinx.android.synthetic.main.fragment_schedule.*
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import java.io.FileInputStream
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 // TODO:add address to the schedule table
@@ -150,35 +155,67 @@ class ScheduleFragment : Fragment(),
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        Log.d("resultCode", resultCode.toString())
-        Log.d("requestCode", requestCode.toString())
-        Log.d("data", data.toString())
+        Log.d("123123","123123")
+        var week:Int = 0
         super.onActivityResult(requestCode, resultCode, data)
+        var mySharedPreferences: SharedPreferences = requireActivity().getSharedPreferences(
+            "schedule_time",
+            Context.MODE_PRIVATE
+        )
 
-        Log.d("get in", "On resultActivity")
-//        val mainHolder = findViewById<GridLayout>(R.id.content_holder)
-//        val context = mainHolder.context
-            if (requestCode == INTENT_ADD_COURSE) {
-                //直接更新
-                requireActivity().setPerCourseColor()
-                    val courseFragment = CourseFragment.newInstance()
-                    childFragmentManager.beginTransaction()
-                        .replace(R.id.fragment2, courseFragment)
-                        .commit()
-                if(resultCode == RESULT_ADD_NEW_COURSE){
-                    Toast.makeText(context,"小猫咪帮你更新课程表啦", Toast.LENGTH_SHORT).show()
-                }else{
-                    Toast.makeText(context,"小猫咪没敢动你的课表噢", Toast.LENGTH_SHORT).show()
-                }
 
-            }else if(data == null || resultCode == RESULT_CANCELED){
-                return
-            }else{
-                val uri = data?.data
-                if (uri != null) {
-                    parseCourse(uri)
+        if(mySharedPreferences.getLong("startTime", -1).toInt() !=-1){
+            val calendar = Calendar.getInstance()
+
+            val startTime = mySharedPreferences.getLong("startTime", -1)
+            val stopTime = System.currentTimeMillis()
+            calendar.time = Date(startTime)
+            val startDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
+//            calendar.firstDayOfWeek = Calendar.MONDAY
+//
+//            val startWeekMonday = calendar.timeInMillis
+            week = ((stopTime - startTime + (startDayOfWeek-2)*24*60*60*1000)/7/(24*60*60*1000)).toInt()
+
+
+        }
+        Log.d("item===123123","get in vp2")
+        Log.d("requestCode",requestCode.toString())
+        if (requestCode == INTENT_ADD_COURSE) {
+            //直接更新
+            requireActivity().setPerCourseColor()
+            val vp2 = view?.findViewById<ViewPager2>(R.id.viewPager2)
+
+            if (vp2 != null) {
+                vp2.adapter?.notifyDataSetChanged()
+                vp2.post {
+                    viewPager2.setCurrentItem(week,true)
                 }
             }
+            if(resultCode == RESULT_ADD_NEW_COURSE){
+                Toast.makeText(context,"小猫咪帮你更新课程表啦", Toast.LENGTH_SHORT).show()
+            }else{
+
+                Toast.makeText(context,"小猫咪没敢动你的课表噢", Toast.LENGTH_SHORT).show()
+            }
+
+        }else if(data == null || resultCode == RESULT_CANCELED){
+            return
+        }else{
+            Log.d("123123123123123123","22222")
+            val uri = data?.data
+            if (uri != null) {
+                parseCourse(uri)
+            }
+            val vp2 = view?.findViewById<ViewPager2>(R.id.viewPager2)
+            if (vp2 != null) {
+                vp2.adapter?.notifyDataSetChanged()
+                vp2.post {
+                    viewPager2.setCurrentItem(week,true)
+                }
+
+
+            }
+        }
 
     }
 

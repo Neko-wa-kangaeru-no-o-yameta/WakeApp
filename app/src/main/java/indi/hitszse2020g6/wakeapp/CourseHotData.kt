@@ -12,7 +12,6 @@ object CourseList{
     lateinit var DAO:RoomDAO
     lateinit var context: Context
     var initComplete = false
-
     fun getDatefromDB(){
         GlobalScope.launch(Dispatchers.IO){
             courseList = DAO.getAll().toMutableList()
