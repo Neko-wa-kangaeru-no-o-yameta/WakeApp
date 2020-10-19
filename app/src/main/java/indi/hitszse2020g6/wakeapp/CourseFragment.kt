@@ -78,14 +78,15 @@ class CourseFragment : Fragment() {
 
             val startTime = mySharedPreferences.getLong("startTime", -1)
             val stopTime = System.currentTimeMillis()
-            calendar.firstDayOfWeek = Calendar.MONDAY
             calendar.time = Date(startTime)
-            val startWeekMonday = calendar.timeInMillis
-            week = ((stopTime - startWeekMonday)/7/(24*60*60*1000)).toInt()
-            Log.d("get in week",week.toString())
+            val startDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
+//            calendar.firstDayOfWeek = Calendar.MONDAY
+//
+//            val startWeekMonday = calendar.timeInMillis
+            week = ((stopTime - startTime + (startDayOfWeek-2)*24*60*60*1000)/7/(24*60*60*1000)).toInt()
+
 
         }
-        Log.d("=====week=============",week.toString())
         viewPager2.adapter = myAdapter
         requireActivity().findViewById<ViewPager2>(R.id.viewPager2).currentItem = week
 
