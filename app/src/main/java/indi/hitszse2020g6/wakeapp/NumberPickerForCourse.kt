@@ -44,6 +44,7 @@ class TimePickFragment(position: Int): DialogFragment(){
         npDayOfWeek.minValue = 1
         npDayOfWeek.maxValue = 7
         npDayOfWeek.wrapSelectorWheel = false
+        npDayOfWeek.displayedValues = arrayOf("一", "二", "三","四","五","六","日")
         npTime.maxValue = 6
         npTime.minValue = 1
         npTime.wrapSelectorWheel = false
@@ -104,7 +105,6 @@ class WeekPickerFragment(position: Int) :DialogFragment(){
         }
     }
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        Log.d("get in--------------------------------------------------", "weekPickFragment")
         val builder = AlertDialog.Builder(activity)
         val infalter = requireActivity().layoutInflater;
         builder.context.theme.applyStyle(R.style.MyAlertDialog, true)
@@ -215,22 +215,28 @@ class SelectCoursePickFragment(repeatList: List<Course>): DialogFragment(){
         val course = repeatList.first()
         val builder = AlertDialog.Builder(activity)
         val infalter = requireActivity().layoutInflater;
-        builder.setTitle(this.getString(R.string.pick_topic2).format(
-            course.week,
-            course.dayOfWeek,
-            course.time,
-            course.courseName
-        ))
-            .setSingleChoiceItems(R.array.selectChoice,-1,
+        builder.setTitle(
+            this.getString(R.string.pick_topic2).format(
+                course.week,
+                course.dayOfWeek,
+                course.time,
+                course.courseName
+            )
+        )
+            .setSingleChoiceItems(R.array.selectChoice, -1,
                 DialogInterface.OnClickListener { dialog, which ->
-                selectItem = which
-            })
-            .setPositiveButton(R.string.dialog_ok,DialogInterface.OnClickListener { dialog, which ->
-                listener.onDialogPositiveClickForSelectCoursePick(this)
-            })
-            .setNegativeButton(R.string.dialog_cancel,DialogInterface.OnClickListener { dialog, which ->
-                listener.onDialogNegativeClickForSelectCoursePick(this)
-            })
+                    selectItem = which
+                })
+            .setPositiveButton(
+                R.string.dialog_ok,
+                DialogInterface.OnClickListener { dialog, which ->
+                    listener.onDialogPositiveClickForSelectCoursePick(this)
+                })
+            .setNegativeButton(
+                R.string.dialog_cancel,
+                DialogInterface.OnClickListener { dialog, which ->
+                    listener.onDialogNegativeClickForSelectCoursePick(this)
+                })
         builder.create()
         return builder.create()
     }

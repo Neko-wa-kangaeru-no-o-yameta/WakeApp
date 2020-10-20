@@ -159,10 +159,11 @@ object CourseList{
         detail: List<Detail>,
         reminder: List<Reminder>,
         time: Int,
-        oldName: String
+        oldName: String,
+        dayOfWeek: Int
     ){
         for(item in courseList){
-            if((item.time == time)&&(item.courseName == oldName)){
+            if((item.time == time)&&(item.courseName == oldName)&&(item.dayOfWeek == dayOfWeek)){
                 item.courseName = name
                 item.address = address
                 item.notice = notice
@@ -182,7 +183,8 @@ object CourseList{
                 detail,
                 reminder,
                 time,
-                oldName
+                oldName,
+                dayOfWeek
             )
         }
     }

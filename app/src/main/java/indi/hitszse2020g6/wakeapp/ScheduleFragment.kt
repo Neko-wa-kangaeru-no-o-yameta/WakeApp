@@ -193,15 +193,15 @@ class ScheduleFragment : Fragment(),
             }
             if(resultCode == RESULT_ADD_NEW_COURSE){
                 Toast.makeText(context,"小猫咪帮你更新课程表啦", Toast.LENGTH_SHORT).show()
-            }else{
+            }
+            else{
 
-                Toast.makeText(context,"小猫咪没敢动你的课表噢", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(context,"小猫咪没敢动你的课表噢", Toast.LENGTH_SHORT).show()
             }
 
         }else if(data == null || resultCode == RESULT_CANCELED){
             return
         }else{
-            Log.d("123123123123123123","22222")
             val uri = data?.data
             if (uri != null) {
                 parseCourse(uri)
