@@ -69,8 +69,8 @@ class MyMainPageRecyclerViewAdapter(
             }
         }
 
-        val c = Calendar.getInstance().apply { timeInMillis = values[position].stopTime*1000 }
         holder.cardView.findViewById<TextView>(R.id.eventDetail_stopTimeTV).apply {
+            val c = Calendar.getInstance().apply { timeInMillis = values[position].stopTime*1000 }
             text = context.getString(
                 R.string.eventList_stopTimeTVContent
             ).format(

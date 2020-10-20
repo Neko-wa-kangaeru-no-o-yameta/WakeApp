@@ -176,7 +176,7 @@ class AffairDetailActivity :
             if(!isNewAffair) {
                 findViewById<TextView>(R.id.affairDetail_stopTimeText).text =  context.getString(
                     R.string.eventList_stopTimeTVContent
-                ).format(month, date, hour, minute)
+                ).format(month+1, date, hour, minute)
             }
             setOnClickListener {
                 DatePickerFragment().show(supportFragmentManager, "dataPicker")
@@ -237,7 +237,7 @@ class AffairDetailActivity :
 
     override fun onDateSet(view: DatePicker?, setYear: Int, setMonth: Int, setDayOfMonth: Int) {
         year = setYear
-        month = setMonth + 1
+        month = setMonth
         date = setDayOfMonth
         Log.d("OnTimeSet", "$year : $month : $date ")
         supportFragmentManager.let { TimePickerFragment().show(it, "timePicker") }
