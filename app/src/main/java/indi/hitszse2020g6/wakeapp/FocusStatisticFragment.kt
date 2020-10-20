@@ -166,12 +166,12 @@ class FocusStatisticFragment : Fragment() {
                     data.totalFocusTime.toFloat()
             }
         }
-        donutSet.toSortedMap()//转化为降序
+        val donutSetSorted = donutSet.toList().sortedBy { (_, value) -> value }.reversed().toMap()//转化为降序
         //饼状图最大显示7个项，如果大于7个则要将后面的数据算作“其他”
-        if(donutSet.size > 7){
+        if(donutSetSorted.size > 7){
             var counter = 1
             var otherTotal = 0f
-            for(data in donutSet){
+            for(data in donutSetSorted){
                 if(counter >= 7)
                 {
                     otherTotal += data.value
@@ -179,23 +179,23 @@ class FocusStatisticFragment : Fragment() {
                 else donutPairSet[setLabel(data.key)] = data.value
                 counter++
             }
-            donutPairSet["其他    "] = otherTotal
+            donutPairSet["其他            "] = otherTotal
         }
         else{
-            for(data in donutSet) donutPairSet[setLabel(data.key)] = data.value
+            for(data in donutSetSorted) donutPairSet[setLabel(data.key)] = data.value
         }
     }
 
     private fun setLabel(label:String):String{
         var returnLabel = ""
         if(label.length == 1)
-            returnLabel = "  $label  "
+            returnLabel = "$label                "
         else if(label.length == 2)
-            returnLabel = "  $label "
+            returnLabel = "$label            "
         else if(label.length == 3)
-            returnLabel = " $label "
+            returnLabel = "$label        "
         else if(label.length == 4)
-            returnLabel = " $label"
+            returnLabel = "$label    "
         else if(label.length == 5)
             returnLabel = label
         else
@@ -233,11 +233,13 @@ class FocusStatisticFragment : Fragment() {
                 val legendItem = LayoutInflater.from(legendCreator.context)
                     .inflate((R.layout.focus_statistic_legend_item), legendCreator, false)
                 val legend = legendItem.findViewById<HorizontalBarChartView>(R.id.horizontalBarChart)
-                legend.barsColor = ColorSet[ColorSet.size - counter - 1]
+                legend.barsColor = ColorSet[ColorSet.size - Set.size + counter]
                 legend.animation.duration = legendAnimationDuration
                 legend.animate(tempLegendData)
                 legendCreator.addView(legendItem)
                 counter++
+                println(data.key)
+                println(data.value)
             }
         }
         val donutChart = requireView().findViewById<DonutChartView>(R.id.donutChart)
