@@ -319,7 +319,7 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
             total_time = setTime
             (activity as MainActivity).binder?.setIsStored(true)
             (activity as MainActivity).binder?.startMyCountDownTimer(total_time, set_focus_title)
-            Toast.makeText(context, total_time.toString(), Toast.LENGTH_SHORT).show()
+//            Toast.makeText(context, total_time.toString(), Toast.LENGTH_SHORT).show()
 
             storeTime()
 
