@@ -84,74 +84,90 @@ class ChooseCustomTheme : AppCompatActivity() {
         val sharedPreferences: SharedPreferences =
             context.getSharedPreferences("ThemeColors", Context.MODE_PRIVATE)
         val stringColor = sharedPreferences.getString("color", "2d2d2d")
+        Log.d(TAG,stringColor!!)
         when (stringColor) {
             "0fd2c3" -> {
                 choosedTheme = "theme_green"
                 clickFunc(theme_green, getDrawable(R.drawable.shape_green_selected))
+                show_page.setImageDrawable(getDrawable(R.drawable.page_green))
             }
             "ffe15a" -> {
                 choosedTheme = "theme_yellow"
                 clickFunc(theme_yellow, getDrawable(R.drawable.shape_yellow_selected))
+                show_page.setImageDrawable(getDrawable(R.drawable.page_yellow))
             }
             "ff87a5" -> {
                 choosedTheme = "theme_pink"
                 clickFunc(theme_pink, getDrawable(R.drawable.shape_pink_selected))
+                show_page.setImageDrawable(getDrawable(R.drawable.page_pink))
             }
             "693ce1" -> {
                 choosedTheme = "theme_purple"
                 clickFunc(theme_purple, getDrawable(R.drawable.shape_purple_selected))
+                show_page.setImageDrawable(getDrawable(R.drawable.page_purple))
             }
-            "1e4b81" -> {
+            "1e4b87" -> {
                 choosedTheme = "theme_blue"
                 clickFunc(theme_blue, getDrawable(R.drawable.shape_blue_selected))
+                show_page.setImageDrawable(getDrawable(R.drawable.page_blue))
             }
             "ff6978" -> {
                 choosedTheme = "theme_red"
                 clickFunc(theme_red, getDrawable(R.drawable.shape_red_selected))
+                show_page.setImageDrawable(getDrawable(R.drawable.page_red))
             }
             "2d2d2d" -> {
                 choosedTheme = "theme_black"
                 clickFunc(theme_black, getDrawable(R.drawable.shape_black_selected))
+                show_page.setImageDrawable(getDrawable(R.drawable.page_black))
             }
             else -> {
                 choosedTheme = "theme_black"
                 clickFunc(theme_black, getDrawable(R.drawable.shape_black_selected))
+                show_page.setImageDrawable(getDrawable(R.drawable.page_black))
             }
         }
 
         theme_green.setOnClickListener {
             choosedTheme = "theme_green"
             clickFunc(theme_green, getDrawable(R.drawable.shape_green_selected))
+            show_page.setImageDrawable(getDrawable(R.drawable.page_green))
         }
 
         theme_yellow.setOnClickListener {
             choosedTheme = "theme_yellow"
             clickFunc(theme_yellow, getDrawable(R.drawable.shape_yellow_selected))
+            show_page.setImageDrawable(getDrawable(R.drawable.page_yellow))
         }
 
         theme_pink.setOnClickListener {
             choosedTheme = "theme_pink"
             clickFunc(theme_pink, getDrawable(R.drawable.shape_pink_selected))
+            show_page.setImageDrawable(getDrawable(R.drawable.page_pink))
         }
 
         theme_purple.setOnClickListener {
             choosedTheme = "theme_purple"
             clickFunc(theme_purple, getDrawable(R.drawable.shape_purple_selected))
+            show_page.setImageDrawable(getDrawable(R.drawable.page_purple))
         }
 
         theme_blue.setOnClickListener {
             choosedTheme = "theme_blue"
             clickFunc(theme_blue, getDrawable(R.drawable.shape_blue_selected))
+            show_page.setImageDrawable(getDrawable(R.drawable.page_blue))
         }
 
         theme_red.setOnClickListener {
             choosedTheme = "theme_red"
             clickFunc(theme_red, getDrawable(R.drawable.shape_red_selected))
+            show_page.setImageDrawable(getDrawable(R.drawable.page_red))
         }
 
         theme_black.setOnClickListener {
             choosedTheme = "theme_black"
             clickFunc(theme_black, getDrawable(R.drawable.shape_black_selected))
+            show_page.setImageDrawable(getDrawable(R.drawable.page_black))
         }
     }
 
