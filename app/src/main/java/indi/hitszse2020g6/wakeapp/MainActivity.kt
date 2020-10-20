@@ -170,11 +170,10 @@ class MainActivity() : AppCompatActivity() {
 //        //startService
 //        //在MainActivity onStart的时候开启一个service,这个service安排指定的任务在指定的演示后开始进行重复的固定速率的执行
 //        if(!mBound) {
-//            Intent(this, BackgroundService::class.java).also { intent ->
-////                startService(intent)
-//                bindService(intent, connection, Context.BIND_AUTO_CREATE)
-//                Log.d("Main Activity: onStart", "trying to bind")
-//            }
+        Intent(this, BackgroundService::class.java).also { intent ->
+            startService(intent)
+            Log.d("Main Activity: onStart", "trying to bind")
+        }
 //        }
 
         if (!Settings.canDrawOverlays(this)) {
@@ -226,7 +225,11 @@ class MainActivity() : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         Log.d("MainActivity", "OnPause")
-//        unbindService(connection)
+        try {
+            unbindService(connection)
+        } catch (ex: java.lang.IllegalArgumentException) {
+            ;
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
