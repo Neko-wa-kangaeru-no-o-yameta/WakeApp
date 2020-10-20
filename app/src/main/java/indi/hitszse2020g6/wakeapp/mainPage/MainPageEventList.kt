@@ -69,7 +69,7 @@ object MainPageEventList {
             entry.uid = DAO.insertEvent(entry)
 
             Handler(Looper.getMainLooper()).post{
-                configureAlarm(entry, 0)
+                configureAlarm(entry, FLAG_UPDATE_CURRENT)
             }
         }
     }
@@ -223,7 +223,7 @@ object MainPageEventList {
         Log.d("ALARM", "$currentTimeInSecond, ${entry.reminder.map { it.delta }}")
         val minReminderTime = entry.reminder.map {
             val st = if(entry.isAffair) entry.stopTime else entry.startTime
-            if(st < currentTimeInSecond)
+            if((st - it.delta) < currentTimeInSecond)
                 Long.MAX_VALUE
             else
                 (st-it.delta)*1000
