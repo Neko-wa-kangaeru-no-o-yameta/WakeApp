@@ -9,7 +9,9 @@ import android.net.Uri
 import android.os.*
 import android.provider.Settings
 import android.util.Log
+import android.view.WindowManager
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
@@ -54,11 +56,24 @@ class MainActivity() : AppCompatActivity() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O_MR1)
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d("MainActivity", "Oncreate")
         super.onCreate(savedInstanceState)
         ThemeColors(this)
         setContentView(R.layout.activity_main)
+
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O_MR1) {
+//            setTurnScreenOn(true)
+//        } else {
+//            window.addFlags(
+//                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
+//                WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
+//                WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+//            )
+//        }
+
+        Log.d("Main activity", "Waking up...")
 
         MainPageEventList.DAO = AppRoomDB.getDataBase(this).getDAO()
         MainPageEventList.getEventListFromDB()
@@ -117,10 +132,10 @@ class MainActivity() : AppCompatActivity() {
         //之前啥都没有的话
         if(sharedPreferences.getLong("startTime", -1).toInt() ==-1){
             val editor = sharedPreferences.edit()
-            val startTime = getTimeInMills(2020,0,1)
-            val endTime = getTimeInMills(2020,11,31)
-            editor.putLong("startTime",startTime)
-            editor.putLong("endTime",endTime)
+            val startTime = getTimeInMills(2020, 0, 1)
+            val endTime = getTimeInMills(2020, 11, 31)
+            editor.putLong("startTime", startTime)
+            editor.putLong("endTime", endTime)
             editor.apply()
         }
     }
@@ -128,6 +143,13 @@ class MainActivity() : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         Log.d("MainActivity", "Onstart")
+
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O_MR1) {
+//            setTurnScreenOn(true)
+//        } else {
+//            window.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON)
+//        }
+
 
         //获取应用列表权限
         hasPermissionToReadNetworkStats()
@@ -145,13 +167,15 @@ class MainActivity() : AppCompatActivity() {
         ) {
             requestPermissions(arrayOf(Manifest.permission.SYSTEM_ALERT_WINDOW), REQUEST_SYS_ALERT)
         }
-        //startService
-        //在MainActivity onStart的时候开启一个service,这个service安排指定的任务在指定的演示后开始进行重复的固定速率的执行
-        Intent(this, BackgroundService::class.java).also { intent ->
-            startService(intent)
-//            bindService(intent, connection, Context.BIND_AUTO_CREATE)
-            Log.d("B Main Activity", "trying to bind")
-        }
+//        //startService
+//        //在MainActivity onStart的时候开启一个service,这个service安排指定的任务在指定的演示后开始进行重复的固定速率的执行
+//        if(!mBound) {
+//            Intent(this, BackgroundService::class.java).also { intent ->
+////                startService(intent)
+//                bindService(intent, connection, Context.BIND_AUTO_CREATE)
+//                Log.d("Main Activity: onStart", "trying to bind")
+//            }
+//        }
 
         if (!Settings.canDrawOverlays(this)) {
             val intent =
@@ -166,15 +190,15 @@ class MainActivity() : AppCompatActivity() {
         super.onResume()
 
         sharedPreferences = getSharedPreferences("changeTheme", Context.MODE_PRIVATE)
-        if(sharedPreferences.getBoolean("changed",false)){
-               val tmp = getSharedPreferences("redGreenBlue",Context.MODE_PRIVATE)
-            val red = tmp.getInt("red",43)
-            val green = tmp.getInt("green",44)
-            val blue = tmp.getInt("blue",48)
+        if(sharedPreferences.getBoolean("changed", false)){
+               val tmp = getSharedPreferences("redGreenBlue", Context.MODE_PRIVATE)
+            val red = tmp.getInt("red", 43)
+            val green = tmp.getInt("green", 44)
+            val blue = tmp.getInt("blue", 48)
             val editor = sharedPreferences.edit()
-            editor.putBoolean("changed",false)
+            editor.putBoolean("changed", false)
             editor.apply()
-            ThemeColors.setNewThemeColor(this,red,green,blue)
+            ThemeColors.setNewThemeColor(this, red, green, blue)
         }
 
         //获得启动该activity的intent对象
@@ -185,21 +209,24 @@ class MainActivity() : AppCompatActivity() {
             jumped = true
         }
 
-        Intent(this, BackgroundService::class.java).also { intent ->
-            bindService(intent, connection, Context.BIND_AUTO_CREATE)
-            Log.d("B Main Activity", "trying to bind")
-
-            //连上的时候说一声
-            val myIntent = Intent()
-            myIntent.setAction("Connnecting")
-            myIntent.putExtra("connect", true)
-            sendBroadcast(myIntent)
+        if(!mBound) {
+            Intent(this, BackgroundService::class.java).also { intent ->
+                bindService(intent, connection, Context.BIND_AUTO_CREATE)
+                Log.d("Main Activity: onResume", "trying to bind")
+            }
         }
+        //连上的时候说一声 // WHY?
+        val i = Intent()
+        i.setAction("Connnecting")
+        i.putExtra("connect", true)
+        sendBroadcast(i)
+
     }
 
     override fun onPause() {
         super.onPause()
-        unbindService(connection)
+        Log.d("MainActivity", "OnPause")
+//        unbindService(connection)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -249,16 +276,28 @@ class FocusReceiver: BroadcastReceiver() {
         Log.d("Receiver", "received")
         Toast.makeText(context, "receiver received!", Toast.LENGTH_SHORT).show()
         Log.d("Receiver", "uid: ${intent?.getLongExtra(PARAM_START_FOCUS_FROM_BACKGROUND, -1)}")
-        context!!.startActivity(Intent(context, MainActivity::class.java).apply {
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            putExtra("RequestCode", REQUEST_OPEN_TIMER_FRG)
-            putExtra(
-                PARAM_START_FOCUS_FROM_BACKGROUND, intent?.getLongExtra(
-                    PARAM_START_FOCUS_FROM_BACKGROUND,
-                    -1
-                )
-            )
-        })
+//        context!!.startActivity(Intent(context, MainActivity::class.java).apply {
+//            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+//            putExtra("RequestCode", REQUEST_OPEN_TIMER_FRG)
+//            putExtra(
+//                PARAM_START_FOCUS_FROM_BACKGROUND, intent?.getLongExtra(
+//                    PARAM_START_FOCUS_FROM_BACKGROUND,
+//                    -1
+//                )
+//            )
+//        })
+        val binder = peekService(context, Intent(context, BackgroundService::class.java)) as BackgroundService.MyBinder
+        GlobalScope.launch(Dispatchers.IO) {
+            val entry = MainPageEventList.DAO.getEvent(intent!!.getLongExtra(PARAM_START_FOCUS_FROM_BACKGROUND, -1))
+            Handler(Looper.getMainLooper()).postDelayed({
+                Log.d("FocusReceiver", "Starting Timer...")
+                binder.setUseCustomWhiteList(entry.hasCustomWhiteList)
+                binder.setCustomWhiteList(entry.customWhiteList)
+                binder.setIsBlocking(true)
+                binder.startTimer(entry.startTime, entry.stopTime, entry.title)
+//                    binder.startCoutnDownTimer()
+            }, 500)
+        }
     }
 }
 

@@ -6,12 +6,15 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.media.MediaPlayer
 import android.media.RingtoneManager
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.Log
+import android.view.WindowManager
 import android.widget.Button
+import androidx.annotation.RequiresApi
 import indi.hitszse2020g6.wakeapp.mainPage.MainPageEventList
 import kotlin.math.abs
 
@@ -20,6 +23,23 @@ class AlarmActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_alarm)
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O_MR1) {
+//            setTurnScreenOn(true)
+//        } else {
+//            window.addFlags(
+//                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
+//                        WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
+//                        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+//            )
+//        }
+
+        window.addFlags(
+            WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
+                    WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
+                    WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+        )
+
+        Log.d("Alarm activity", "Waking up...")
 
         for(e in MainPageEventList.eventList) {
             if (e.uid == intent.getLongExtra(PARAM_ALARM_UID, -1)) {
