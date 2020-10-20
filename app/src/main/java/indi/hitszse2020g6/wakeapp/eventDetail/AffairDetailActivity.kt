@@ -29,7 +29,8 @@ class AffairDetailActivity :
     DatePickerDialog.OnDateSetListener,
     TimePickerDialog.OnTimeSetListener,
     RepeatTypeDialog.RepeatTypeListener,
-    RepeatWeekdayDialog.RepeatWeekDayDialogListener{
+    RepeatWeekdayDialog.RepeatWeekDayDialogListener,
+    ReminderChooseDialog.ReminderChooseListener{
 
     private var isNewAffair = true
     private lateinit var entryToEdit: EventTableEntry
@@ -103,7 +104,7 @@ class AffairDetailActivity :
             }
 
             val stopTime = Calendar.getInstance()
-            stopTime.set(year, month, date, hour, minute, 0)
+            stopTime.set(year, month-1, date, hour, minute, 0)
 
 //            val descHolder = findViewById<RecyclerView>(R.id.eventDetail_descriptionListContainer)
 //            for(i in 0 until EventDetailList.ITEMS.size) {
@@ -126,7 +127,6 @@ class AffairDetailActivity :
                     stopTime    = stopTime.timeInMillis / 1000,
                     notice      = alarm,
                     isAutoGen   = false,
-                    ruleId      = -1,
                     repeatAt
                 )
             } else {
@@ -136,7 +136,6 @@ class AffairDetailActivity :
                 entryToEdit.stopTime    = stopTime.timeInMillis / 1000
                 entryToEdit.notice      = alarm
                 entryToEdit.isAutoGen   = false
-                entryToEdit.ruleId      = -1
                 entryToEdit.repeatAt    = repeatAt
                 MainPageEventList.updateEvent(entryToEdit)
             }
@@ -373,6 +372,12 @@ class AffairDetailActivity :
         builder.addComponent(SetEndTimeComponent())
         val guide = builder.createGuide()
         guide.show(this)
+    }
+
+
+    override fun onReminderChosen(delta: Long, pos: Int) {
+        EventReminderList.ITEMS[pos].delta = delta
+        findViewById<RecyclerView>(R.id.eventDetail_reminderListContainer).adapter!!.notifyItemChanged(pos)
     }
 
     class SetEndTimeComponent:Component{

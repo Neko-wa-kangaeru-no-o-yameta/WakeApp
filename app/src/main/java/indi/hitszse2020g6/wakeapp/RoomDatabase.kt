@@ -23,7 +23,7 @@ data class Detail (
 
 @Serializable
 data class Reminder (
-    var time: Long,     // UNIX style
+    var delta: Long,     // UNIX style
     var ring: Boolean,
     var vibration: Boolean,
     var notification: Boolean,
@@ -90,10 +90,34 @@ class EventTableEntry (
     var customWhiteList     : List<String>,     // Not available when !hasCustomWhiteList
     var isAutoGen           : Boolean,          // is auto generated
     var isClass             : Boolean,          // is class?
-    var ruleId              : Long,             // generated from...
+    var hasDescendant       : Boolean,          // generated from...
     var classId             : Long,             // generated from...
     var repeatAt            : Int               // repeat
-)
+){
+    @Ignore fun clone(): EventTableEntry {
+        return EventTableEntry(
+            uid                ,
+            ///////////////////,
+            title              ,
+            detail             ,
+            reminder           ,
+            isAffair           ,
+            startTime          ,
+            stopTime           ,
+            priority           ,
+            focus              ,
+            mute               ,
+            notice             ,
+            hasCustomWhiteList ,
+            customWhiteList    ,
+            isAutoGen          ,
+            isClass            ,
+            hasDescendant      ,
+            classId            ,
+            repeatAt
+        )
+    }
+}
 
 @Entity(tableName = "course_table")
 class Course(
@@ -154,9 +178,6 @@ interface RoomDAO {
 
     @Query("SELECT * FROM EventTable WHERE isAffair=0")
     fun getSchedule(): List<EventTableEntry>
-
-    @Query("SELECT * FROM EventTable WHERE ruleId=:genRuleId")
-    fun getRepeatEvents(genRuleId: Long): List<EventTableEntry>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertEvent(re: EventTableEntry) : Long

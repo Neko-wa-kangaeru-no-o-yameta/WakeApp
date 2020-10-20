@@ -2,7 +2,6 @@ package indi.hitszse2020g6.wakeapp.mainPage
 
 import android.app.AlarmManager
 import android.app.PendingIntent
-import android.app.PendingIntent.FLAG_NO_CREATE
 import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.content.Context
 import android.content.Intent
@@ -13,7 +12,8 @@ import indi.hitszse2020g6.wakeapp.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlin.math.abs
+import java.util.*
+import kotlin.collections.ArrayList
 
 const val PARAM_START_FOCUS_FROM_BACKGROUND = "indi.hitszse2020g6.wakeapp.PARAM_START_FOCUS_FROM_BACKGROUND"
 
@@ -28,6 +28,7 @@ object MainPageEventList {
         GlobalScope.launch(Dispatchers.IO) {
             eventList = DAO.getEvents().toMutableList()
             initComplete = true
+            updateStatus()
         }
     }
 
@@ -38,7 +39,6 @@ object MainPageEventList {
         stopTime    : Long,
         notice      : Boolean,
         isAutoGen   : Boolean,
-        ruleId      : Long,
         repeatAt    : Int
     ) {
         val entry = EventTableEntry(
@@ -57,7 +57,7 @@ object MainPageEventList {
             customWhiteList = ArrayList<String>(),
             isAutoGen   = isAutoGen,
             isClass     = false,
-            ruleId      = ruleId,
+            hasDescendant      = false,
             classId     = -1,
             repeatAt    = repeatAt
         )
@@ -100,7 +100,6 @@ object MainPageEventList {
         whiteList   : List<String>,
         isAutoGen   : Boolean,
         isClass     : Boolean,
-        ruleId      : Long,
         classId     : Long,
         repeatAt    : Int
     ) {
@@ -120,7 +119,7 @@ object MainPageEventList {
             customWhiteList = whiteList.toList(),
             isAutoGen   = isAutoGen,
             isClass     = isClass,
-            ruleId      = ruleId,
+            hasDescendant      = false,
             classId     = classId,
             repeatAt    = repeatAt
         )
@@ -133,6 +132,22 @@ object MainPageEventList {
                 configureAlarm(entry, FLAG_UPDATE_CURRENT)
                 Log.d("Alarm", "trying to set focus...")
                 configureFocus(entry, FLAG_UPDATE_CURRENT)
+            }
+        }
+    }
+
+    fun addEvent(entry: EventTableEntry) {
+        eventList.add(entry)        // uid should catch up in milliseconds
+
+        GlobalScope.launch(Dispatchers.IO) {
+            entry.uid = DAO.insertEvent(entry)
+
+            Handler(Looper.getMainLooper()).post{
+                configureAlarm(entry, FLAG_UPDATE_CURRENT)
+                if(!entry.isAffair){
+                    Log.d("Alarm", "trying to set focus...")
+                    configureFocus(entry, FLAG_UPDATE_CURRENT)
+                }
             }
         }
     }
@@ -173,20 +188,48 @@ object MainPageEventList {
         }
     }
 
-    fun removeEvent(position: Int) {
-        configureAlarm(eventList[position], FLAG_NO_CREATE)
-        val uid = eventList[position].uid   // no reference
+    fun removeEvent(position: Int): Boolean {
+        var flag = false
+        val entry = eventList[position]
+        if(!entry.hasDescendant && entry.repeatAt != 0) {
+            val c = Calendar.getInstance().apply {
+                timeInMillis = entry.stopTime * 1000
+            }
+            for(i in 1 until 8) {
+                val weekday = (c.get(Calendar.DAY_OF_WEEK) + i) % 7
+                if(((1 shl weekday) and (entry.repeatAt)) != 0) {
+                    val clone = entry.clone()
+                    if(!clone.isAffair) {
+                        clone.startTime = entry.startTime + i * 24 * 60 * 60
+                    }
+                    clone.stopTime = entry.stopTime + i * 24 * 60 * 60
+                    addEvent(clone)
+                    flag = true
+                    break
+                }
+            }
+        }
+        deleteAlarm(entry)
+        val uid = entry.uid   // no reference
         GlobalScope.launch(Dispatchers.IO) {
             DAO.deleteEvent(uid)
         }
         eventList.removeAt(position)
-
+        return flag
     }
 
     fun configureAlarm(entry: EventTableEntry, flag: Int) {
         val currentTimeInSecond = System.currentTimeMillis()/1000 + 1
-        val minReminderTime = entry.reminder.map { if(it.time < currentTimeInSecond) Long.MAX_VALUE else it.time*1000 }.maxOrNull()
+        Log.d("ALARM", "$currentTimeInSecond, ${entry.reminder.map { it.delta }}")
+        val minReminderTime = entry.reminder.map {
+            val st = if(entry.isAffair) entry.stopTime else entry.startTime
+            if(st < currentTimeInSecond)
+                Long.MAX_VALUE
+            else
+                (st-it.delta)*1000
+        }.minOrNull()
         if(minReminderTime != null) {
+            Log.d("ALARM", "setting alarm for $minReminderTime")
             val intentToReceiver = Intent(context, AlarmReceiver::class.java).let{
                 it.putExtra(PARAM_START_FOCUS_FROM_BACKGROUND, entry.uid)
                 PendingIntent.getBroadcast(context, alarmHash(entry.uid), it, flag)
@@ -244,7 +287,52 @@ object MainPageEventList {
         return uid.toInt()
     }
 
-    fun clearStat() {
-
+    fun updateStatus() {
+        val newEventList = ArrayList<EventTableEntry>()
+        for(entry in eventList) {
+            if(entry.isAffair && entry.repeatAt != 0 && !entry.hasDescendant) {
+                if(System.currentTimeMillis() / 1000 > entry.stopTime) {
+                    newEventList.add(entry.clone().apply {
+                        val ca = Calendar.getInstance().apply {
+                            timeInMillis = entry.stopTime
+                        }
+                        for(i in 1 until 8) {
+                            val weekday = (i + ca.get(Calendar.DAY_OF_WEEK)) % 7
+                            if((1 shl weekday) and entry.repeatAt != 0) {
+                                stopTime += i * 24 * 60 * 60
+                                break
+                            }
+                        }
+                    })
+                    entry.hasDescendant = true
+                }
+            } else if(!entry.isAffair && entry.repeatAt != 0 && !entry.hasDescendant) {
+                if(System.currentTimeMillis() / 1000 > entry.startTime) {
+                    newEventList.add(entry.clone().apply {
+                        val ca = Calendar.getInstance().apply {
+                            timeInMillis = entry.startTime
+                        }
+                        for(i in 1 until 8) {
+                            val weekday = (i + ca.get(Calendar.DAY_OF_WEEK)) % 7
+                            if((1 shl weekday) and entry.repeatAt != 0) {
+                                startTime += i * 24 * 60 * 60
+                                stopTime += i * 24 * 60 * 60
+                                break
+                            }
+                        }
+                    })
+                    entry.hasDescendant = true
+                }
+            }
+        }
+        for(newEntry in newEventList) {
+            addEvent(newEntry)
+        }
+        for(entry in eventList) {
+            if(!entry.isAffair){
+                configureFocus(entry, FLAG_UPDATE_CURRENT)
+            }
+            configureAlarm(entry, FLAG_UPDATE_CURRENT)
+        }
     }
 }

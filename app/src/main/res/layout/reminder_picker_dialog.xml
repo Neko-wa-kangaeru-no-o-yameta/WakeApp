@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+<!--        <TextView-->
+<!--            android:id="@+id/reminder_picker_dialog_title"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:padding="16dp"-->
+<!--            android:text="@string/reminder_picker_dialog_title"-->
+<!--            android:textAppearance="@style/TextAppearance.AppCompat.Medium"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent" />-->
+
+        <TextView
+            android:id="@+id/textView11"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="在事件前"
+            app:layout_constraintBottom_toBottomOf="@+id/reminder_picker_dialog_minute_input"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/reminder_picker_dialog_day_input" />
+
+        <EditText
+            android:id="@+id/reminder_picker_dialog_hour_input"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:autofillHints="0"
+            android:ems="5"
+            android:gravity="center"
+            android:hint="0"
+            android:inputType="number"
+            android:text="0"
+            app:layout_constraintStart_toEndOf="@+id/textView11"
+            app:layout_constraintTop_toBottomOf="@+id/reminder_picker_dialog_day_input" />
+
+        <TextView
+            android:id="@+id/textView15"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="小时"
+            app:layout_constraintBaseline_toBaselineOf="@+id/reminder_picker_dialog_hour_input"
+            app:layout_constraintStart_toEndOf="@+id/reminder_picker_dialog_hour_input" />
+
+        <EditText
+            android:id="@+id/reminder_picker_dialog_minute_input"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:autofillHints="0"
+            android:ems="5"
+            android:gravity="center"
+            android:hint="0"
+            android:inputType="number"
+            android:text="0"
+            app:layout_constraintStart_toEndOf="@+id/textView11"
+            app:layout_constraintTop_toBottomOf="@+id/reminder_picker_dialog_hour_input" />
+
+        <TextView
+            android:id="@+id/textView13"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="分钟"
+            app:layout_constraintBaseline_toBaselineOf="@+id/reminder_picker_dialog_minute_input"
+            app:layout_constraintStart_toEndOf="@+id/reminder_picker_dialog_minute_input" />
+
+        <EditText
+            android:id="@+id/reminder_picker_dialog_day_input"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:autofillHints="0"
+            android:ems="5"
+            android:gravity="center"
+            android:hint="0"
+            android:inputType="number"
+            android:text="0"
+            app:layout_constraintStart_toEndOf="@+id/textView11"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="天"
+            app:layout_constraintBaseline_toBaselineOf="@+id/reminder_picker_dialog_day_input"
+            app:layout_constraintStart_toEndOf="@+id/reminder_picker_dialog_day_input" />
+
+        <TextView
+            android:id="@+id/textView16"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="提醒我"
+            app:layout_constraintBottom_toBottomOf="@+id/reminder_picker_dialog_minute_input"
+            app:layout_constraintStart_toEndOf="@+id/textView15"
+            app:layout_constraintTop_toTopOf="@+id/reminder_picker_dialog_day_input" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

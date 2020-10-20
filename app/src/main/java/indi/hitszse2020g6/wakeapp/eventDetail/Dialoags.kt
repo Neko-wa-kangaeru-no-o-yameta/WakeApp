@@ -7,6 +7,8 @@ import android.app.TimePickerDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
+import android.util.Log
+import android.widget.EditText
 import androidx.fragment.app.DialogFragment
 import indi.hitszse2020g6.wakeapp.*
 import java.lang.IllegalStateException
@@ -119,5 +121,47 @@ class RepeatWeekdayDialog(private var repeatAt: Int): DialogFragment() {
             }
             builder.create()
         } ?: throw IllegalStateException("Null activity @ RepeatWeekdayDialog::onCreateDialog.")
+    }
+}
+
+class ReminderChooseDialog(private var delta: Long, private var pos: Int):DialogFragment() {
+    interface ReminderChooseListener {
+        abstract fun onReminderChosen(delta: Long, pos: Int)
+    }
+
+    private lateinit var listener: ReminderChooseListener
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        Log.d("ReminderChooseDialog", "$context")
+        listener = context as ReminderChooseListener
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+//        return super.onCreateDialog(savedInstanceState)
+        return activity?.let {
+            val builder = AlertDialog.Builder(it).apply {
+                val view = layoutInflater.inflate(R.layout.reminder_picker_dialog, null)
+                setTitle("输入提醒时间")
+                setView(view)
+                setPositiveButton(
+                    R.string.confirm,
+                    DialogInterface.OnClickListener{ _, _ ->
+                        val day = view.findViewById<EditText>(R.id.reminder_picker_dialog_day_input).text.toString().toLong()
+                        val hour = view.findViewById<EditText>(R.id.reminder_picker_dialog_hour_input).text.toString().toLong()
+                        val minute = view.findViewById<EditText>(R.id.reminder_picker_dialog_minute_input).text.toString().toLong()
+                        delta = (((day * 24 + hour) * 60) + minute) * 60
+                        listener.onReminderChosen(delta, pos)
+                    }
+                )
+                setNegativeButton(
+                    R.string.cancel,
+                    DialogInterface.OnClickListener { _, _ ->
+                        listener.onReminderChosen(delta, pos)
+                    }
+                )
+            }
+            builder.create()
+        } ?: throw IllegalStateException("Null activity @ ReminderChooseDialog::onCreateDialog.")
     }
 }

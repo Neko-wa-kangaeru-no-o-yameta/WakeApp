@@ -142,8 +142,11 @@ class MyMainPageRecyclerViewAdapter(
     }
 
     override fun onItemDismiss(position: Int): Boolean {
-        MainPageEventList.removeEvent(position)
+        val flag = MainPageEventList.removeEvent(position)
         notifyItemRemoved(position)
+        if(flag) {
+            notifyItemInserted(MainPageEventList.eventList.size)
+        }
         return true
     }
 

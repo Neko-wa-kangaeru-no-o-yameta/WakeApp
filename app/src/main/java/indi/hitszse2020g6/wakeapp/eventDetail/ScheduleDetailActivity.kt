@@ -55,7 +55,8 @@ class ScheduleDetailActivity :
     DatePickerDialog.OnDateSetListener,
     TimePickerDialog.OnTimeSetListener,
     RepeatTypeDialog.RepeatTypeListener,
-    RepeatWeekdayDialog.RepeatWeekDayDialogListener {
+    RepeatWeekdayDialog.RepeatWeekDayDialogListener,
+    ReminderChooseDialog.ReminderChooseListener{
 
     private var isNewSchedule = true
     private lateinit var entryToEdit: EventTableEntry
@@ -84,7 +85,6 @@ class ScheduleDetailActivity :
         EventReminderList.ITEMS.clear()
 
         if(intent.extras != null) {
-            isNewSchedule = false
             val uid = intent.getLongExtra(UNIQUE_ID_TO_SCHEDULE_DETAIL, -1)
             for(entry in MainPageEventList.eventList) {
                 if(entry.uid == uid) {
@@ -118,6 +118,7 @@ class ScheduleDetailActivity :
                     EventReminderList.ITEMS = entryToEdit.reminder.toMutableList()
                     findViewById<EditText>(R.id.scheduleDetail_eventTitle).setText(entryToEdit.title)
                     Log.d("ScheduleDetailActivity ", "detail and reminder Loaded: ${entryToEdit.detail} & ${entryToEdit.detail}")
+                    isNewSchedule = false
                     break
                 }
             }
@@ -147,7 +148,6 @@ class ScheduleDetailActivity :
                     whiteList   = whiteList,
                     isAutoGen   = false,
                     isClass     = false,
-                    ruleId      = -1,
                     classId     = -1,
                     repeatAt    = repeatAt
                 )
@@ -163,7 +163,6 @@ class ScheduleDetailActivity :
                 entryToEdit.hasCustomWhiteList = hasWL
                 entryToEdit.customWhiteList = whiteList
                 entryToEdit.isAutoGen   = false
-                entryToEdit.ruleId      = -1
                 entryToEdit.isClass     = false
                 entryToEdit.classId     = -1
                 MainPageEventList.updateEvent(entryToEdit)
@@ -200,7 +199,7 @@ class ScheduleDetailActivity :
                 findViewById<TextView>(R.id.scheduleDetail_startTimeText).text =  context.getString(
                     R.string.eventList_startTimeTVContent
                 ).format(
-                    startTime.month,
+                    startTime.month + 1,
                     startTime.date,
                     startTime.hour,
                     startTime.minute
@@ -217,7 +216,7 @@ class ScheduleDetailActivity :
                 findViewById<TextView>(R.id.scheduleDetail_stopTimeText).text =  context.getString(
                     R.string.eventList_stopTimeTVContent
                 ).format(
-                    stopTime.month,
+                    stopTime.month + 1,
                     stopTime.date,
                     stopTime.hour,
                     stopTime.minute
@@ -252,6 +251,10 @@ class ScheduleDetailActivity :
                 mute = !mute
                 toggleImageDrawable(this, mute, R.drawable.mute_on_24, R.drawable.mute_off_24)
             }
+        }
+
+        findViewById<CardView>(R.id.scheduleDetail_repeatCard).setOnClickListener {
+            RepeatTypeDialog().show(supportFragmentManager, "RepeatTypeDialog")
         }
 
         findViewById<Button>(R.id.scheduleDetail_EditWhiteList).setOnClickListener {
@@ -626,5 +629,10 @@ class ScheduleDetailActivity :
         override fun getYOffset(): Int {
             return -10
         }
+    }
+
+    override fun onReminderChosen(delta: Long, pos: Int) {
+        EventReminderList.ITEMS[pos].delta = delta
+        findViewById<RecyclerView>(R.id.eventDetail_reminderListContainer).adapter!!.notifyItemChanged(pos)
     }
 }

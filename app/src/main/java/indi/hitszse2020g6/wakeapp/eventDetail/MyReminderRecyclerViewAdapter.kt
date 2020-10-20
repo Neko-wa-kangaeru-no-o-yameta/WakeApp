@@ -1,13 +1,5 @@
 package indi.hitszse2020g6.wakeapp.eventDetail
 
-import android.app.Activity
-import android.app.DatePickerDialog
-import android.app.Dialog
-import android.app.TimePickerDialog
-import android.content.Context
-import android.media.Image
-import android.os.Bundle
-import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -16,12 +8,9 @@ import android.widget.*
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
 import indi.hitszse2020g6.wakeapp.R
 import indi.hitszse2020g6.wakeapp.Reminder
-
-import indi.hitszse2020g6.wakeapp.dummy.DummyContent.DummyItem
 
 class MyReminderRecyclerViewAdapter(
     private val values: List<Reminder>,
@@ -55,9 +44,9 @@ class MyReminderRecyclerViewAdapter(
                 Toast.makeText(holder.cardView.context, "TODO for position $position", Toast.LENGTH_SHORT).show()
                 // TODO: Number Picker Dialog
             }
-            val day = item.time / (24*60*60)
-            val hour = item.time / (60*60) - day * 24
-            val minute = item.time / 60 - (day*24*60 + hour*+60)
+            val day = item.delta / (24*60*60)
+            val hour = item.delta / (60*60) - day * 24
+            val minute = item.delta / 60 - (day*24*60 + hour*+60)
             text = resources.getText(R.string.eventDetail_reminderListItem_timeContent).toString().format(day, hour, minute)
         }
 
@@ -86,7 +75,7 @@ class MyReminderRecyclerViewAdapter(
         }
 
         holder.cardView.findViewById<TextView>(R.id.eventDetail_reminderListItem_content).setOnClickListener {
-            Toast.makeText(context, "还没想好怎么表示", Toast.LENGTH_SHORT).show()
+            ReminderChooseDialog(item.delta, position).show(context!!.supportFragmentManager, "ReminderChooseDialog")
         }
 
         holder.cardView.findViewById<EditText>(R.id.eventDetail_reminderListItem_detailContent).apply {
