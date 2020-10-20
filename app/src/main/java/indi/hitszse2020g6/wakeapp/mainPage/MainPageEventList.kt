@@ -231,7 +231,7 @@ object MainPageEventList {
         if(minReminderTime != null) {
             Log.d("ALARM", "setting alarm for $minReminderTime")
             val intentToReceiver = Intent(context, AlarmReceiver::class.java).let{
-                it.putExtra(PARAM_START_FOCUS_FROM_BACKGROUND, entry.uid)
+                it.putExtra(PARAM_ALARM_UID, entry.uid)
                 PendingIntent.getBroadcast(context, alarmHash(entry.uid), it, flag)
             }
             val intentToActivity = Intent(context, MainActivity::class.java).let {
@@ -246,7 +246,7 @@ object MainPageEventList {
 
     fun deleteAlarm(entry: EventTableEntry) {
         Intent(context, AlarmReceiver::class.java).let{
-            it.putExtra(PARAM_START_FOCUS_FROM_BACKGROUND, entry.uid)
+            it.putExtra(PARAM_ALARM_UID, entry.uid)
             PendingIntent.getBroadcast(context, alarmHash(entry.uid), it, 0)
         }?.let{
             alarmManager.cancel(it)

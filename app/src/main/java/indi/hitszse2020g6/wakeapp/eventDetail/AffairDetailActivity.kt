@@ -160,9 +160,9 @@ class AffairDetailActivity :
             if(EventReminderList.ITEMS.size < 10) {
                 EventReminderList.ITEMS.add(Reminder(
                     0,
-                    ring = false,
-                    vibration = false,
-                    notification = false,
+                    ring = true,
+                    vibration = true,
+                    notification = true,
                     ""
                 ))
                 findViewById<RecyclerView>(R.id.eventDetail_reminderListContainer).adapter?.notifyItemInserted(EventReminderList.ITEMS.size)

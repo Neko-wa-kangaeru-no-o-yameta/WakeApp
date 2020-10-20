@@ -262,13 +262,13 @@ class FocusReceiver: BroadcastReceiver() {
     }
 }
 
+const val PARAM_ALARM_UID = "indi.hitszse2020g6.wakeapp.PARAM_ALARM_UID"
 class AlarmReceiver: BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
-        Log.d("Receiver", "received")
-        Toast.makeText(context, "receiver received!", Toast.LENGTH_SHORT).show()
+        Log.d("Receiver", "received, uid = ${intent!!.getLongExtra(PARAM_ALARM_UID, -1)}")
         context!!.startActivity(Intent(context, AlarmActivity::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            putExtra("RequestCode", REQUEST_OPEN_TIMER_FRG)
+            putExtra(PARAM_ALARM_UID, intent.getLongExtra(PARAM_ALARM_UID, -1))
         })
     }
 }

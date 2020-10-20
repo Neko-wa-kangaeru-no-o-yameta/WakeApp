@@ -186,7 +186,7 @@ class ScheduleDetailActivity :
 
         findViewById<ImageButton>(R.id.scheduleDetail_addReminder).setOnClickListener {
             if(EventReminderList.ITEMS.size < 10) {
-                EventReminderList.ITEMS.add(Reminder(0, ring = false, vibration = false, notification = false, ""))
+                EventReminderList.ITEMS.add(Reminder(0, ring = true, vibration = true, notification = true, ""))
                 findViewById<RecyclerView>(R.id.eventDetail_reminderListContainer).adapter?.notifyItemInserted(EventReminderList.ITEMS.size)
                 findViewById<NestedScrollView>(R.id.scheduleDetail_mainContainer).apply { post {
                     fullScroll(NestedScrollView.FOCUS_DOWN)
