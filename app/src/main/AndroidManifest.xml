@@ -24,7 +24,8 @@
         android:theme="@style/AppTheme.NoActionBar">
         <activity android:name=".ChooseScheduleTime" />
         <activity android:name=".ChooseCustomTheme" />
-        <activity android:name=".AlarmActivity" />
+        <activity android:name=".AlarmActivity"
+            android:showOnLockScreen="true"/>
         <activity android:name=".CourseAddActivity" />
         <activity android:name=".ChooseWhiteListActivity" />
         <activity android:name=".eventDetail.AffairDetailActivity" />
