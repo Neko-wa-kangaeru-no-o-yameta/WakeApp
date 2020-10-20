@@ -66,6 +66,7 @@
                     app:layout_constraintEnd_toStartOf="@+id/course_focus"
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/mute_on_24" />
+
                 <EditText
                     android:id="@+id/addCourseDetail_courseAddress"
                     android:layout_width="wrap_content"
@@ -78,11 +79,13 @@
                     android:textSize="14sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/addCourseDetail_courseName" />
+
                 <View
                     android:id="@+id/course_divider3"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_marginVertical="16dp"
+                    android:layout_marginTop="16dp"
                     android:background="?android:attr/listDivider"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/addCourseDetail_courseAddress" />
@@ -141,6 +144,18 @@
                             android:text="@string/courseDetail_timeAddHint"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/courseDetail_time_week" />
+                        <EditText
+                            android:id="@+id/addressEditexFirst"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:autofillHints="@string/courseDetail_detailListItem_detailContentHint"
+                            android:ems="10"
+                            android:hint="@string/courseDetail_detailListItem_detailContentHint"
+                            android:inputType="text"
+                            android:textAppearance="?attr/textAppearanceListItem"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/courseDetail_time" />
 
 
 
