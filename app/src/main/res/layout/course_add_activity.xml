@@ -66,6 +66,7 @@
                     app:layout_constraintEnd_toStartOf="@+id/course_focus"
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/mute_on_24" />
+
                 <EditText
                     android:id="@+id/addCourseDetail_courseAddress"
                     android:layout_width="wrap_content"
@@ -84,9 +85,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_marginVertical="16dp"
+                    android:layout_marginTop="16dp"
                     android:background="?android:attr/listDivider"
                     app:layout_constraintStart_toStartOf="parent"
-                    tools:layout_editor_absoluteY="120dp" />
+                    app:layout_constraintTop_toBottomOf="@+id/addCourseDetail_courseAddress" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
