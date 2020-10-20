@@ -71,6 +71,15 @@ class BackgroundService : Service() {
     var isMuting: Boolean = false
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        super.onStartCommand(intent, flags, startId)
+
+        return START_STICKY
+    }
+
+    override fun onBind(intent: Intent?): IBinder? {
+        pendingReturn = false
+        Log.d(TAG, "rebind.")
+
         Log.d(TAG,"BlockAppService onStartCommannd $isBlocking")
         Timer().scheduleAtFixedRate(
             object : TimerTask() {
@@ -106,12 +115,12 @@ class BackgroundService : Service() {
                     if (needToBlock && isBlocking) {
                         Log.d("BCKGRND", topPackageName)
                         if (!pendingReturn) {
-                            Handler(Looper.getMainLooper()).post { drawOverlay() }
                             Log.d("BCKGRND", "Trying to return...")
                             val i = Intent(this@BackgroundService, MainActivity::class.java)
                             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
                             i.putExtra("RequestCode", REQUEST_OPEN_TIMER_FRG)
+                            Handler(Looper.getMainLooper()).post { drawOverlay() }
                             this@BackgroundService.startActivity(i)
                             pendingReturn = true
                         }
@@ -121,12 +130,6 @@ class BackgroundService : Service() {
             1000, 1000
         )
 
-        return START_STICKY
-    }
-
-    override fun onBind(intent: Intent?): IBinder? {
-        pendingReturn = false
-        Log.d(TAG, "rebind.")
         return binder
     }
 
