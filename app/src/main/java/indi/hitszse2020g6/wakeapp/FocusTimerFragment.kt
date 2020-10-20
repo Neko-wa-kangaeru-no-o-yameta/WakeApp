@@ -35,7 +35,7 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
     var total_time: Long = 0
     var condition_flag: Int = 0
     var before_sys_time: Long = 0
-    var set_focus_title: String = "用户自定义专注"
+    var set_focus_title: String = "人工智能"
 
     private var btnFlag: Boolean = false
 
@@ -243,8 +243,8 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
                 }
             } else if (condition_flag == -1) {
                 condition_flag = 0
+                myCircle.setAnimation(1f)
                 myCircle.setCountdownTime(0)
-                myCircle.setAnimation(0f)
                 storeTime()
                 val mt = MyFocusEntry(
                     uid = System.currentTimeMillis(),
@@ -356,8 +356,8 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
             //计时结束的操作
             override fun onFinish() {
                 if (startBtn != null) {
+                    myCircle.setAnimation(1f)
                     myCircle.setCountdownTime(0)
-                    myCircle.setAnimation(0f)
                     startBtn.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.ic_baseline_check_circle_24))
                     setButtonAni(false)
                     Toast.makeText(context, "计时结束", Toast.LENGTH_SHORT).show()
@@ -420,8 +420,8 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
             hour.text = "00"
             minute.text = "00"
             second.text = "00"
+            myCircle.setAnimation(1f)
             myCircle.setCountdownTime(0)
-            myCircle.setAnimation(0f)
             startBtn.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.ic_baseline_check_circle_24))
             startBtn.isClickable = true
         }
