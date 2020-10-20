@@ -104,7 +104,7 @@ class AffairDetailActivity :
             }
 
             val stopTime = Calendar.getInstance()
-            stopTime.set(year, month-1, date, hour, minute, 0)
+            stopTime.set(year, month, date, hour, minute, 0)
 
 //            val descHolder = findViewById<RecyclerView>(R.id.eventDetail_descriptionListContainer)
 //            for(i in 0 until EventDetailList.ITEMS.size) {
@@ -249,7 +249,7 @@ class AffairDetailActivity :
         Log.d("OnTimeSet", "$hour : $minute")
         findViewById<TextView>(R.id.affairDetail_stopTimeText).text = getString(
             R.string.eventList_stopTimeTVContent
-        ).format(month, date, hour, minute)
+        ).format(month + 1, date, hour, minute)
     }
 
     override fun onRepeatTypeSet(doRepeat: Boolean) {
