@@ -14,6 +14,7 @@ import android.os.Vibrator
 import android.util.Log
 import android.view.WindowManager
 import android.widget.Button
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import indi.hitszse2020g6.wakeapp.mainPage.MainPageEventList
 import kotlin.math.abs
@@ -51,7 +52,10 @@ class AlarmActivity : AppCompatActivity() {
             abs(System.currentTimeMillis()/100 - it.delta)
         }
 
-        if(!reminder!!.notification) {
+        findViewById<TextView>(R.id.alarm_activity_event_title).text = "${entry.title}:"
+        findViewById<TextView>(R.id.alarm_activity_alarm_title).text = reminder!!.description
+
+        if(!reminder.notification) {
             startActivity(Intent(this, MainActivity::class.java))
         }
         val mp = MediaPlayer()

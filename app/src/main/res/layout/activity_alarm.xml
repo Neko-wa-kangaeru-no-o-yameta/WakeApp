@@ -10,10 +10,46 @@
         android:id="@+id/alarm_returnToMain"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="RETURN"
+        android:layout_marginBottom="150dp"
+        android:text="返回"
+        android:textSize="36sp"
+        android:background="?android:attr/selectableItemBackground"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/alarm_activity_event_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="150dp"
+        android:text="事件标题:"
+        android:textColor="@color/design_default_color_on_secondary"
+        android:textSize="36sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/alarm_activity_alarm_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="提醒内容标题"
+        android:textSize="36sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/alarm_activity_event_title" />
+
+<!--    <TextClock-->
+<!--        android:id="@+id/alarm_activity_text_clock"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:format24Hour="hh:mm"-->
+<!--        android:textSize="84sp"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/alarm_returnToMain"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/alarm_activity_alarm_title" />-->
 </androidx.constraintlayout.widget.ConstraintLayout>
