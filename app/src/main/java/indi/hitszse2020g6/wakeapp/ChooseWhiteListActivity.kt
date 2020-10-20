@@ -43,7 +43,7 @@ class ChooseWhiteListActivity : AppCompatActivity(),CompoundButton.OnCheckedChan
         var myIntent = intent
         var b:Bundle? = myIntent.extras
         //庚宝请求的
-        if(b!!.getString(PARAM_SCHEDULE_DETAIL_TO_WHITELIST_JSON)!=null){
+        if(b!=null && b.getString(PARAM_SCHEDULE_DETAIL_TO_WHITELIST_JSON)!=null){
             Log.d(TAG,"GENGBAO!!!")
             openFlag = true
             //获得庚宝发送的字符串

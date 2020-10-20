@@ -35,7 +35,7 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
     var total_time: Long = 0
     var condition_flag: Int = 0
     var before_sys_time: Long = 0
-    var set_focus_title: String = "人工智能"
+    var set_focus_title: String = "软件工程"
 
     private var btnFlag: Boolean = false
 

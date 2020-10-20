@@ -167,7 +167,9 @@ class BackgroundService : Service() {
 
         fun stopCountDownTimer(){
             myCountTime = 0
-            myCountDownTimer!!.cancel()
+            if(myCountDownTimer!=null){
+                myCountDownTimer!!.cancel()
+            }
             isBlocking = false
         }
 

@@ -1,5 +1,6 @@
 package indi.hitszse2020g6.wakeapp
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -30,6 +31,7 @@ class CourseDate{
     var weekEnd :Int = 0
     var time : Int = 0
     var dayOfWeek :Int = 0
+    var courseAddress:String = ""
 }
 class CourseDetails {
     var courseName: String = ""
@@ -62,6 +64,7 @@ class CourseAddActivity : AppCompatActivity(),
         var detail = CourseDetails()
     }
 
+    @SuppressLint("CutPasteId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         ThemeColors(this)
@@ -112,6 +115,7 @@ class CourseAddActivity : AppCompatActivity(),
         } else {
             //对于新事件，啥都是新的
             findViewById<TextView>(R.id.CourseDetailChange_title).visibility = ViewGroup.GONE
+            findViewById<EditText>(R.id.addCourseDetail_courseAddress).visibility = ViewGroup.GONE
             detail.courseWeekEnd = 0
             detail.dateList.clear()
             detail.courseName = ""
@@ -157,11 +161,13 @@ class CourseAddActivity : AppCompatActivity(),
                                         HaveFlag = 1
                                     }
                                     else{
+                                        detail.courseAddress = findViewById<EditText>(R.id.addressEditexFirst).text.toString()
                                         val result = CourseDate()
                                         result.time = detail.courseTime
                                         result.weekEnd = week
                                         result.weekBegin = week
                                         result.dayOfWeek = detail.courseDayOfWeek
+                                        result.courseAddress = detail.courseAddress
                                         resultList.add(result)
                                     }
                                 }
@@ -191,6 +197,7 @@ class CourseAddActivity : AppCompatActivity(),
                                                 result.weekEnd = week
                                                 result.weekBegin = week
                                                 result.dayOfWeek = CourseWeek.ITEMS[ele].dayOfWeek
+                                                result.courseAddress = CourseWeek.ITEMS[ele].courseAddress
                                                 resultList.add(result)
                                                 HaveFlag = 0
                                             }
@@ -209,8 +216,6 @@ class CourseAddActivity : AppCompatActivity(),
                                 //表示没有找到跟设置时间段冲突的课程
                                 detail.courseName =
                                     findViewById<EditText>(R.id.addCourseDetail_courseName).text.toString()
-                                detail.courseAddress =
-                                    findViewById<EditText>(R.id.addCourseDetail_courseAddress).text.toString()
                                 for(ele in resultList){
                                     for(week in ele.weekBegin..ele.weekEnd){
                                         val course = Course(
@@ -218,7 +223,7 @@ class CourseAddActivity : AppCompatActivity(),
                                             detail.courseName,
                                             week,
                                             ele.dayOfWeek,
-                                            detail.courseAddress,
+                                            ele.courseAddress,
                                             ele.time,
                                             getColor(R.color.CourseTableColor1),
                                             detail.alarm,
@@ -250,10 +255,7 @@ class CourseAddActivity : AppCompatActivity(),
                         findViewById<EditText>(R.id.addCourseDetail_courseAddress).text.toString()
                     //弹出选择范围的弹窗
                     CourseChangeSelectFragment().show(supportFragmentManager,"WeekPickerFragment")
-
-
                 }
-
         }
 
         findViewById<ImageButton>(R.id.courseDetail_cancel).setOnClickListener {
@@ -335,6 +337,7 @@ class CourseAddActivity : AppCompatActivity(),
             courseDate.weekBegin = 0
             courseDate.weekEnd = 0
             courseDate.dayOfWeek = 0
+            courseDate.courseAddress = ""
             CourseWeek.ITEMS.add(courseDate)
             findViewById<RecyclerView>(R.id.course_time_add_list_container).adapter?.notifyItemInserted(
                 CourseWeek.ITEMS.size
@@ -596,7 +599,7 @@ class CourseAddActivity : AppCompatActivity(),
 
     private fun showLocationInfoGuideView(){
         val builder = GuideBuilder()
-        builder.setTargetView(addCourseDetail_courseAddress).setAlpha(150).setHighTargetPadding(5)
+        builder.setTargetView(addressEditexFirst).setAlpha(150).setHighTargetPadding(5)
             .setHighTargetGraphStyle(Component.ROUNDRECT)
         builder.setOnVisibilityChangedListener(object : GuideBuilder.OnVisibilityChangedListener {
             override fun onShown() {}
