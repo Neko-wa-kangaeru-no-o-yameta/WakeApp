@@ -45,7 +45,7 @@
                 android:layout_height="wrap_content"
 
                 android:layout_marginStart="24dp"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="108dp"
                 android:text="@string/Xing"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView_forNumberPickerHint1" />
@@ -56,7 +56,7 @@
                 android:layout_height="wrap_content"
 
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="108dp"
                 android:text="@string/Qi"
                 app:layout_constraintStart_toEndOf="@+id/textView_forNumberPickerHint2"
                 app:layout_constraintTop_toBottomOf="@+id/textView_forNumberPickerHint1" />
@@ -66,7 +66,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="108dp"
                 android:text="@string/Di"
                 app:layout_constraintStart_toEndOf="@+id/numberPicker1"
                 app:layout_constraintTop_toBottomOf="@+id/textView_forNumberPickerHint1" />
@@ -76,7 +76,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="108dp"
                 android:layout_marginEnd="24dp"
                 android:text="@string/jie"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -88,8 +88,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                android:layout_marginTop="32dp"
                 app:layout_constraintStart_toEndOf="@+id/textView_forNumberPickerHint3"
-                app:layout_constraintTop_toBottomOf="@+id/textView_forNumberPickerHint2"
+                app:layout_constraintTop_toBottomOf="@+id/textView_forNumberPickerHint1"
                 tools:layout_conversion_absoluteHeight="180dp"
                 tools:layout_conversion_absoluteWidth="64dp" />
 
@@ -98,8 +99,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                android:layout_marginTop="32dp"
                 app:layout_constraintStart_toEndOf="@+id/textView_forNumberPickerHint4"
-                app:layout_constraintTop_toBottomOf="@+id/textView_forNumberPickerHint4"
+                app:layout_constraintTop_toBottomOf="@+id/textView_forNumberPickerHint1"
                 tools:layout_conversion_absoluteHeight="180dp"
                 tools:layout_conversion_absoluteWidth="64dp" />
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -77,7 +77,7 @@ class WeekCourseFragment : Fragment() {
             if(resultCode == RESULT_ADD_NEW_COURSE){
                 Toast.makeText(context,"小猫咪帮你更新课程表啦", Toast.LENGTH_SHORT).show()
             }else{
-                Toast.makeText(context,"小猫咪很乖的没动你的课表啦", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(context,"小猫咪很乖的没动你的课表啦", Toast.LENGTH_SHORT).show()
             }
 
         }

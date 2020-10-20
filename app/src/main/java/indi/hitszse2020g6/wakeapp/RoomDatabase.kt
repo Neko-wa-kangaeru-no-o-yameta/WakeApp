@@ -251,7 +251,7 @@ interface RoomDAO {
     )
 
     //修改这一时间段的courseDetails
-    @Query("UPDATE course_table SET course_name = (:name),class_address = (:address),course_notice = (:notice),course_focus = (:focus), course_mute = (:mute),course_detail=(:detail),course_reminder = (:reminder) WHERE (class_time = (:time) and course_name = (:oldName))")
+    @Query("UPDATE course_table SET course_name = (:name),class_address = (:address),course_notice = (:notice),course_focus = (:focus), course_mute = (:mute),course_detail=(:detail),course_reminder = (:reminder) WHERE (class_time = (:time) and course_name = (:oldName) and day_of_week = (:TheDayOfWeek))")
     fun updateCourseDetailByTime(
         name: String,
         address: String,
@@ -261,7 +261,8 @@ interface RoomDAO {
         detail: List<Detail>,
         reminder: List<Reminder>,
         time :Int,
-        oldName :String
+        oldName :String,
+        TheDayOfWeek: Int
     )
 
     //修改这门课所有时间的CourseDetails

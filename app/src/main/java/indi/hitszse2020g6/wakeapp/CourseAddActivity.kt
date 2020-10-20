@@ -60,6 +60,7 @@ class CourseAddActivity : AppCompatActivity(),
     private var repeatCourseDate = CourseDate()
     private val resultList = arrayListOf<CourseDate>()
     private val resultCoruseList = ArrayList<Course>()
+    private var hintedFlag : Int = 0
     companion object {
         var detail = CourseDetails()
     }
@@ -116,6 +117,7 @@ class CourseAddActivity : AppCompatActivity(),
             //对于新事件，啥都是新的
             findViewById<TextView>(R.id.CourseDetailChange_title).visibility = ViewGroup.GONE
             findViewById<EditText>(R.id.addCourseDetail_courseAddress).visibility = ViewGroup.GONE
+            findViewById<CardView>(R.id.deleteCard).visibility = ViewGroup.GONE
             detail.courseWeekEnd = 0
             detail.dateList.clear()
             detail.courseName = ""
@@ -134,6 +136,7 @@ class CourseAddActivity : AppCompatActivity(),
                     HaveFlag = 0
                     listSize = 0
                     repeatCourse = ""
+                    hintedFlag = 0
 
                     if (detail.courseWeekBegin > detail.courseWeekEnd){
                         Toast.makeText(this@CourseAddActivity,"小猫咪说你的课程时间的设置错了啦",Toast.LENGTH_SHORT).show()
@@ -176,6 +179,7 @@ class CourseAddActivity : AppCompatActivity(),
                                 Toast.makeText(this@CourseAddActivity,
                                     "小猫咪说在你的第1个课程时间设置中，已经有第${repeatCourseDate.weekBegin}周星期${chineseWeek[repeatCourseDate.dayOfWeek - 1]}第${repeatCourseDate.time}节的${repeatCourse}等${listSize}门课程啦，请检查",
                                     Toast.LENGTH_SHORT).show()
+                                    hintedFlag = 1
                             } else if(HaveFlag == 0){
                                 for(ele in 0 until CourseWeek.ITEMS.size){
                                     for(week in CourseWeek.ITEMS[ele].weekBegin ..CourseWeek.ITEMS[ele].weekEnd){
@@ -208,7 +212,7 @@ class CourseAddActivity : AppCompatActivity(),
                                     if(HaveFlag == 1)   break
                                 }
                             }
-                            if(HaveFlag == 1){
+                            if((HaveFlag == 1)&&(hintedFlag == 0)){
                                 Toast.makeText(this@CourseAddActivity,
                                     "小猫咪说在你的第1个课程时间设置中，已经有第${repeatCourseDate.weekBegin}周星期${chineseWeek[repeatCourseDate.dayOfWeek - 1]}第${repeatCourseDate.time}节的${repeatCourse}等课程啦，请检查",
                                     Toast.LENGTH_SHORT).show()
@@ -451,7 +455,8 @@ class CourseAddActivity : AppCompatActivity(),
                 EventDetailList.ITEMS.toList(),
                 EventReminderList.ITEMS.toList(),
                 detail.courseTime,
-                courseName
+                courseName,
+                detail.courseDayOfWeek
             )
         }
         else if(select == 2){
