@@ -5,8 +5,10 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
 import indi.hitszse2020g6.wakeapp.dummy.CourseWeek
@@ -62,6 +64,14 @@ class MyCourseTimeAddAdapter(
                 }
             }
         }
+
+        holder.addressView.apply {
+            setText(CourseWeek.ITEMS[position].courseAddress)
+            addTextChangedListener {
+                CourseWeek.ITEMS[position].courseAddress = it.toString()
+            }
+        }
+
     }
 
     override fun getItemCount(): Int = values.size
@@ -75,6 +85,7 @@ class MyCourseTimeAddAdapter(
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val weekView : TextView = view.findViewById(R.id.course_time_add_discription_week)
         val timeView : TextView = view.findViewById(R.id.courseDetail_time_add_discription_time)
+        val addressView : EditText = view.findViewById(R.id.addressEditex)
 //        override fun toString(): String {
 //            return super.toString() + " '" + contentView.text + "'"
 //        }

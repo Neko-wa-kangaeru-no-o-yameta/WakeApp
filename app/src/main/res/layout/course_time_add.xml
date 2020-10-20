@@ -47,6 +47,19 @@
                     android:text="@string/courseDetail_timeAddHint"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/course_time_add_discription_week" />
+
+                <EditText
+                    android:id="@+id/addressEditex"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:autofillHints="@string/courseDetail_detailListItem_detailContentHint"
+                    android:ems="10"
+                    android:hint="@string/courseDetail_detailListItem_detailContentHint"
+                    android:inputType="text"
+                    android:textAppearance="?attr/textAppearanceListItem"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/courseDetail_time_add_discription_time" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
 

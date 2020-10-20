@@ -60,6 +60,7 @@
     <string name="eventDetail_reminderListItem_timeContent">任务前%d天%d小时%d分钟</string>
     <string name="eventDetail_reminderListItem_detail">备注</string>
     <string name="eventDetail_detailListItem_detailContentHint">点击修改提醒备注</string>
+    <string name="courseDetail_detailListItem_detailContentHint">点击修改课程地点</string>
     <string name="eventDetail_detailListItem_ringBtn_hint">toggle ring</string>
     <string name="eventDetail_detailListItem_vibrateBtn_hint">toggle vibration</string>
     <string name="eventDetail_detailListItem_notificationBtn_hint">toggle notification</string>
