@@ -112,8 +112,8 @@ class BackgroundService : Service() {
                     for(wlPackageName in finalWhiteList) {
                         if(topPackageName == wlPackageName) needToBlock = false
                     }
+                    Log.d("BCKGRND", "$topPackageName, needToBlock = $needToBlock, isBlocking = $isBlocking")
                     if (needToBlock && isBlocking) {
-                        Log.d("BCKGRND", topPackageName)
                         if (!pendingReturn) {
                             Log.d("BCKGRND", "Trying to return...")
                             val i = Intent(this@BackgroundService, MainActivity::class.java)
@@ -162,11 +162,14 @@ class BackgroundService : Service() {
         fun getService() : BackgroundService = this@BackgroundService
 
         fun setIsBlocking(block: Boolean){
-            Log.d("BlockAppService","isBlocking changed")
             isBlocking = block
+            Log.d("BlockAppService","isBlocking changed: $isBlocking")
         }
 
-        fun getBlock():Boolean = isBlocking
+        fun getBlock():Boolean {
+            val blocking = isBlocking
+            return blocking
+        }
 
         fun stopCountDownTimer(){
             myCountTime = 0
@@ -174,6 +177,7 @@ class BackgroundService : Service() {
                 myCountDownTimer!!.cancel()
             }
             isBlocking = false
+            Log.d("BlockAppService","stopCountDownTimer")
         }
 
         fun setCustomWhiteList(cusWL: List<String>) {
@@ -219,6 +223,7 @@ class BackgroundService : Service() {
                     Log.d(TAG,"BACKGROUND TIMER FINISHED")
                 }
             }.start()
+            Log.d("BlockAppService","startCountDownTimer")
         }
 
         fun getStartTime(): Long = startBlocking
