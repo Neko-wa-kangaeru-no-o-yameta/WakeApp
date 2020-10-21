@@ -35,7 +35,7 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
     var total_time: Long = 0
     var condition_flag: Int = 0
     var before_sys_time: Long = 0
-    var set_focus_title: String = "软件工程"
+    var set_focus_title: String = "用户自定义专注"
 
     private var btnFlag: Boolean = false
 
@@ -242,6 +242,7 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
                         .show()
                 }
             } else if (condition_flag == -1) {
+                Toast.makeText(context,set_focus_title,Toast.LENGTH_SHORT).show()
                 condition_flag = 0
                 myCircle.setAnimation(1f)
                 myCircle.setCountdownTime(0)
@@ -275,6 +276,7 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
         }
 
         cancelBtn.setOnClickListener {
+            Toast.makeText(context, set_focus_title,Toast.LENGTH_SHORT).show()
             val mt = MyFocusEntry(
                 uid = System.currentTimeMillis(),
                 totalFocusTime = total_time,
@@ -382,6 +384,7 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
             condition_flag = 0
             total_time = (activity as MainActivity).binder?.getConditon()!!
             set_focus_title = (activity as MainActivity).binder?.getFocusTitle()!!
+            Log.d("FFFFFocusTitle",set_focus_title)
             distance = 0
             setMyCountDownTimer(total_time)
             Log.d(TAG, "backgroung stored ${(activity as MainActivity).binder?.getIsStored()}")
@@ -394,6 +397,7 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
                 total_time = mySharedPreferences.getLong("total_time", 0)
                 before_sys_time =
                     mySharedPreferences.getLong("before_system_time", System.currentTimeMillis())
+                set_focus_title = mySharedPreferences.getString("focus_title","用户自定义").toString()
             }
 
             distance =
@@ -458,6 +462,7 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
         editor.putLong("total_time", total_time)
         editor.putLong("before_system_time", System.currentTimeMillis())
         editor.putInt("condition_flag", condition_flag)
+        editor.putString("focus_title",set_focus_title)
         editor.apply()
     }
 

@@ -112,7 +112,7 @@ class BackgroundService : Service() {
                     for(wlPackageName in finalWhiteList) {
                         if(topPackageName == wlPackageName) needToBlock = false
                     }
-                    Log.d("BCKGRND", "$topPackageName, needToBlock = $needToBlock, isBlocking = $isBlocking")
+//                    Log.d("BCKGRND", "$topPackageName, needToBlock = $needToBlock, isBlocking = $isBlocking")
                     if (needToBlock && isBlocking) {
                         if (!pendingReturn) {
                             Log.d("BCKGRND", "Trying to return...")
@@ -173,6 +173,7 @@ class BackgroundService : Service() {
 
         fun stopCountDownTimer(){
             myCountTime = 0
+            useCustomWhiteList = false
             if(myCountDownTimer!=null){
                 myCountDownTimer!!.cancel()
             }
@@ -194,9 +195,23 @@ class BackgroundService : Service() {
 
         fun getFocusTitle() = focusTitle
 
-        fun startTimer(startTime:Long,endTime:Long, title: String){
-            val totalTime = endTime - startTime
-            startMyCountDownTimer(totalTime,title)
+//        fun startTimer(startTime:Long,endTime:Long, title: String){
+//            val totalTime = endTime - startTime
+//            startMyCountDownTimer(totalTime,title)
+//            //发送BroadCast通知切换页面
+//            val myIntent = Intent()
+//            myIntent.action = "switchToFocusFragment"
+//            sendBroadcast(myIntent)
+//        }
+
+        fun startTimer(entry:EventTableEntry){
+            val totalTime = entry.stopTime - entry.startTime
+            for (item in entry.customWhiteList){
+                Log.d("CustomWhiteList",item)
+            }
+            useCustomWhiteList = true
+            customWhiteList = entry.customWhiteList
+            startMyCountDownTimer(totalTime,entry.title)
             //发送BroadCast通知切换页面
             val myIntent = Intent()
             myIntent.action = "switchToFocusFragment"
