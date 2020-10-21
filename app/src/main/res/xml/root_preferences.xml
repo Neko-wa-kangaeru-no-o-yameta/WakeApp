@@ -27,5 +27,12 @@
             app:title="设置学期起止时间"
             app:summary="选择当前学期的开始时间和结束时间"/>
     </PreferenceCategory>
+    <PreferenceCategory
+        app:title="Help">
+        <Preference
+            app:key="help_sec"
+            app:title="常见问题"
+            app:summary="关于此app使用上一些常见问题的解答"/>
+    </PreferenceCategory>
 
 </PreferenceScreen>

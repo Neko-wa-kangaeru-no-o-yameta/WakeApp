@@ -195,15 +195,6 @@ class BackgroundService : Service() {
 
         fun getFocusTitle() = focusTitle
 
-//        fun startTimer(startTime:Long,endTime:Long, title: String){
-//            val totalTime = endTime - startTime
-//            startMyCountDownTimer(totalTime,title)
-//            //发送BroadCast通知切换页面
-//            val myIntent = Intent()
-//            myIntent.action = "switchToFocusFragment"
-//            sendBroadcast(myIntent)
-//        }
-
         fun startTimer(entry:EventTableEntry){
             val totalTime = entry.stopTime - entry.startTime
             for (item in entry.customWhiteList){

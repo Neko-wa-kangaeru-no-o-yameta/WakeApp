@@ -8,7 +8,7 @@
     <uses-permission android:name="android.permission.ACTION_MANAGE_OVERLAY_PERMISSION" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.ACTION_USAGE_ACCESS_SETTINGS" />
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission
         android:name="android.permission.PACKAGE_USAGE_STATS"
         tools:ignore="ProtectedPermissions" />
@@ -22,10 +22,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
+        <activity android:name=".HelpGuideActivity"></activity>
         <activity android:name=".ChooseScheduleTime" />
         <activity android:name=".ChooseCustomTheme" />
-        <activity android:name=".AlarmActivity"
-            android:showOnLockScreen="true"/>
+        <activity
+            android:name=".AlarmActivity"
+            android:showOnLockScreen="true" />
         <activity android:name=".CourseAddActivity" />
         <activity android:name=".ChooseWhiteListActivity" />
         <activity android:name=".eventDetail.AffairDetailActivity" />

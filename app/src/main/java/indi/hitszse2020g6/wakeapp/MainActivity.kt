@@ -119,7 +119,6 @@ class MainActivity() : AppCompatActivity() {
                     binder?.setUseCustomWhiteList(entry.hasCustomWhiteList)
                     binder?.setCustomWhiteList(entry.customWhiteList)
                     binder?.setIsBlocking(true)
-//                    binder?.startTimer(entry.startTime, entry.stopTime, entry.title)
                     binder?.startTimer(entry)
                 }, 500)
             }
@@ -297,7 +296,6 @@ class FocusReceiver: BroadcastReceiver() {
                 binder.setUseCustomWhiteList(entry.hasCustomWhiteList)
                 binder.setCustomWhiteList(entry.customWhiteList)
                 binder.setIsBlocking(true)
-//                binder.startTimer(entry.startTime, entry.stopTime, entry.title)
                 binder.startTimer(entry)
             }, 500)
         }

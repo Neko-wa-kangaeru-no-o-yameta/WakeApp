@@ -41,5 +41,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
             startActivity(Intent(context,ChooseScheduleTime::class.java))
             true
         }
+
+        findPreference<Preference>("help_sec")?.setOnPreferenceClickListener {
+            startActivity(Intent(context,HelpGuideActivity::class.java))
+            true
+        }
     }
 }
