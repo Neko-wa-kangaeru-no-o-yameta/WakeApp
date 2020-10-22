@@ -135,4 +135,5 @@
     <string name="set_thing_start_time">设置事件开始时间</string>
     <string name="add_custom_whitelist">设置该日程专注时自定义白名单</string>
     <string name="reminder_picker_dialog_title">选择提醒时间</string>
+    <string name="two_zero">00</string>
 </resources>
