@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
-import androidx.core.content.res.ResourcesCompat
 import androidx.dynamicanimation.animation.SpringAnimation
 import androidx.dynamicanimation.animation.SpringForce
 import androidx.fragment.app.Fragment
@@ -235,7 +234,7 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
                     //设置动画时长
                     myCircle.setCountdownTime(total_time * 1000)
                     myCircle.setAnimation(0f)
-
+                    set_focus_title = "用户自定义"
                     setMyCountDownTimer(total_time)
                 } else {
                     Toast.makeText(context, "Unable to start a 0 minute focus.", Toast.LENGTH_SHORT)
@@ -257,9 +256,9 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
                 myDao.addFocusData(mt)
                 startBtn.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.ic_baseline_play_circle_filled_24))
                 toggleDisplay(false)
-                hour.text = "00"
-                minute.text = "00"
-                second.text = "00"
+                hour.text = getString(R.string.two_zero)
+                minute.text = getString(R.string.two_zero)
+                second.text = getString(R.string.two_zero)
             }
         }
 
@@ -308,7 +307,7 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
             requireContext().getSharedPreferences("new_user", Context.MODE_PRIVATE)
         if (mySharedPreferences.getBoolean("isNewTimerFragment", true)) {
             myCircle.post { showGuideView() }
-            var editor = mySharedPreferences.edit()
+            val editor = mySharedPreferences.edit()
             editor.putBoolean("isNewTimerFragment", false)
             editor.apply()
         }
@@ -370,6 +369,9 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
                         (activity as MainActivity).binder?.stopCountDownTimer()
                         (activity as MainActivity).binder?.setIsStored(false)
                     }
+                    hour.text = getString(R.string.two_zero)
+                    minute.text = getString(R.string.two_zero)
+                    second.text = getString(R.string.two_zero)
                 }
             }
         }.start()
@@ -421,9 +423,9 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
         } else if (condition_flag == -1) {
             //之前关掉的时候是计时结束状态
             toggleDisplay(true)
-            hour.text = "00"
-            minute.text = "00"
-            second.text = "00"
+            hour.text = getString(R.string.two_zero)
+            minute.text = getString(R.string.two_zero)
+            second.text = getString(R.string.two_zero)
             myCircle.setAnimation(1f)
             myCircle.setCountdownTime(0)
             startBtn.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.ic_baseline_check_circle_24))
@@ -458,7 +460,7 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
     private fun storeTime() {
         mySharedPreferences =
             requireContext().getSharedPreferences("user_time", Context.MODE_PRIVATE)
-        var editor = mySharedPreferences.edit()
+        val editor = mySharedPreferences.edit()
         editor.putLong("total_time", total_time)
         editor.putLong("before_system_time", System.currentTimeMillis())
         editor.putInt("condition_flag", condition_flag)
@@ -496,9 +498,7 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
 
     class SetClickComponent : Component {
         override fun getView(inflater: LayoutInflater?): View {
-            var ll: LinearLayout =
-                inflater?.inflate(R.layout.layer_start_timer_btn, null) as LinearLayout
-            return ll
+            return inflater?.inflate(R.layout.layer_start_timer_btn, null) as LinearLayout
         }
 
         override fun getAnchor(): Int {
@@ -520,8 +520,7 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
 
     class MyCircleComponent : Component {
         override fun getView(inflater: LayoutInflater?): View {
-            var ll: LinearLayout = inflater?.inflate(R.layout.layer_my_circle, null) as LinearLayout
-            return ll
+            return inflater?.inflate(R.layout.layer_my_circle, null) as LinearLayout
         }
 
         override fun getAnchor(): Int {
