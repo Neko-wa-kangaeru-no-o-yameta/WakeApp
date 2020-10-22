@@ -317,7 +317,8 @@ class ScheduleFragment : Fragment(),
                                 courseFocus,
                                 courseMute,
                                 detail.toList(),
-                                reminder
+                                reminder,
+                                false
                             )
                             resultList.add(course)
                         }
@@ -337,7 +338,8 @@ class ScheduleFragment : Fragment(),
                             courseFocus,
                             courseMute,
                             detail.toList(),
-                            reminder
+                            reminder,
+                            false
                         )
                         resultList.add(course)
                     }

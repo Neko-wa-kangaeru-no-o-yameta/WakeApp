@@ -234,7 +234,8 @@ class CourseAddActivity : AppCompatActivity(),
                                             detail.focus,
                                             detail.mute,
                                             EventDetailList.ITEMS.toList(),
-                                            EventReminderList.ITEMS.toList()
+                                            EventReminderList.ITEMS.toList(),
+                                            false
                                         )
                                         resultCoruseList.add(course)
                                     }

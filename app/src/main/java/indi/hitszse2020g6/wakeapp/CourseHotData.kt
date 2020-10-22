@@ -6,6 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.descriptors.PrimitiveKind
 
 object CourseList{
     lateinit var courseList: MutableList<Course>
@@ -110,12 +111,6 @@ object CourseList{
         for(i in 0 until courseList.size){
             if(courseList[i].courseId == courseId){
                 pos = i
-                Log.d("=====3pos3=====",pos.toString())
-                Log.d("courseId", courseList[i].courseId.toString())
-                Log.d("courseNamge", courseList[i].courseName)
-                Log.d("courseWeek", courseList[i].week.toString())
-                Log.d("dayOfWeek", courseList[i].dayOfWeek.toString())
-                Log.d("time", courseList[i].time.toString())
             }
         }
 
@@ -128,6 +123,7 @@ object CourseList{
 //        courseList.clear()
 //        courseList = DAO.getAll().toMutableList()
     }
+
 
     fun updateCourseDetailById(
         name: String, address: String, notice: Boolean,
@@ -221,6 +217,18 @@ object CourseList{
                 reminder,
                 oldName
             )
+        }
+    }
+    // TODO 给庚宝的接口
+    fun updateCourseIsGeneratedFlag(uid:Long,generate : Boolean){
+        for(item in courseList){
+            if(item.courseId == uid){
+                //两个id相等
+                item.isGenerate = generate
+            }
+        }
+        GlobalScope.launch(Dispatchers.IO){
+            DAO.updateCourseIsGeneratedFlag(uid,generate)
         }
     }
 }
