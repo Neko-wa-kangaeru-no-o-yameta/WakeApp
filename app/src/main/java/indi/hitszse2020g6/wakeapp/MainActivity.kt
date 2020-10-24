@@ -123,6 +123,7 @@ class MainActivity() : AppCompatActivity() {
                 }, 500)
             }
         }
+
         //之前课程表没有设置，默认写一下时间
         sharedPreferences = getSharedPreferences(
             "schedule_time",
@@ -218,7 +219,6 @@ class MainActivity() : AppCompatActivity() {
         i.setAction("Connnecting")
         i.putExtra("connect", true)
         sendBroadcast(i)
-
     }
 
     override fun onPause() {
@@ -260,8 +260,8 @@ class MainActivity() : AppCompatActivity() {
         this.registerReceiver(object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 Log.d("MainActivity", "Received intent from background service")
-                findNavController(R.id.mainNavFragment).navigate(R.id.action_global_focusFragment)
-                bottomNavigationView.selectedItemId = R.id.bottomNavFocusBtn
+//                findNavController(R.id.mainNavFragment).navigate(R.id.action_global_focusFragment)
+//                bottomNavigationView.selectedItemId = R.id.bottomNavFocusBtn
             }
         }, intentFilter)
     }

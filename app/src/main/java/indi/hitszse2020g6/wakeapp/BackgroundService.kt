@@ -70,6 +70,7 @@ class BackgroundService : Service() {
     var focusTitle: String = ""
 
     var isMuting: Boolean = false
+    var totalTime:Long = 0
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
@@ -205,7 +206,7 @@ class BackgroundService : Service() {
         fun getFocusTitle() = focusTitle
 
         fun startTimer(entry:EventTableEntry){
-            val totalTime = entry.stopTime - entry.startTime
+            totalTime = entry.stopTime - entry.startTime
             for (item in entry.customWhiteList){
                 Log.d("CustomWhiteList",item)
             }
@@ -246,6 +247,8 @@ class BackgroundService : Service() {
         fun getStopTime(): Long = stopBlocking
 
         fun getConditon():Long = myCountTime
+
+        fun getTotalTime():Long = totalTime
 
         fun setIsStored(b:Boolean){
             isStored = b

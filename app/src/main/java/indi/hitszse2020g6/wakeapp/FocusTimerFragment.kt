@@ -232,10 +232,10 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
                 if (total_time > 0) {
                     setButtonAni(true)
                     //设置动画时长
-                    myCircle.setCountdownTime(total_time * 1000)
-                    myCircle.setAnimation(0f)
                     set_focus_title = "用户自定义"
                     setMyCountDownTimer(total_time)
+                    myCircle.setCountdownTime(total_time * 1000)
+                    myCircle.setAnimation(0f)
                 } else {
                     Toast.makeText(context, "Unable to start a 0 minute focus.", Toast.LENGTH_SHORT)
                         .show()
@@ -321,8 +321,8 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
 
             storeTime()
 
-            myCircle.setCountdownTime(total_time * 1000)
-            myCircle.setAnimation(0f)
+//            myCircle.setCountdownTime(total_time * 1000)
+//            myCircle.setAnimation(0f)
             toggleDisplay(true)
         }
         //如果之前开了一个计时先关掉
@@ -378,19 +378,79 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
     private fun getPreviousCondition() {
         Log.d(TAG, "getPreviousConditon")
         val distance: Long
+//        Log.d("Binder",((activity as MainActivity).binder == null).toString())
+//        Log.d("Binder",(activity as MainActivity).binder?.getConditon().toString())
+//        Log.d("Binder",(activity as MainActivity).binder?.getIsStored()!!.toString())
         if ((activity as MainActivity).binder != null && (activity as MainActivity).binder?.getConditon()!! > 0 && !(activity as MainActivity).binder?.getIsStored()!!) {
             //第一次进来，后台已经开始计时了，isStored表示第一次进来
             Log.d(TAG, "Background Service is Timing")
             condition_flag = 0
-            total_time = (activity as MainActivity).binder?.getConditon()!!
+            total_time = (activity as MainActivity).binder?.getTotalTime()!!
+            var pass_time = (activity as MainActivity).binder?.getConditon()!!
             set_focus_title = (activity as MainActivity).binder?.getFocusTitle()!!
             Log.d("FFFFFocusTitle",set_focus_title)
             distance = 0
             //跟着后台前台也开始计时
-            setMyCountDownTimer(total_time)
-            //这里会把conditon flag变成1
-            Log.d(TAG, "backgroung stored ${(activity as MainActivity).binder?.getIsStored()}")
+//            setMyCountDownTimer(total_time)
+
+            setButtonAni(true)
+            condition_flag = 1
             (activity as MainActivity).binder?.setIsStored(true)
+            storeTime(System.currentTimeMillis()-(total_time-pass_time)*1000)
+
+            myCircle.setCountdownTime(pass_time * 1000)
+            myCircle.setAnimation((total_time-pass_time).toFloat()/total_time.toFloat())
+            toggleDisplay(true)
+
+            //如果之前开了一个计时先关掉
+            if (myCountDownTimer != null) {
+                myCountDownTimer!!.cancel()
+            }
+            myCountDownTimer = object : CountDownTimer((pass_time) * 1000, 1000) {
+                override fun onTick(millisUntilFinished: Long) {
+                    val h: Long = millisUntilFinished / (1000 * 60 * 60) //单位时
+                    val m: Long =
+                        (millisUntilFinished - h * (1000 * 60 * 60)) / (1000 * 60) //单位分
+                    val s: Long =
+                        (millisUntilFinished - h * (1000 * 60 * 60) - m * (1000 * 60)) / 1000 //单位秒L
+                    //防止下拉的时候出错
+                    if (hour != null && minute != null && second != null) {
+                        hour.text = "0$h"
+                        if (m < 10) {
+                            minute.text = "0$m"
+                        } else {
+                            minute.text = m.toString()
+                        }
+                        if (s < 10) {
+                            second.text = "0$s"
+                        } else {
+                            second.text = s.toString()
+                        }
+                    }
+                }
+
+                //计时结束的操作
+                override fun onFinish() {
+                    if (startBtn != null) {
+                        myCircle.setAnimation(1f)
+                        myCircle.setCountdownTime(0)
+                        startBtn.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.ic_baseline_check_circle_24))
+                        setButtonAni(false)
+                        Toast.makeText(context, "计时结束", Toast.LENGTH_SHORT).show()
+                        condition_flag = -1
+                        storeTime()
+                        //service的也要停
+                        if ((activity as MainActivity).mBound) {
+                            (activity as MainActivity).binder?.stopCountDownTimer()
+                            (activity as MainActivity).binder?.setIsStored(false)
+                        }
+                        hour.text = getString(R.string.two_zero)
+                        minute.text = getString(R.string.two_zero)
+                        second.text = getString(R.string.two_zero)
+                    }
+                }
+            }.start()
+
             //这里记得返回不然下面根据condition_flag会再开一次计时
             return
         } else {
@@ -421,11 +481,11 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
             setButtonAni(true)
             toggleDisplay(true)
             //剩余计时时间
+            setMyCountDownTimer(total_time - distance)
+            //剩余计时时间
             myCircle.setCountdownTime((total_time - distance) * 1000)
             //剩余的弧形长度
             myCircle.setAnimation(distance.toFloat() / total_time.toFloat())
-            //剩余计时时间
-            setMyCountDownTimer(total_time - distance)
         } else if (condition_flag == -1) {
             //之前关掉的时候是计时结束状态
             toggleDisplay(true)
@@ -469,6 +529,17 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
         val editor = mySharedPreferences.edit()
         editor.putLong("total_time", total_time)
         editor.putLong("before_system_time", System.currentTimeMillis())
+        editor.putInt("condition_flag", condition_flag)
+        editor.putString("focus_title",set_focus_title)
+        editor.apply()
+    }
+
+    private fun storeTime(time:Long) {
+        mySharedPreferences =
+            requireContext().getSharedPreferences("user_time", Context.MODE_PRIVATE)
+        val editor = mySharedPreferences.edit()
+        editor.putLong("total_time", total_time)
+        editor.putLong("before_system_time", time)
         editor.putInt("condition_flag", condition_flag)
         editor.putString("focus_title",set_focus_title)
         editor.apply()
