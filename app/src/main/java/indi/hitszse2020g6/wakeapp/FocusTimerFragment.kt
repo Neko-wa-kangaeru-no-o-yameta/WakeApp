@@ -241,7 +241,7 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
                         .show()
                 }
             } else if (condition_flag == -1) {
-                Toast.makeText(context,set_focus_title,Toast.LENGTH_SHORT).show()
+//                Toast.makeText(context,set_focus_title,Toast.LENGTH_SHORT).show()
                 condition_flag = 0
                 myCircle.setAnimation(1f)
                 myCircle.setCountdownTime(0)
@@ -284,10 +284,6 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
                 true
             )
             myDao.addFocusData(mt)
-            var items = myDao.findFocusData(System.currentTimeMillis() - 100000000)
-            for (item in items) {
-                Log.d("${item.focusDate}", "${item.totalFocusTime} ${item.focusTitle}")
-            }
             condition_flag = 0
 
             storeTime()
@@ -314,6 +310,7 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
     }
 
     private fun setMyCountDownTimer(setTime: Long) {
+        //按了按钮开始计时
         if (condition_flag == 0) {
             setButtonAni(true)
             condition_flag = 1
@@ -328,6 +325,7 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
             myCircle.setAnimation(0f)
             toggleDisplay(true)
         }
+        //如果之前开了一个计时先关掉
         if (myCountDownTimer != null) {
             myCountDownTimer!!.cancel()
         }
@@ -381,17 +379,22 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
         Log.d(TAG, "getPreviousConditon")
         val distance: Long
         if ((activity as MainActivity).binder != null && (activity as MainActivity).binder?.getConditon()!! > 0 && !(activity as MainActivity).binder?.getIsStored()!!) {
-            //第一次进来，后台已经开始计时了
+            //第一次进来，后台已经开始计时了，isStored表示第一次进来
             Log.d(TAG, "Background Service is Timing")
             condition_flag = 0
             total_time = (activity as MainActivity).binder?.getConditon()!!
             set_focus_title = (activity as MainActivity).binder?.getFocusTitle()!!
             Log.d("FFFFFocusTitle",set_focus_title)
             distance = 0
+            //跟着后台前台也开始计时
             setMyCountDownTimer(total_time)
+            //这里会把conditon flag变成1
             Log.d(TAG, "backgroung stored ${(activity as MainActivity).binder?.getIsStored()}")
             (activity as MainActivity).binder?.setIsStored(true)
+            //这里记得返回不然下面根据condition_flag会再开一次计时
+            return
         } else {
+            //后台没有开始计时，则读数据
             mySharedPreferences =
                 requireContext().getSharedPreferences("user_time", Context.MODE_PRIVATE)
             if (mySharedPreferences.getInt("condition_flag", -2) != -2) {
@@ -417,8 +420,11 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
             }
             setButtonAni(true)
             toggleDisplay(true)
+            //剩余计时时间
             myCircle.setCountdownTime((total_time - distance) * 1000)
+            //剩余的弧形长度
             myCircle.setAnimation(distance.toFloat() / total_time.toFloat())
+            //剩余计时时间
             setMyCountDownTimer(total_time - distance)
         } else if (condition_flag == -1) {
             //之前关掉的时候是计时结束状态
@@ -489,11 +495,48 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
             .setHighTargetPadding(20).setHighTargetGraphStyle(Component.CIRCLE)
         builder.setOnVisibilityChangedListener(object : GuideBuilder.OnVisibilityChangedListener {
             override fun onShown() {}
-            override fun onDismiss() {}
+            override fun onDismiss() {
+                showGuideView3()
+            }
         })
         builder.addComponent(SetClickComponent())
         val guide = builder.createGuide()
         guide.show((activity as MainActivity))
+    }
+
+    private fun showGuideView3(){
+        val builder = GuideBuilder()
+        builder.setTargetView(startBtn).setAlpha(150).setHighTargetCorner(20)
+            .setHighTargetPadding(20).setHighTargetGraphStyle(Component.CIRCLE)
+        builder.setOnVisibilityChangedListener(object : GuideBuilder.OnVisibilityChangedListener {
+            override fun onShown() {}
+            override fun onDismiss() {}
+        })
+        builder.addComponent(GuideToStasticFragmentComponent())
+        val guide = builder.createGuide()
+        guide.show((activity as MainActivity))
+    }
+
+    class GuideToStasticFragmentComponent:Component {
+        override fun getView(inflater: LayoutInflater?): View {
+            return inflater?.inflate(R.layout.layer_stastic_frag, null) as LinearLayout
+        }
+
+        override fun getAnchor(): Int {
+            return Component.ANCHOR_BOTTOM
+        }
+
+        override fun getFitPosition(): Int {
+            return Component.FIT_END
+        }
+
+        override fun getXOffset(): Int {
+            return 60
+        }
+
+        override fun getYOffset(): Int {
+            return 0
+        }
     }
 
     class SetClickComponent : Component {

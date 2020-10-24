@@ -12,6 +12,7 @@ import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.WindowManager
+import org.json.JSONArray
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.concurrent.schedule
@@ -60,7 +61,7 @@ class BackgroundService : Service() {
 
     var useCustomWhiteList:Boolean = false
     var customWhiteList:List<String> = ArrayList()
-    var defaultWhiteList:List<String> = ArrayList()
+    var defaultWhiteList:MutableList<String> = ArrayList()
 
     var isStored:Boolean = false
     var isBlocking: Boolean = false
@@ -72,7 +73,15 @@ class BackgroundService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
-
+        //读一下用户默认白名单
+        val mySharedPreferences = getSharedPreferences("user_default_white_list", Context.MODE_PRIVATE)
+        val jsonArray = JSONArray(mySharedPreferences.getString("default_white_list","[]"))
+        Log.d(TAG,"${jsonArray.length()}")
+        if(jsonArray.length()>0){
+            for(item in 0 until jsonArray.length()){
+                defaultWhiteList.add(jsonArray.get(item) as String)
+            }
+        }
         return START_STICKY
     }
 
@@ -190,7 +199,7 @@ class BackgroundService : Service() {
         }
 
         fun setDefaultWhiteList(defWL: List<String>) {
-            defaultWhiteList = defWL
+            defaultWhiteList = defWL as MutableList<String>
         }
 
         fun getFocusTitle() = focusTitle

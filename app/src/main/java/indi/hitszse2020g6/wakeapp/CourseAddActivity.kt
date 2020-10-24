@@ -734,49 +734,10 @@ class CourseAddActivity : AppCompatActivity(),
             .setHighTargetGraphStyle(Component.CIRCLE)
         builder.setOnVisibilityChangedListener(object : GuideBuilder.OnVisibilityChangedListener {
             override fun onShown() {}
-            override fun onDismiss() {
-                showDeleteCourseGuideView()
-            }
+            override fun onDismiss() {}
         })
         builder.addComponent(AffairDetailActivity.AddReminderComponent())
         val guide = builder.createGuide()
         guide.show(this)
-    }
-
-    private fun showDeleteCourseGuideView(){
-//        scrollView.fullScroll(ScrollView.FOCUS_DOWN)
-
-        val builder = GuideBuilder()
-        builder.setTargetView(deleteCard).setAlpha(150).setHighTargetPadding(5)
-            .setHighTargetGraphStyle(Component.ROUNDRECT)
-        builder.setOnVisibilityChangedListener(object : GuideBuilder.OnVisibilityChangedListener {
-            override fun onShown() {}
-            override fun onDismiss() {}
-        })
-        builder.addComponent(DeleteCourseComponent())
-        val guide = builder.createGuide()
-        guide.show(this)
-    }
-
-    class DeleteCourseComponent:Component{
-        override fun getView(inflater: LayoutInflater?): View {
-            return inflater?.inflate(R.layout.layer_delete_course, null) as LinearLayout
-        }
-
-        override fun getAnchor(): Int {
-            return Component.ANCHOR_TOP
-        }
-
-        override fun getFitPosition(): Int {
-            return Component.FIT_END
-        }
-
-        override fun getXOffset(): Int {
-            return 0
-        }
-
-        override fun getYOffset(): Int {
-            return -40
-        }
     }
 }
