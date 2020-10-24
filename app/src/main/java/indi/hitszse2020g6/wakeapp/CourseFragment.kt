@@ -131,10 +131,15 @@ class MyViewPageAdapter(val fragment: CourseFragment):FragmentStateAdapter(fragm
         position: Int,
         payloads: MutableList<Any>
     ) {
-        super.onBindViewHolder(holder, position, payloads)
-        val fragment:WeekCourseFragment? = fragment.fragmentManager?.findFragmentById(position) as WeekCourseFragment?
+        val tag = "f" + holder.itemId
+        Log.d("tag",tag)
+        val fragment:WeekCourseFragment? = fragment.childFragmentManager?.findFragmentByTag(tag) as WeekCourseFragment?
         if (fragment != null) {
+            Log.d("tag-onBindViewHolder",tag)
             fragment.updateCourseCardView()
+        }else{
+            Log.d("tag-onBindViewHolder","null")
+            super.onBindViewHolder(holder, position, payloads)
         }
     }
 
