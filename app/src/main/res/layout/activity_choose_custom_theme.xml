@@ -26,18 +26,6 @@
             android:layout_height="match_parent">
 
             <ImageButton
-                android:id="@+id/theme_confirm"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="@string/sure_white_list"
-                android:padding="12dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/check_24" />
-
-            <ImageButton
                 android:id="@+id/theme_cancel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -58,7 +46,7 @@
                 android:textColor="#ffffff"
                 android:textSize="24sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/theme_confirm"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/theme_cancel" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
