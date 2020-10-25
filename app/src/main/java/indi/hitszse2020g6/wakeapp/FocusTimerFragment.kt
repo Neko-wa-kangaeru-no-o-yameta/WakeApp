@@ -236,6 +236,15 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
                     setMyCountDownTimer(total_time)
                     myCircle.setCountdownTime(total_time * 1000)
                     myCircle.setAnimation(0f)
+                    //开始的时候存数据，李宇航后面会判
+                    val mt = MyFocusEntry(
+                        uid = System.currentTimeMillis(),
+                        totalFocusTime = total_time,
+                        focusDate = System.currentTimeMillis(),
+                        set_focus_title,
+                        false
+                    )
+                    myDao.addFocusData(mt)
                 } else {
                     Toast.makeText(context, "Unable to start a 0 minute focus.", Toast.LENGTH_SHORT)
                         .show()
@@ -246,14 +255,14 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
                 myCircle.setAnimation(1f)
                 myCircle.setCountdownTime(0)
                 storeTime()
-                val mt = MyFocusEntry(
-                    uid = System.currentTimeMillis(),
-                    totalFocusTime = total_time,
-                    focusDate = System.currentTimeMillis(),
-                    set_focus_title,
-                    false
-                )
-                myDao.addFocusData(mt)
+//                val mt = MyFocusEntry(
+//                    uid = System.currentTimeMillis(),
+//                    totalFocusTime = total_time,
+//                    focusDate = System.currentTimeMillis(),
+//                    set_focus_title,
+//                    false
+//                )
+//                myDao.addFocusData(mt)
                 startBtn.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.ic_baseline_play_circle_filled_24))
                 toggleDisplay(false)
                 hour.text = getString(R.string.two_zero)
@@ -275,15 +284,25 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
         }
 
         cancelBtn.setOnClickListener {
-            Toast.makeText(context, set_focus_title,Toast.LENGTH_SHORT).show()
-            val mt = MyFocusEntry(
-                uid = System.currentTimeMillis(),
-                totalFocusTime = total_time,
-                focusDate = System.currentTimeMillis(),
-                set_focus_title,
-                true
-            )
-            myDao.addFocusData(mt)
+//            Toast.makeText(context, set_focus_title,Toast.LENGTH_SHORT).show()
+//            val mt = MyFocusEntry(
+//                uid = System.currentTimeMillis(),
+//                totalFocusTime = total_time,
+//                focusDate = System.currentTimeMillis(),
+//                set_focus_title,
+//                true
+//            )
+//            myDao.addFocusData(mt)
+            if(myDao.getNearestFocusData().isNotEmpty()){
+                val mt = myDao.getNearestFocusData()[0]
+                val before_id = mt.uid
+                myDao.updateFocusData(before_id,true)
+                val tmpList = myDao.findFocusData(System.currentTimeMillis()-1000000000)
+                for(item in tmpList){
+                    Log.d("iiiiitem","${item.focusTitle}+${item.totalFocusTime}+${item.isCanceled}")
+                }
+            }
+
             condition_flag = 0
 
             storeTime()

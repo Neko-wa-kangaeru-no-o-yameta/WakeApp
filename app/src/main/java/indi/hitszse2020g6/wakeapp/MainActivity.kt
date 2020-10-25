@@ -291,6 +291,16 @@ class FocusReceiver: BroadcastReceiver() {
         val binder = peekService(context, Intent(context, BackgroundService::class.java)) as BackgroundService.MyBinder
         GlobalScope.launch(Dispatchers.IO) {
             val entry = MainPageEventList.DAO.getEvent(intent!!.getLongExtra(PARAM_START_FOCUS_FROM_BACKGROUND, -1))
+            //抓紧时间写一下表
+            val mt = MyFocusEntry(
+                uid = System.currentTimeMillis(),
+                totalFocusTime = entry.stopTime-entry.startTime,
+                focusDate = System.currentTimeMillis(),
+                entry.title,
+                false
+            )
+            MainPageEventList.DAO.addFocusData(mt)
+            Log.d("YYYYYYes","write")
             Handler(Looper.getMainLooper()).postDelayed({
                 Log.d("FocusReceiver", "Starting Timer...")
                 binder.setUseCustomWhiteList(entry.hasCustomWhiteList)

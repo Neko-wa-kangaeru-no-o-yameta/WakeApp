@@ -312,4 +312,12 @@ interface RoomDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addFocusData(mf: MyFocusEntry)
 
+    @Query("SELECT * FROM focusTable WHERE (focusDate in (SELECT MAX(focusDate) FROM focusTable))")
+    fun getNearestFocusData():List<MyFocusEntry>
+
+    @Query("UPDATE focusTable SET isCanceled = (:set_boolean) WHERE uid = (:before_id)")
+    fun updateFocusData(
+        before_id:Long,
+        set_boolean:Boolean
+    )
 }
