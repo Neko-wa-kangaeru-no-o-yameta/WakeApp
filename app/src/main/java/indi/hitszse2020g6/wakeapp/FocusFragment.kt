@@ -88,12 +88,12 @@ class FocusFragment : Fragment() {
             Log.d("Gesture Listener", "onFling, speed = ${velocityY.toDouble()}")
             val current = Navigation.findNavController(v).currentDestination!!.id
             return when {
-                (velocityY.toDouble() > 200 && current != R.id.focusTimerFragment)-> {
+                (velocityY.toDouble() > 200 && abs(velocityX.toDouble()) < abs(velocityY.toDouble()) && current != R.id.focusTimerFragment)-> {
                     Log.d("Gesture Listener", "Going to Statistic")
                     Navigation.findNavController(v).navigate(R.id.action_focusStatisticFragment_to_focusTimerFragment)
                     true
                 }
-                (velocityY.toDouble() < -200  && current != R.id.focusStatisticFragment) -> {
+                (velocityY.toDouble() < -200 && abs(velocityX.toDouble()) < abs(velocityY.toDouble()) && current != R.id.focusStatisticFragment) -> {
                     Log.d("Gesture Listener", "Going to Timer")
                     Navigation.findNavController(v).navigate(R.id.action_focusTimerFragment_to_focusStatisticFragment)
                     true

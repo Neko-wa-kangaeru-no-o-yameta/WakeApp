@@ -7,9 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.graphics.Color
-import android.text.Layout
 import android.widget.LinearLayout
-import android.widget.Switch
 import android.widget.TextView
 import com.db.williamchart.view.DonutChartView
 import com.db.williamchart.view.HorizontalBarChartView
@@ -69,7 +67,11 @@ class FocusStatisticFragment : Fragment() {
             set(Calendar.SECOND,0)
             set(Calendar.MILLISECOND,0)
         }.timeInMillis
-        val statisticList:List<MyFocusEntry> = myDao.findFocusData(nowDate)
+        val nowTime = Calendar.getInstance().timeInMillis
+        val readStatisticList: List<MyFocusEntry> = myDao.findFocusData(nowDate)
+        val tempStatisticList = readStatisticList.toMutableList()
+        tempStatisticList.removeIf { !it.isCanceled && (it.focusDate+1000*it.totalFocusTime > nowTime) }
+        val statisticList = tempStatisticList.toList()
         //计算计时取消的次数和总共的时长
         var count = 0
         var totalTime = 0L
@@ -122,7 +124,11 @@ class FocusStatisticFragment : Fragment() {
             set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)
         }.timeInMillis - (days-1) * dayTime
-        val statisticList: List<MyFocusEntry> = myDao.findFocusData(beginDate)
+        val nowTime = Calendar.getInstance().timeInMillis
+        val readStatisticList: List<MyFocusEntry> = myDao.findFocusData(beginDate)
+        val tempStatisticList = readStatisticList.toMutableList()
+        tempStatisticList.removeIf { !it.isCanceled && (it.focusDate+1000*it.totalFocusTime > nowTime) }
+        val statisticList = tempStatisticList.toList()
         //计算计时取消的次数和总共的时长,对lineChart使用
         var index = 0
         if(days == 7L){
@@ -202,6 +208,7 @@ class FocusStatisticFragment : Fragment() {
             returnLabel = label.substring(0,4)+"..."
         return returnLabel
     }
+
 
     //lineChart
     private fun setLineChart(Set:LinkedHashMap<String,Float>){
