@@ -64,7 +64,7 @@ class MainActivity() : AppCompatActivity() {
 
 //        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O_MR1) {
 //            setTurnScreenOn(true)
-//        } else {
+    //        } else {
 //            window.addFlags(
 //                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
 //                WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
@@ -81,6 +81,7 @@ class MainActivity() : AppCompatActivity() {
 
         val pf = getSharedPreferences("schedule_time", Context.MODE_PRIVATE)
         MainPageEventList.termStart = pf.getLong("startTime", -1)
+        Log.d("startTime1Gb",MainPageEventList.termStart.toString())
         if(MainPageEventList.termStart != -1L) {
             val c = Calendar.getInstance().apply { timeInMillis = MainPageEventList.termStart.toLong() }
             c.firstDayOfWeek = Calendar.MONDAY
@@ -89,7 +90,9 @@ class MainActivity() : AppCompatActivity() {
                 "MainActivity",
                 "start time in millis: ${c.timeInMillis}, $c, ${MainPageEventList.termStart}"
             )
+            Log.d("timeIntMills1GB",c.timeInMillis.toString())
             MainPageEventList.currentWeek = ((System.currentTimeMillis() - c.timeInMillis) / (7 * 24 * 60 * 60 * 1000) + 1).toInt()
+            Log.d("WEEKGB",MainPageEventList.currentWeek.toString())
             MainPageEventList.currentDayOfWeek =
                 mapOf(
                     Calendar.MONDAY to 1,
