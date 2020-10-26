@@ -12,6 +12,12 @@
         android:layout_height="match_parent"
         tools:context=".workers.MainActivity">
 
+        <com.leinardi.android.speeddial.SpeedDialOverlayLayout
+            android:id="@+id/schedule_overlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
 
         <androidx.fragment.app.FragmentContainerView
@@ -32,7 +38,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:sdMainFabClosedSrc="@drawable/add_fill_24"
-            app:sdOverlayLayout="@id/mainPage_overlay"/>
+            app:sdOverlayLayout="@id/schedule_overlay"/>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
