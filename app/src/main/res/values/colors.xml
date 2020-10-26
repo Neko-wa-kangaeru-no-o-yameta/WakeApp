@@ -7,13 +7,13 @@
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
     <color name="colorBackground">#FFFFFF</color>
-    <color name="CourseTableColor1">#6E7DAB</color>
-    <color name="CourseTableColor2">#575366</color>
-    <color name="CourseTableColor3">#9A8F97</color>
-    <color name="CourseTableColor4">#32292F</color>
-    <color name="CourseTableColor5">#7272A6</color>
-    <color name="CourseTableColor6">#554640</color>
-    <color name="CourseTableColor7">#7E8D85</color>
-    <color name="CourseTableColor8">#9E7577</color>
+    <color name="CourseTableColor1">#23036A</color>
+    <color name="CourseTableColor2">#3700B3</color>
+    <color name="CourseTableColor3">#005457</color>
+    <color name="CourseTableColor4">#018786</color>
+    <color name="CourseTableColor5">#BB86FC</color>
+    <color name="CourseTableColor6">#03DAC6</color>
+    <color name="CourseTableColor7">#985EFF</color>
+    <color name="CourseTableColor8">#00C4B4</color>
     <color name="CircleColor">#ff6776</color>
 </resources>
