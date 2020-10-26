@@ -334,5 +334,8 @@ object MainPageEventList {
             }
             configureAlarm(entry, FLAG_UPDATE_CURRENT)
         }
+        GlobalScope.launch(Dispatchers.IO) {
+            DAO.updateEvent(*eventList.toTypedArray())
+        }
     }
 }
