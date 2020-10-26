@@ -106,6 +106,9 @@ class MainPageFragment : Fragment() {
 
     override fun onResume() {
         view?.findViewById<RecyclerView>(R.id.mainPageRecyclerView)?.adapter?.notifyDataSetChanged()
+        if(MainPageEventList.initComplete) {
+            MainPageEventList.updateStatus()
+        }
         super.onResume()
     }
 

@@ -64,6 +64,7 @@ class MyMainPageRecyclerViewAdapter(
             if(values[position].isAffair) {
                 visibility = GONE
             } else {
+                visibility = VISIBLE
                 val c = Calendar.getInstance().apply { timeInMillis = values[position].startTime*1000 }
                 text = context.getString(R.string.eventList_startTimeTVContent).format(c.get(Calendar.MONTH) + 1, c.get(Calendar.DAY_OF_MONTH), c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE))
             }

@@ -43,7 +43,6 @@
         app:layout_constraintTop_toBottomOf="@+id/alarm_activity_event_title" />
 
 <!--    <TextClock-->
-<!--        android:id="@+id/alarm_activity_text_clock"-->
 <!--        android:layout_width="wrap_content"-->
 <!--        android:layout_height="wrap_content"-->
 <!--        android:format24Hour="hh:mm"-->

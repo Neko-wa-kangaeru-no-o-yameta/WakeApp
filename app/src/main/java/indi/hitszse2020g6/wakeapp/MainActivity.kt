@@ -22,6 +22,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.util.*
+import kotlin.system.exitProcess
 
 
 const val INTENT_AFFAIR_DETAIL = 1
@@ -79,6 +80,26 @@ class MainActivity() : AppCompatActivity() {
         MainPageEventList.getEventListFromDB()
         MainPageEventList.context = this
         MainPageEventList.alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+        val pf = getSharedPreferences("schedule_time", Context.MODE_PRIVATE)
+        MainPageEventList.termStart = pf.getLong("startTime", -1)
+        if(MainPageEventList.termStart != -1L) {
+            val c = Calendar.getInstance().apply { timeInMillis = MainPageEventList.termStart.toLong() }
+            c.firstDayOfWeek = Calendar.MONDAY
+            c.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
+            Log.d("MainActivity", "start time in millis: ${c.timeInMillis}, $c, ${MainPageEventList.termStart}")
+            MainPageEventList.currentWeek = ((System.currentTimeMillis() - c.timeInMillis) / (7 * 24 * 60 * 60 * 1000) + 1).toInt()
+            MainPageEventList.currentDayOfWeek =
+                mapOf(
+                    Calendar.MONDAY     to 1,
+                    Calendar.TUESDAY    to 2,
+                    Calendar.WEDNESDAY  to 3,
+                    Calendar.THURSDAY   to 4,
+                    Calendar.FRIDAY     to 5,
+                    Calendar.SATURDAY   to 6,
+                    Calendar.SUNDAY     to 7,
+                )[Calendar.getInstance().get(Calendar.DAY_OF_WEEK)] ?: error("MAP ERROR")
+        }
 
         //加载课程表数据
         CourseList.DAO = AppRoomDB.getDataBase(this).getDAO()

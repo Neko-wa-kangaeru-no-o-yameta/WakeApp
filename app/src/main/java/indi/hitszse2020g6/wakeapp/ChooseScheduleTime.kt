@@ -4,6 +4,7 @@ import android.app.DatePickerDialog
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_choose_schedule_time.*
 import java.util.*
@@ -110,6 +111,7 @@ class ChooseScheduleTime : AppCompatActivity() {
     private fun getTimeInMills(year: Int, month: Int, day: Int): Long {
         val calendar = Calendar.getInstance()
         calendar[year, month] = day
+        Log.d("ChooseScheduleTime", "get Time in millis: y:m:d = $year, $month, $day, ${calendar.timeInMillis}")
         return calendar.timeInMillis
     }
 }

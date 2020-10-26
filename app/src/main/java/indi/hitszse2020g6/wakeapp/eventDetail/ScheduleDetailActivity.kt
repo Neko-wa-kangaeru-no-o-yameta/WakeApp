@@ -165,6 +165,7 @@ class ScheduleDetailActivity :
                 entryToEdit.isAutoGen   = false
                 entryToEdit.isClass     = false
                 entryToEdit.classId     = -1
+                entryToEdit.repeatAt    = repeatAt
                 MainPageEventList.updateEvent(entryToEdit)
             }
             finish()

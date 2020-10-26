@@ -2,6 +2,7 @@ package indi.hitszse2020g6.wakeapp
 
 import android.content.Context
 import android.util.Log
+import indi.hitszse2020g6.wakeapp.mainPage.MainPageEventList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -17,6 +18,8 @@ object CourseList{
         GlobalScope.launch(Dispatchers.IO){
             courseList = DAO.getAll().toMutableList()
             initComplete = true
+            Log.d("CourseList", "read course list: $courseList")
+            MainPageEventList.populateCourse()
         }
     }
 

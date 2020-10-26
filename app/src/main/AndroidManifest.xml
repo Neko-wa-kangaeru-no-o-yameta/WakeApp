@@ -17,9 +17,9 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/icon"
+        android:icon="@mipmap/launcher_icon"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/round_icon"
+        android:roundIcon="@mipmap/launcher_icon_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
         <activity android:name=".HelpGuideActivity"></activity>
@@ -32,7 +32,8 @@
         <activity android:name=".ChooseWhiteListActivity" />
         <activity android:name=".eventDetail.AffairDetailActivity" />
         <activity android:name=".eventDetail.ScheduleDetailActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
