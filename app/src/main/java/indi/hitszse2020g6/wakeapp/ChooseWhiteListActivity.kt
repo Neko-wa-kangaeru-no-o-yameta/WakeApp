@@ -85,7 +85,7 @@ class ChooseWhiteListActivity : AppCompatActivity(),CompoundButton.OnCheckedChan
                 mySharedPreferences = getSharedPreferences("user_default_white_list", Context.MODE_PRIVATE)
                 val editor = mySharedPreferences.edit()
                 editor.putString("default_white_list",jsonArray.toString())
-                editor.apply()
+                editor.commit()
             }
             finish()
         }
@@ -170,13 +170,17 @@ class ChooseWhiteListActivity : AppCompatActivity(),CompoundButton.OnCheckedChan
         if(buttonView.isChecked){
             myWhiteList.add(myParent.getChildAt(7).hideTextView.text.toString())
         }else{
-            myWhiteList.remove(myParent.getChildAt(7).hideTextView.text.toString())
+            //如果之前在白名单里，移除
+            if(myParent.getChildAt(7).hideTextView.text.toString() in myWhiteList){
+                myWhiteList.remove(myParent.getChildAt(7).hideTextView.text.toString())
+            }
         }
     }
 
     fun convertIntoJsonArray(): JSONArray {
         val jsonArray:JSONArray = JSONArray()
         for(item in myWhiteList){
+            Log.d(TAG,item)
             jsonArray.put(item)
         }
         return jsonArray

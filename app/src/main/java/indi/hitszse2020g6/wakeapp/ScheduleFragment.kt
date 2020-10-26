@@ -10,6 +10,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.DocumentsContract
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +20,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.documentfile.provider.DocumentFile
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
@@ -155,7 +157,6 @@ class ScheduleFragment : Fragment(),
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        Log.d("123123","123123")
         var week:Int = 0
         super.onActivityResult(requestCode, resultCode, data)
         var mySharedPreferences: SharedPreferences = requireActivity().getSharedPreferences(
@@ -165,16 +166,18 @@ class ScheduleFragment : Fragment(),
 
 
         if(mySharedPreferences.getLong("startTime", -1).toInt() !=-1){
-            val calendar = Calendar.getInstance()
-
             val startTime = mySharedPreferences.getLong("startTime", -1)
+            Log.d("startTime1", startTime.toString())
+            val calendar = Calendar.getInstance().apply { timeInMillis =  startTime}
             val stopTime = System.currentTimeMillis()
-            calendar.time = Date(startTime)
-            val startDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
+            calendar.firstDayOfWeek = Calendar.MONDAY
+            calendar.set(Calendar.DAY_OF_WEEK,Calendar.MONDAY)
+            Log.d("timeIntMills1",calendar.timeInMillis.toString())
 //            calendar.firstDayOfWeek = Calendar.MONDAY
 //
 //            val startWeekMonday = calendar.timeInMillis
-            week = ((stopTime - startTime + (startDayOfWeek-2)*24*60*60*1000)/7/(24*60*60*1000)).toInt()
+            week = ((stopTime - calendar.timeInMillis)/(7*24*60*60*1000)).toInt()
+            Log.d("WEEK1",week.toString())
 
 
         }
@@ -204,7 +207,15 @@ class ScheduleFragment : Fragment(),
         }else{
             val uri = data?.data
             if (uri != null) {
-                parseCourse(uri)
+                val file = context?.let { DocumentFile.fromSingleUri(it,uri) }
+                val fileName = file?.name
+                val split = fileName?.split(".")?.toTypedArray()
+                Log.d("fileName",fileName.toString())
+                val type = split?.last()
+                if(type == "xlsx"){
+                    Log.d("type:?",type)
+                    parseCourse(uri)
+                }
             }
             val vp2 = view?.findViewById<ViewPager2>(R.id.viewPager2)
             if (vp2 != null) {
