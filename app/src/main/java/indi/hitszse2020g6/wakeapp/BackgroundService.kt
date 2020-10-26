@@ -6,6 +6,7 @@ import android.app.usage.UsageStatsManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.PixelFormat
+import android.media.AudioManager
 import android.net.Uri
 import android.os.*
 import android.provider.Settings
@@ -118,7 +119,7 @@ class BackgroundService : Service() {
                             topPackageName = mySortedMap[mySortedMap.lastKey()]!!.packageName
                         }
                     }
-                    Log.d("BCKGRND", topPackageName)
+//                    Log.d("BCKGRND", topPackageName)
                     var needToBlock = true
                     val finalWhiteList = listOf<String>(*forceWhiteList.toTypedArray(), *if(useCustomWhiteList) {customWhiteList.toTypedArray()} else {defaultWhiteList.toTypedArray()})
                     for(wlPackageName in finalWhiteList) {
@@ -190,6 +191,7 @@ class BackgroundService : Service() {
                 myCountDownTimer!!.cancel()
             }
             isBlocking = false
+            (getSystemService(Context.AUDIO_SERVICE) as AudioManager).ringerMode = AudioManager.RINGER_MODE_NORMAL
             Log.d("BlockAppService","stopCountDownTimer")
         }
 
@@ -214,6 +216,9 @@ class BackgroundService : Service() {
             }
             useCustomWhiteList = true
             customWhiteList = entry.customWhiteList
+            if(entry.mute) {
+                (getSystemService(Context.AUDIO_SERVICE) as AudioManager).ringerMode = AudioManager.RINGER_MODE_SILENT
+            }
             startMyCountDownTimer(totalTime,entry.title)
             //发送BroadCast通知切换页面
             val myIntent = Intent()
@@ -239,6 +244,7 @@ class BackgroundService : Service() {
                     isStored = false
                     isBlocking = false
                     Log.d(TAG,"BACKGROUND TIMER FINISHED")
+                    (getSystemService(Context.AUDIO_SERVICE) as AudioManager).ringerMode = AudioManager.RINGER_MODE_NORMAL
                 }
             }.start()
             Log.d("BlockAppService","startCountDownTimer")
