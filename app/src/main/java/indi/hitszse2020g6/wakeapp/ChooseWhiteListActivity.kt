@@ -40,8 +40,9 @@ class ChooseWhiteListActivity : AppCompatActivity(),CompoundButton.OnCheckedChan
         ThemeColors(this)
         setContentView(R.layout.activity_choose_white_list)
 
-        var myIntent = intent
-        var b:Bundle? = myIntent.extras
+        val myIntent = intent
+        val b:Bundle? = myIntent.extras
+        myWhiteList.add("indi.hitszse2020g6.wakeapp")
         //庚宝请求的
         if(b!=null && b.getString(PARAM_SCHEDULE_DETAIL_TO_WHITELIST_JSON)!=null){
             Log.d(TAG,"GENGBAO!!!")
