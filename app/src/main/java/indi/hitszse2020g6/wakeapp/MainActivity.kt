@@ -299,17 +299,12 @@ class FocusReceiver: BroadcastReceiver() {
         Log.d("Receiver", "received")
         Toast.makeText(context, "receiver received!", Toast.LENGTH_SHORT).show()
         Log.d("Receiver", "uid: ${intent?.getLongExtra(PARAM_START_FOCUS_FROM_BACKGROUND, -1)}")
-//        context!!.startActivity(Intent(context, MainActivity::class.java).apply {
-//            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-//            putExtra("RequestCode", REQUEST_OPEN_TIMER_FRG)
-//            putExtra(
-//                PARAM_START_FOCUS_FROM_BACKGROUND, intent?.getLongExtra(
-//                    PARAM_START_FOCUS_FROM_BACKGROUND,
-//                    -1
-//                )
-//            )
-//        })
-        val binder = peekService(context, Intent(context, BackgroundService::class.java)) as BackgroundService.MyBinder
+        val binder = peekService(context, Intent(context, BackgroundService::class.java)) as BackgroundService.MyBinder?
+        if(binder == null) {
+            Intent(context, BackgroundService::class.java).also { intent ->
+                context?.startService(intent)
+            }
+        }
         GlobalScope.launch(Dispatchers.IO) {
             val entry = MainPageEventList.DAO.getEvent(intent!!.getLongExtra(PARAM_START_FOCUS_FROM_BACKGROUND, -1))
             //抓紧时间写一下表
@@ -324,10 +319,10 @@ class FocusReceiver: BroadcastReceiver() {
             Log.d("YYYYYYes","write")
             Handler(Looper.getMainLooper()).postDelayed({
                 Log.d("FocusReceiver", "Starting Timer...")
-                binder.setUseCustomWhiteList(entry.hasCustomWhiteList)
-                binder.setCustomWhiteList(entry.customWhiteList)
-                binder.setIsBlocking(true)
-                binder.startTimer(entry)
+                binder?.setUseCustomWhiteList(entry.hasCustomWhiteList)
+                binder?.setCustomWhiteList(entry.customWhiteList)
+                binder?.setIsBlocking(true)
+                binder?.startTimer(entry)
             }, 500)
         }
     }

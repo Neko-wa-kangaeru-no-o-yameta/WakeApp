@@ -126,6 +126,13 @@ class ScheduleDetailActivity :
         setRepeatList()
 
         findViewById<ImageButton>(R.id.scheduleDetail_confirm).setOnClickListener {
+            val title = findViewById<EditText>(R.id.scheduleDetail_eventTitle).text.toString()
+
+            if(title == "") {
+                Toast.makeText(this, "错误：标题尚未设置", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             val stop = Calendar.getInstance().apply {
                 set(stopTime.year, stopTime.month, stopTime.date, stopTime.hour, stopTime.minute, 0)
             }
@@ -134,9 +141,14 @@ class ScheduleDetailActivity :
                 set(startTime.year, startTime.month, startTime.date, startTime.hour, startTime.minute, 0)
             }
 
+            if(stop.timeInMillis < start.timeInMillis) {
+                Toast.makeText(this, "错误：开始时间晚于结束时间", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             if(isNewSchedule) {
                 MainPageEventList.addSchedule(
-                    title       = findViewById<EditText>(R.id.scheduleDetail_eventTitle).text.toString(),
+                    title       = title,
                     detail      = EventDetailList.ITEMS.toList(),
                     reminder    = EventReminderList.ITEMS.toList(),
                     startTime   = start.timeInMillis /1000,
@@ -152,7 +164,7 @@ class ScheduleDetailActivity :
                     repeatAt    = repeatAt
                 )
             } else {
-                entryToEdit.title       = findViewById<EditText>(R.id.scheduleDetail_eventTitle).text.toString()
+                entryToEdit.title       = title
                 entryToEdit.detail      = EventDetailList.ITEMS.toList()
                 entryToEdit.reminder    = EventReminderList.ITEMS.toList()
                 entryToEdit.startTime   = start.timeInMillis / 1000
