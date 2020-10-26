@@ -45,10 +45,12 @@ val forceWhiteList: List<String> = arrayListOf(
     "com.samsung.android.contacts",
     "com.samsung.android.phone",
     "com.google.android.permissioncontroller",
+    "com.android.permissioncontroller",
     "indi.hitszse2020g6.wakeapp",
     "",
     "com.google.android.apps.nexuslauncher",
     "com.miui.home",
+    "com.huawei.android.launcher"
     // ADD YOUR LAUNCHER HERE!!!
 )
 
@@ -116,7 +118,7 @@ class BackgroundService : Service() {
                             topPackageName = mySortedMap[mySortedMap.lastKey()]!!.packageName
                         }
                     }
-//                    Log.d("BCKGRND", topPackageName)
+                    Log.d("BCKGRND", topPackageName)
                     var needToBlock = true
                     val finalWhiteList = listOf<String>(*forceWhiteList.toTypedArray(), *if(useCustomWhiteList) {customWhiteList.toTypedArray()} else {defaultWhiteList.toTypedArray()})
                     for(wlPackageName in finalWhiteList) {
