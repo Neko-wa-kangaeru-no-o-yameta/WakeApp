@@ -20,7 +20,7 @@ class CountDownProgress: View {
     private var defaultCircleStrokeColor: Int = Color.WHITE
     private var defaultCircleStrokeWidth = 16
     private var defaultCircleRadius = 390
-    private var progressColor: Int = Color.BLUE
+    private var progressColor: Int = Color.GRAY
     private var progressWidth = 8
     private var textColor: Int = Color.BLACK
     private var textSize = 30f

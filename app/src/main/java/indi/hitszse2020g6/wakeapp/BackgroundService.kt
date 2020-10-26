@@ -74,22 +74,12 @@ class BackgroundService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
-        //读一下用户默认白名单
-        val mySharedPreferences = getSharedPreferences("user_default_white_list", Context.MODE_PRIVATE)
-        val jsonArray = JSONArray(mySharedPreferences.getString("default_white_list","[]"))
-        Log.d(TAG,"${jsonArray.length()}")
-        if(jsonArray.length()>0){
-            for(item in 0 until jsonArray.length()){
-                defaultWhiteList.add(jsonArray.get(item) as String)
-            }
-        }
         return START_STICKY
     }
 
     override fun onBind(intent: Intent?): IBinder? {
         pendingReturn = false
         Log.d(TAG, "rebind.")
-
         Log.d(TAG,"BlockAppService onStartCommannd $isBlocking")
         Timer().scheduleAtFixedRate(
             object : TimerTask() {
@@ -119,6 +109,9 @@ class BackgroundService : Service() {
 //                    Log.d("BCKGRND", topPackageName)
                     var needToBlock = true
                     val finalWhiteList = listOf<String>(*forceWhiteList.toTypedArray(), *if(useCustomWhiteList) {customWhiteList.toTypedArray()} else {defaultWhiteList.toTypedArray()})
+//                    for(item in finalWhiteList){
+//                        Log.d("DDDDDebug",item)
+//                    }
                     for(wlPackageName in finalWhiteList) {
                         if(topPackageName == wlPackageName) needToBlock = false
                     }
@@ -220,6 +213,18 @@ class BackgroundService : Service() {
         }
 
         fun startMyCountDownTimer(totalTime:Long,title:String){
+            //读一下用户默认白名单
+            //在开启专注的时候更改现有的会使用原来的
+            val mySharedPreferences = getSharedPreferences("user_default_white_list", Context.MODE_PRIVATE)
+            val jsonArray = JSONArray(mySharedPreferences.getString("default_white_list","[]"))
+            defaultWhiteList = ArrayList()
+            Log.d(TAG,"Hhhhhhhere")
+            if(jsonArray.length()>0){
+                for(item in 0 until jsonArray.length()){
+                    defaultWhiteList.add(jsonArray.get(item) as String)
+                }
+            }
+
             myCountTime = totalTime
             focusTitle = title
             //开始计时

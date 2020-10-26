@@ -34,14 +34,14 @@ class ChooseScheduleTime : AppCompatActivity() {
             val calendar = Calendar.getInstance()
             calendar.time = Date(mySharedPreferences.getLong("startTime", -1))
             startYear = calendar.get(Calendar.YEAR)
-            startMonth = calendar.get(Calendar.MONTH)+1
+            startMonth = calendar.get(Calendar.MONTH)
             startDay = calendar.get(Calendar.DAY_OF_MONTH)
             calendar.time = Date(mySharedPreferences.getLong("endTime", -1))
             endYear = calendar.get(Calendar.YEAR)
-            endMonth = calendar.get(Calendar.MONTH)+1
+            endMonth = calendar.get(Calendar.MONTH)
             endDay = calendar.get(Calendar.DAY_OF_MONTH)
-            schedule_start_time.text = "${startYear}-${startMonth}-${startDay}"
-            schedule_end_time.text = "${endYear}-${endMonth}-${endDay}"
+            schedule_start_time.text = "${startYear}-${startMonth+1}-${startDay}"
+            schedule_end_time.text = "${endYear}-${endMonth+1}-${endDay}"
         }
 
         schedule_cancel.setOnClickListener {
@@ -49,11 +49,11 @@ class ChooseScheduleTime : AppCompatActivity() {
         }
 
         schedule_confirm.setOnClickListener {
-            var mySharedPreferences:SharedPreferences = getSharedPreferences(
+            val mySharedPreferences:SharedPreferences = getSharedPreferences(
                 "schedule_time",
                 Context.MODE_PRIVATE
             )
-            var editor = mySharedPreferences.edit()
+            val editor = mySharedPreferences.edit()
             startTime = getTimeInMills(startYear,startMonth,startDay)
             endTime = getTimeInMills(endYear,endMonth,endDay)
             editor.putLong("startTime",startTime)
@@ -70,7 +70,7 @@ class ChooseScheduleTime : AppCompatActivity() {
                 startDay = dayOfMonth
                 val data = month.toString() + "月-" + dayOfMonth + "日 "
             },
-            startYear, startMonth-1, startDay
+            startYear, startMonth, startDay
         )
 
         dateStartPickerDialog.setOnDateSetListener { view, year, month, dayOfMonth ->
@@ -88,7 +88,7 @@ class ChooseScheduleTime : AppCompatActivity() {
                 endDay = dayOfMonth
                 val data = month.toString() + "月-" + dayOfMonth + "日 "
             },
-            endYear, endMonth-1, endDay
+            endYear, endMonth, endDay
         )
 
         dateEndPickerDialog.setOnDateSetListener { view, year, month, dayOfMonth ->

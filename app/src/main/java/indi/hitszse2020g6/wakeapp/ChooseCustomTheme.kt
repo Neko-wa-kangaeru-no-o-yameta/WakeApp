@@ -174,7 +174,7 @@ class ChooseCustomTheme : AppCompatActivity() {
             clickFunc(theme_red, getDrawable(R.drawable.shape_red_selected))
             ThemeColors.setNewThemeColor(this, 255, 103, 118)
             show_page.setImageDrawable(getDrawable(R.drawable.page_red))
-            storeColor(25, 77, 132)
+            storeColor(255, 103, 118)
         }
 
         theme_black.setOnClickListener {
@@ -182,7 +182,7 @@ class ChooseCustomTheme : AppCompatActivity() {
             clickFunc(theme_black, getDrawable(R.drawable.shape_black_selected))
             ThemeColors.setNewThemeColor(this, 43, 44, 48)
             show_page.setImageDrawable(getDrawable(R.drawable.page_black))
-            storeColor(25, 77, 132)
+            storeColor(43, 44, 48)
         }
     }
 

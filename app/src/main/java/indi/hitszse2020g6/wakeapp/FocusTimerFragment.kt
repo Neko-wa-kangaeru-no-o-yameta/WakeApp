@@ -310,6 +310,7 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
             myCountDownTimer?.cancel()
             (activity as MainActivity).binder?.setIsStored(false)
             (activity as MainActivity).binder?.stopCountDownTimer()
+            (activity as MainActivity).binder?.setIsBlocking(false)
             myCircle.setAnimation(1f)
             myCircle.setCountdownTime(0)
             toggleDisplay(false)
@@ -385,6 +386,7 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
                     if ((activity as MainActivity).mBound) {
                         (activity as MainActivity).binder?.stopCountDownTimer()
                         (activity as MainActivity).binder?.setIsStored(false)
+                        (activity as MainActivity).binder?.setIsBlocking(false)
                     }
                     hour.text = getString(R.string.two_zero)
                     minute.text = getString(R.string.two_zero)
@@ -462,6 +464,7 @@ class FocusTimerFragment : Fragment(), NumberPicker.OnValueChangeListener,
                         if ((activity as MainActivity).mBound) {
                             (activity as MainActivity).binder?.stopCountDownTimer()
                             (activity as MainActivity).binder?.setIsStored(false)
+                            (activity as MainActivity).binder?.setIsBlocking(false)
                         }
                         hour.text = getString(R.string.two_zero)
                         minute.text = getString(R.string.two_zero)
