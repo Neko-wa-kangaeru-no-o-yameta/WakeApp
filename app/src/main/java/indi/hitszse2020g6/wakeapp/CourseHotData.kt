@@ -18,6 +18,8 @@ object CourseList{
         GlobalScope.launch(Dispatchers.IO){
             courseList = DAO.getAll().toMutableList()
             initComplete = true
+            Log.d("CourseList", "read course list: $courseList")
+            MainPageEventList.populateCourse()
         }
     }
 

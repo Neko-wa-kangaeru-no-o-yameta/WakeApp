@@ -24,6 +24,10 @@ object MainPageEventList {
     lateinit var alarmManager: AlarmManager
     var initComplete = false
 
+    var currentWeek = -1
+    var currentDayOfWeek = -1
+    var termStart = -1L
+
     fun getEventListFromDB() {
         GlobalScope.launch(Dispatchers.IO) {
             eventList = DAO.getEvents().toMutableList()
@@ -325,6 +329,11 @@ object MainPageEventList {
                 }
             }
         }
+
+        if(CourseList.initComplete) {
+            populateCourse()
+        }
+
         for(newEntry in newEventList) {
             addEvent(newEntry)
         }
@@ -336,6 +345,94 @@ object MainPageEventList {
         }
         GlobalScope.launch(Dispatchers.IO) {
             DAO.updateEvent(*eventList.toTypedArray())
+        }
+    }
+
+    fun populateCourse() {
+        if(currentWeek == -1 || !initComplete){
+            Log.d("MainPageEventList", "currentWeek not initialized, or lateinit not finished")
+            return
+        } else {
+            Log.d("MainPageEventList", "current is $currentWeek, $currentDayOfWeek")
+        }
+        val todayClasses = CourseList.courseList.toMutableList()
+        todayClasses.removeIf {
+            it.dayOfWeek - currentDayOfWeek > 1 || it.dayOfWeek - currentDayOfWeek < 0 || it.week != currentWeek || it.isGenerate
+        }
+        todayClasses.sortBy {
+            it.week*7*6 + it.dayOfWeek*6 + it.time
+        }
+        for(c in todayClasses) {
+            val startHourMap = mapOf(
+                1 to 8,
+                2 to 10,
+                3 to 14,
+                4 to 16,
+                5 to 18,
+                6 to 20
+            )
+            val startMinuteMap = mapOf(
+                1 to 30,
+                2 to 30,
+                3 to 0,
+                4 to 0,
+                5 to 45,
+                6 to 45
+            )
+            val stopHourMap = mapOf(
+                1 to 10,
+                2 to 12,
+                3 to 15,
+                4 to 17,
+                5 to 20,
+                6 to 22
+            )
+            val stopMinuteMap = mapOf(
+                1 to 15,
+                2 to 15,
+                3 to 45,
+                4 to 45,
+                5 to 30,
+                6 to 30
+            )
+            CourseList.updateCourseIsGeneratedFlag(c.courseId, true)
+            addSchedule(
+                title = c.courseName,
+                detail = ArrayList<Detail>().apply {
+                    add(Detail("地址", c.address))
+                    addAll(c.detail.toMutableList().apply {
+                        removeIf {
+                            it.content == "" && it.title == ""
+                        }
+                    })
+                },
+                reminder = c.reminder,
+                startTime = Calendar.getInstance().let {
+                    if(c.dayOfWeek != currentDayOfWeek) {
+                        it.set(Calendar.DAY_OF_YEAR, it.get(Calendar.DAY_OF_YEAR) + 1)
+                    }
+                    it.set(Calendar.HOUR_OF_DAY, startHourMap[c.time] ?: error("Class time out of range"))
+                    it.set(Calendar.MINUTE, startMinuteMap[c.time] ?: error("Class time out of range"))
+                    it.timeInMillis / 1000
+                },
+                stopTime = Calendar.getInstance().let {
+                    if(c.dayOfWeek != currentDayOfWeek) {
+                        it.set(Calendar.DAY_OF_YEAR, it.get(Calendar.DAY_OF_YEAR) + 1)
+                    }
+                    it.set(Calendar.HOUR_OF_DAY, stopHourMap[c.time] ?: error("Class time out of range"))
+                    it.set(Calendar.MINUTE, stopMinuteMap[c.time] ?: error("Class time out of range"))
+                    it.timeInMillis / 1000
+                },
+                focus = c.focus,
+                mute = c.mute,
+                notice = c.notice,
+                hasWL = false,
+                whiteList = ArrayList<String>(),
+                isAutoGen = false,
+                isClass = true,
+                classId = c.courseId,
+                repeatAt = 0
+            )
         }
     }
 }

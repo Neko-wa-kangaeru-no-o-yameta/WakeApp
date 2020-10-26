@@ -302,8 +302,8 @@ class ScheduleFragment : Fragment(),
                         //是一个星期段
                         val start = element.first().toInt()
                         val end = element.last().toInt()
-                        val detail = arrayListOf<Detail>(Detail("",""))
-                        val reminder = arrayListOf<Reminder>(Reminder(-1,true,true,true,""))
+                        val detail = arrayListOf<Detail>()
+                        val reminder = arrayListOf<Reminder>(Reminder(15 * 60,true,true,true,"课前提醒"))
                         for (week in start..end) {
                             val course = Course(
                                 0,
@@ -324,8 +324,8 @@ class ScheduleFragment : Fragment(),
                         }
                     } else {
                         //是单个星期
-                        val detail = arrayListOf<Detail>(Detail("",""))
-                        val reminder = arrayListOf<Reminder>(Reminder(-1,true,true,true,""))
+                        val detail = arrayListOf<Detail>()
+                        val reminder = arrayListOf<Reminder>(Reminder(15 * 60,true,true,true,"课前提醒"))
                         val course = Course(
                             0,
                             courseName,
