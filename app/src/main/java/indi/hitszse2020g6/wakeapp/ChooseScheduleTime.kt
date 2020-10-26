@@ -55,8 +55,8 @@ class ChooseScheduleTime : AppCompatActivity() {
                 Context.MODE_PRIVATE
             )
             var editor = mySharedPreferences.edit()
-            startTime = getTimeInMills(startYear,startMonth,startDay)
-            endTime = getTimeInMills(endYear,endMonth,endDay)
+            startTime = getTimeInMills(startYear,startMonth-1,startDay)
+            endTime = getTimeInMills(endYear,endMonth-1,endDay)
             editor.putLong("startTime",startTime)
             editor.putLong("endTime",endTime)
             editor.apply()
@@ -67,9 +67,8 @@ class ChooseScheduleTime : AppCompatActivity() {
             this,
             { view, year, month, dayOfMonth ->
                 startYear = year
-                startMonth = month
+                startMonth = month+1
                 startDay = dayOfMonth
-                val data = month.toString() + "月-" + dayOfMonth + "日 "
             },
             startYear, startMonth-1, startDay
         )
@@ -77,7 +76,7 @@ class ChooseScheduleTime : AppCompatActivity() {
         dateStartPickerDialog.setOnDateSetListener { view, year, month, dayOfMonth ->
             schedule_start_time.text = "${year}-${month+1}-${dayOfMonth}"
             startYear = year
-            startMonth = month
+            startMonth = month+1
             startDay = dayOfMonth
         }
 
@@ -85,9 +84,8 @@ class ChooseScheduleTime : AppCompatActivity() {
             this,
             { view, year, month, dayOfMonth ->
                 endYear = year
-                endMonth = month
+                endMonth = month+1
                 endDay = dayOfMonth
-                val data = month.toString() + "月-" + dayOfMonth + "日 "
             },
             endYear, endMonth-1, endDay
         )
@@ -95,7 +93,7 @@ class ChooseScheduleTime : AppCompatActivity() {
         dateEndPickerDialog.setOnDateSetListener { view, year, month, dayOfMonth ->
             schedule_end_time.text = "${year}-${month+1}-${dayOfMonth}"
             endYear = year
-            endMonth = month
+            endMonth = month+1
             endDay = dayOfMonth
         }
 

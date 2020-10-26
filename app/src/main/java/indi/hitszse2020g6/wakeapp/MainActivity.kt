@@ -10,17 +10,25 @@ import android.net.Uri
 import android.os.*
 import android.provider.Settings
 import android.util.Log
+import android.util.Xml
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.navigation.findNavController
 import indi.hitszse2020g6.wakeapp.mainPage.MainPageEventList
 import indi.hitszse2020g6.wakeapp.mainPage.PARAM_START_FOCUS_FROM_BACKGROUND
+import indi.hitszse2020g6.wakeapp.mainPage.WeatherData
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.xmlpull.v1.XmlPullParser
+import java.net.URL
 import java.util.*
+import javax.net.ssl.HttpsURLConnection
 
 
 const val INTENT_AFFAIR_DETAIL = 1
@@ -79,16 +87,12 @@ class MainActivity() : AppCompatActivity() {
         MainPageEventList.context = this
         MainPageEventList.alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-        val pf = getSharedPreferences("schedule_time", Context.MODE_PRIVATE)
-        MainPageEventList.termStart = pf.getLong("startTime", -1)
+        MainPageEventList.termStart = getSharedPreferences("schedule_time", Context.MODE_PRIVATE).getLong("startTime", -1)
+        Log.d("MainActivity", "start at ${MainPageEventList.termStart}")
         if(MainPageEventList.termStart != -1L) {
             val c = Calendar.getInstance().apply { timeInMillis = MainPageEventList.termStart.toLong() }
             c.firstDayOfWeek = Calendar.MONDAY
             c.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
-            Log.d(
-                "MainActivity",
-                "start time in millis: ${c.timeInMillis}, $c, ${MainPageEventList.termStart}"
-            )
             MainPageEventList.currentWeek = ((System.currentTimeMillis() - c.timeInMillis) / (7 * 24 * 60 * 60 * 1000) + 1).toInt()
             MainPageEventList.currentDayOfWeek =
                 mapOf(
@@ -248,6 +252,38 @@ class MainActivity() : AppCompatActivity() {
         i.setAction("Connnecting")
         i.putExtra("connect", true)
         sendBroadcast(i)
+
+        GlobalScope.launch(Dispatchers.IO) {
+            WeatherData.updateWeather()
+            Handler(Looper.getMainLooper()).post {
+                if(WeatherData.weatherID != -1) {
+                    findViewById<TextView>(R.id.mainPage_tempStr)?.text = "${String.format("%.0f", WeatherData.temperature)}°C"
+                    findViewById<TextView>(R.id.mainPage_weatherStr)?.text = WeatherData.weatherDesc
+                    findViewById<ImageView>(R.id.mainPage_weatherIcon)?.setImageDrawable(
+                        mapOf(
+                            "01d" to ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_wb_sunny_24, null),
+                            "01n" to ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_wb_sunny_24, null),
+                            "02d" to ResourcesCompat.getDrawable(resources, R.drawable.ic_weather_partly_cloudy, null),
+                            "02n" to ResourcesCompat.getDrawable(resources, R.drawable.ic_weather_partly_cloudy, null),
+                            "03d" to ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_wb_cloudy_24, null),
+                            "03n" to ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_wb_cloudy_24, null),
+                            "04d" to ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_wb_cloudy_24, null),
+                            "04n" to ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_wb_cloudy_24, null),
+                            "09d" to ResourcesCompat.getDrawable(resources, R.drawable.ic_weather_pouring, null),
+                            "09n" to ResourcesCompat.getDrawable(resources, R.drawable.ic_weather_pouring, null),
+                            "10d" to ResourcesCompat.getDrawable(resources, R.drawable.ic_weather_pouring, null),
+                            "10n" to ResourcesCompat.getDrawable(resources, R.drawable.ic_weather_pouring, null),
+                            "11d" to ResourcesCompat.getDrawable(resources, R.drawable.ic_weather_lightning, null),
+                            "11n" to ResourcesCompat.getDrawable(resources, R.drawable.ic_weather_lightning, null),
+                            "13d" to ResourcesCompat.getDrawable(resources, R.drawable.ic_weather_snowy_heavy, null),
+                            "13n" to ResourcesCompat.getDrawable(resources, R.drawable.ic_weather_snowy_heavy, null),
+                            "50d" to ResourcesCompat.getDrawable(resources, R.drawable.ic_weather_fog, null),
+                            "50n" to ResourcesCompat.getDrawable(resources, R.drawable.ic_weather_fog, null),
+                        )[WeatherData.weatherIcon]
+                    )
+                }
+            }
+        }
     }
 
     override fun onPause() {
