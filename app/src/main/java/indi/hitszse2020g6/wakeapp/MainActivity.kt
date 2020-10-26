@@ -6,6 +6,7 @@ import android.app.AppOpsManager
 import android.app.NotificationManager
 import android.content.*
 import android.content.pm.PackageManager
+import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.*
 import android.provider.Settings
@@ -26,7 +27,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.xmlpull.v1.XmlPullParser
+import java.lang.Exception
 import java.net.URL
+import java.net.UnknownHostException
 import java.util.*
 import javax.net.ssl.HttpsURLConnection
 
@@ -254,7 +257,14 @@ class MainActivity() : AppCompatActivity() {
         sendBroadcast(i)
 
         GlobalScope.launch(Dispatchers.IO) {
-            WeatherData.updateWeather()
+            val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+            try{
+                WeatherData.updateWeather()
+            } catch (e: UnknownHostException) {
+                // Ignore
+            }
+
             Handler(Looper.getMainLooper()).post {
                 if(WeatherData.weatherID != -1) {
                     findViewById<TextView>(R.id.mainPage_tempStr)?.text = "${String.format("%.0f", WeatherData.temperature)}°C"
