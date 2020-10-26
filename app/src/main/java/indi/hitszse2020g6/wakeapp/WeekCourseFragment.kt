@@ -5,6 +5,7 @@ import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -148,7 +149,7 @@ class WeekCourseFragment : Fragment() {
                         val textViewCourse = TextView(context)
                         with(textViewCourse) {
                             Log.d("textViewCourse", "get in textViewCourse")
-
+                            gravity = Gravity.CENTER
                             text = courseName
                             Log.d("text", courseName)
                             setLines(3)
@@ -165,6 +166,7 @@ class WeekCourseFragment : Fragment() {
                         layout.addView(textViewCourse)
                         val textViewCourseAddress = TextView(context)
                         with(textViewCourseAddress) {
+                            gravity = Gravity.CENTER
                             text = courseAddress
                             setLines(2)
                             layoutParams = textCourse

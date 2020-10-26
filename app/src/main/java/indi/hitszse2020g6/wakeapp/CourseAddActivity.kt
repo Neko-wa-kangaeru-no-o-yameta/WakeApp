@@ -179,7 +179,7 @@ class CourseAddActivity : AppCompatActivity(),
                             }
                             if(HaveFlag == 1){
                                 Toast.makeText(this@CourseAddActivity,
-                                    "小猫咪说在你的第1个课程时间设置中，已经有第${repeatCourseDate.weekBegin}周星期${chineseWeek[repeatCourseDate.dayOfWeek - 1]}第${repeatCourseDate.time}节的${repeatCourse}等${listSize}门课程啦，请检查",
+                                    "课程冲突：已存在第${repeatCourseDate.weekBegin}周星期${chineseWeek[repeatCourseDate.dayOfWeek - 1]}第${repeatCourseDate.time}节的${repeatCourse}等课程，请检查",
                                     Toast.LENGTH_SHORT).show()
                                     hintedFlag = 1
                             } else if(HaveFlag == 0){
@@ -217,7 +217,7 @@ class CourseAddActivity : AppCompatActivity(),
                             }
                             if((HaveFlag == 1)&&(hintedFlag == 0)){
                                 Toast.makeText(this@CourseAddActivity,
-                                    "小猫咪说在你的第1个课程时间设置中，已经有第${repeatCourseDate.weekBegin}周星期${chineseWeek[repeatCourseDate.dayOfWeek - 1]}第${repeatCourseDate.time}节的${repeatCourse}等课程啦，请检查",
+                                    "课程冲突：已存在第${repeatCourseDate.weekBegin}周星期${chineseWeek[repeatCourseDate.dayOfWeek - 1]}第${repeatCourseDate.time}节的${repeatCourse}等课程，请检查",
                                     Toast.LENGTH_SHORT).show()
                             } else if(HaveFlag == 0){
                                 //表示没有找到跟设置时间段冲突的课程
@@ -249,6 +249,7 @@ class CourseAddActivity : AppCompatActivity(),
                                     CourseList.importClassWithoutRepeat(resultCoruseList,repeatList)
                                     val data = Intent()
                                     setResult(RESULT_ADD_NEW_COURSE, data)
+                                    finish()
                                 }else{
                                     Toast.makeText(this@CourseAddActivity,"没有课程被修改或新建",Toast.LENGTH_SHORT).show()
                                     finish()
