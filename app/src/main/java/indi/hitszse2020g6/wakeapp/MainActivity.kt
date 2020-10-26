@@ -257,8 +257,6 @@ class MainActivity() : AppCompatActivity() {
         sendBroadcast(i)
 
         GlobalScope.launch(Dispatchers.IO) {
-            val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-
             try{
                 WeatherData.updateWeather()
             } catch (e: UnknownHostException) {

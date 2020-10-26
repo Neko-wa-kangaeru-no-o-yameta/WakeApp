@@ -137,6 +137,26 @@ class MainPageFragment : Fragment() {
 
     override fun onResume() {
         view?.findViewById<RecyclerView>(R.id.mainPageRecyclerView)?.adapter?.notifyDataSetChanged()
+
+        MainPageEventList.termStart = requireActivity().getSharedPreferences("schedule_time", Context.MODE_PRIVATE).getLong("startTime", -1)
+        Log.d("MainActivity", "start at ${MainPageEventList.termStart}")
+        if(MainPageEventList.termStart != -1L) {
+            val c = Calendar.getInstance().apply { timeInMillis = MainPageEventList.termStart.toLong() }
+            c.firstDayOfWeek = Calendar.MONDAY
+            c.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
+            MainPageEventList.currentWeek = ((System.currentTimeMillis() - c.timeInMillis) / (7 * 24 * 60 * 60 * 1000) + 1).toInt()
+            MainPageEventList.currentDayOfWeek =
+                mapOf(
+                    Calendar.MONDAY to 1,
+                    Calendar.TUESDAY to 2,
+                    Calendar.WEDNESDAY to 3,
+                    Calendar.THURSDAY to 4,
+                    Calendar.FRIDAY to 5,
+                    Calendar.SATURDAY to 6,
+                    Calendar.SUNDAY to 7,
+                )[Calendar.getInstance().get(Calendar.DAY_OF_WEEK)] ?: error("MAP ERROR")
+        }
+
         if(MainPageEventList.initComplete) {
             MainPageEventList.updateStatus()
         }
