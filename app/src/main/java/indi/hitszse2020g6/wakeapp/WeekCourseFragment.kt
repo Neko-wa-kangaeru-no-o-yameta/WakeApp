@@ -68,9 +68,7 @@ class WeekCourseFragment : Fragment() {
             //直接更新
             Log.d("get in2", "get in")
             param1?.toInt()?.let {
-                requireActivity().findViewById<ViewPager2>(R.id.viewPager2).adapter?.notifyItemChanged(
-                    it
-                )
+                requireActivity().findViewById<ViewPager2>(R.id.viewPager2).adapter?.notifyDataSetChanged()
 //                requireActivity().findViewById<ViewPager2>(R.id.viewPager2).currentItem = it
             }
             updateCourseCardView()
@@ -114,7 +112,6 @@ class WeekCourseFragment : Fragment() {
                     val courseAddress = ele.address
                     val courseColor = ele.color
                     val cardTag = "$courseDayOfWeek$courseTime"
-                    Log.d("cardTag", cardTag)
                     val cardView = view?.findViewWithTag<CardView>(cardTag)
 
                     if (cardView == null) {

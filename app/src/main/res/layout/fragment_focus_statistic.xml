@@ -5,6 +5,7 @@
     android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:scrollbars="none"
     tools:context=".FocusStatisticFragment">
     <!-- TODO: Update blank fragment layout -->
 
@@ -190,8 +191,6 @@
         android:layout_marginTop="16dp"
         android:layout_marginRight="24dp"
         android:layout_marginBottom="224dp"
-        android:saveEnabled="false"
-        android:scrollbars="none"
         app:chart_axis="xy"
         app:chart_labelsColor="#000000"
         app:chart_labelsSize="9sp"
@@ -228,6 +227,7 @@
         android:layout_marginBottom="16dp"
         android:background="@android:color/transparent"
         android:gravity="center|center_horizontal|center_vertical"
+        android:scaleY="-1"
         app:chart_donutBackgroundColor="#70977F"
         app:chart_donutRoundCorners="false"
         app:chart_donutThickness="70dp"

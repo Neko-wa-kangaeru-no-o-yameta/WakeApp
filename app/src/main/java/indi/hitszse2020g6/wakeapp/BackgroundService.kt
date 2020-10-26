@@ -12,6 +12,7 @@ import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.WindowManager
+import org.json.JSONArray
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.concurrent.schedule
@@ -60,7 +61,7 @@ class BackgroundService : Service() {
 
     var useCustomWhiteList:Boolean = false
     var customWhiteList:List<String> = ArrayList()
-    var defaultWhiteList:List<String> = ArrayList()
+    var defaultWhiteList:MutableList<String> = ArrayList()
 
     var isStored:Boolean = false
     var isBlocking: Boolean = false
@@ -69,10 +70,19 @@ class BackgroundService : Service() {
     var focusTitle: String = ""
 
     var isMuting: Boolean = false
+    var totalTime:Long = 0
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
-
+        //读一下用户默认白名单
+        val mySharedPreferences = getSharedPreferences("user_default_white_list", Context.MODE_PRIVATE)
+        val jsonArray = JSONArray(mySharedPreferences.getString("default_white_list","[]"))
+        Log.d(TAG,"${jsonArray.length()}")
+        if(jsonArray.length()>0){
+            for(item in 0 until jsonArray.length()){
+                defaultWhiteList.add(jsonArray.get(item) as String)
+            }
+        }
         return START_STICKY
     }
 
@@ -112,7 +122,7 @@ class BackgroundService : Service() {
                     for(wlPackageName in finalWhiteList) {
                         if(topPackageName == wlPackageName) needToBlock = false
                     }
-                    Log.d("BCKGRND", "$topPackageName, needToBlock = $needToBlock, isBlocking = $isBlocking")
+//                    Log.d("BCKGRND", "$topPackageName, needToBlock = $needToBlock, isBlocking = $isBlocking")
                     if (needToBlock && isBlocking) {
                         if (!pendingReturn) {
                             Log.d("BCKGRND", "Trying to return...")
@@ -173,6 +183,7 @@ class BackgroundService : Service() {
 
         fun stopCountDownTimer(){
             myCountTime = 0
+            useCustomWhiteList = false
             if(myCountDownTimer!=null){
                 myCountDownTimer!!.cancel()
             }
@@ -189,14 +200,19 @@ class BackgroundService : Service() {
         }
 
         fun setDefaultWhiteList(defWL: List<String>) {
-            defaultWhiteList = defWL
+            defaultWhiteList = defWL as MutableList<String>
         }
 
         fun getFocusTitle() = focusTitle
 
-        fun startTimer(startTime:Long,endTime:Long, title: String){
-            val totalTime = endTime - startTime
-            startMyCountDownTimer(totalTime,title)
+        fun startTimer(entry:EventTableEntry){
+            totalTime = entry.stopTime - entry.startTime
+            for (item in entry.customWhiteList){
+                Log.d("CustomWhiteList",item)
+            }
+            useCustomWhiteList = true
+            customWhiteList = entry.customWhiteList
+            startMyCountDownTimer(totalTime,entry.title)
             //发送BroadCast通知切换页面
             val myIntent = Intent()
             myIntent.action = "switchToFocusFragment"
@@ -231,6 +247,8 @@ class BackgroundService : Service() {
         fun getStopTime(): Long = stopBlocking
 
         fun getConditon():Long = myCountTime
+
+        fun getTotalTime():Long = totalTime
 
         fun setIsStored(b:Boolean){
             isStored = b

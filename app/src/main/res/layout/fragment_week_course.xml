@@ -22,7 +22,8 @@
             android:layout_gravity="center_horizontal|center_vertical"
             android:text="@string/节次"
             android:textAlignment="center"
-            android:textSize="12sp" />
+            android:textColor="#FFFFFF"
+            android:textSize="8sp" />
 
         <TextView
             android:id="@+id/tv2"
@@ -31,7 +32,7 @@
             android:layout_gravity="center_horizontal|center_vertical"
             android:text="@string/第一大节"
             android:textAlignment="center"
-            android:textSize="14sp" />
+            android:textSize="10sp" />
 
         <TextView
             android:id="@+id/tv3"
@@ -39,7 +40,8 @@
             android:layout_columnWeight="1"
             android:layout_gravity="center_horizontal|center_vertical"
             android:text="@string/第二大节"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textSize="10sp" />
 
         <TextView
             android:id="@+id/tv4"
@@ -47,7 +49,8 @@
             android:layout_columnWeight="1"
             android:layout_gravity="center_horizontal|center_vertical"
             android:text="@string/第三大节"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textSize="10sp" />
 
         <TextView
             android:id="@+id/tv5"
@@ -55,7 +58,8 @@
             android:layout_columnWeight="1"
             android:layout_gravity="center_horizontal|center_vertical"
             android:text="@string/第四大节"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textSize="10sp" />
 
         <TextView
             android:id="@+id/tv6"
@@ -63,7 +67,8 @@
             android:layout_columnWeight="1"
             android:layout_gravity="center_horizontal|center_vertical"
             android:text="@string/第五大节"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textSize="10sp" />
 
         <TextView
             android:id="@+id/tv7"
@@ -71,7 +76,8 @@
             android:layout_columnWeight="1"
             android:layout_gravity="center_horizontal|center_vertical"
             android:text="@string/第六大节"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textSize="10sp" />
 
         <TextView
             android:id="@+id/tv_week1"
@@ -329,11 +335,11 @@
             android:layout_rowWeight="1"
             android:layout_column="3"
             android:layout_columnWeight="1"
-            
+
             android:layout_margin="1dp"
             android:padding="1dp"
             android:minHeight="100dp"
-            
+
             android:tag="53" />
 
         <androidx.cardview.widget.CardView

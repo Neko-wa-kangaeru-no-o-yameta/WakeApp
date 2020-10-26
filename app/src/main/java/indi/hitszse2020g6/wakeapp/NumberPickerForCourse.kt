@@ -111,9 +111,9 @@ class WeekPickerFragment(position: Int) :DialogFragment(){
         val view = infalter.inflate(R.layout.week_picker_dailog, null)
         val npWeekBegin = view.findViewById<NumberPicker>(R.id.weekPicker1)
         val npWeekEnd = view.findViewById<NumberPicker>(R.id.weekPicker2)
-        npWeekBegin.maxValue = 20
+        npWeekBegin.maxValue = 18
         npWeekBegin.minValue = 1
-        npWeekEnd.maxValue = 20
+        npWeekEnd.maxValue = 18
         npWeekEnd.minValue = 1
         builder.setView(view)
             .setPositiveButton(R.string.dialog_ok,

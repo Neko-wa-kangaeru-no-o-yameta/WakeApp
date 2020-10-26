@@ -7,6 +7,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#ffffff"
-        android:text="忘记这个是什么了" />
+        android:text="开关提示" />
 
 </LinearLayout>

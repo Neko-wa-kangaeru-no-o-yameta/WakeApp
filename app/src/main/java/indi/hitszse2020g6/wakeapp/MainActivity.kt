@@ -119,11 +119,11 @@ class MainActivity() : AppCompatActivity() {
                     binder?.setUseCustomWhiteList(entry.hasCustomWhiteList)
                     binder?.setCustomWhiteList(entry.customWhiteList)
                     binder?.setIsBlocking(true)
-                    binder?.startTimer(entry.startTime, entry.stopTime, entry.title)
-//                    binder.startCoutnDownTimer()
+                    binder?.startTimer(entry)
                 }, 500)
             }
         }
+
         //之前课程表没有设置，默认写一下时间
         sharedPreferences = getSharedPreferences(
             "schedule_time",
@@ -219,7 +219,6 @@ class MainActivity() : AppCompatActivity() {
         i.setAction("Connnecting")
         i.putExtra("connect", true)
         sendBroadcast(i)
-
     }
 
     override fun onPause() {
@@ -261,8 +260,8 @@ class MainActivity() : AppCompatActivity() {
         this.registerReceiver(object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 Log.d("MainActivity", "Received intent from background service")
-                findNavController(R.id.mainNavFragment).navigate(R.id.action_global_focusFragment)
-                bottomNavigationView.selectedItemId = R.id.bottomNavFocusBtn
+//                findNavController(R.id.mainNavFragment).navigate(R.id.action_global_focusFragment)
+//                bottomNavigationView.selectedItemId = R.id.bottomNavFocusBtn
             }
         }, intentFilter)
     }
@@ -292,13 +291,22 @@ class FocusReceiver: BroadcastReceiver() {
         val binder = peekService(context, Intent(context, BackgroundService::class.java)) as BackgroundService.MyBinder
         GlobalScope.launch(Dispatchers.IO) {
             val entry = MainPageEventList.DAO.getEvent(intent!!.getLongExtra(PARAM_START_FOCUS_FROM_BACKGROUND, -1))
+            //抓紧时间写一下表
+            val mt = MyFocusEntry(
+                uid = System.currentTimeMillis(),
+                totalFocusTime = entry.stopTime-entry.startTime,
+                focusDate = System.currentTimeMillis(),
+                entry.title,
+                false
+            )
+            MainPageEventList.DAO.addFocusData(mt)
+            Log.d("YYYYYYes","write")
             Handler(Looper.getMainLooper()).postDelayed({
                 Log.d("FocusReceiver", "Starting Timer...")
                 binder.setUseCustomWhiteList(entry.hasCustomWhiteList)
                 binder.setCustomWhiteList(entry.customWhiteList)
                 binder.setIsBlocking(true)
-                binder.startTimer(entry.startTime, entry.stopTime, entry.title)
-//                    binder.startCoutnDownTimer()
+                binder.startTimer(entry)
             }, 500)
         }
     }

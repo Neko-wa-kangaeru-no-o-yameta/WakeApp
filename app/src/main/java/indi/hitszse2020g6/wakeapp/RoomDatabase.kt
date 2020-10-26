@@ -133,7 +133,8 @@ class Course(
     @ColumnInfo(name = "course_focus")      var focus: Boolean,
     @ColumnInfo(name = "course_mute")       var mute: Boolean,
     @ColumnInfo(name = "course_detail")     var detail: List<Detail>,
-    @ColumnInfo(name = "course_reminder")     var reminder: List<Reminder>
+    @ColumnInfo(name = "course_reminder")     var reminder: List<Reminder>,
+    @ColumnInfo(name = "isAllreadyGenerated")     var isGenerate:Boolean
 )
 
 
@@ -236,7 +237,11 @@ interface RoomDAO {
 
     @Query("UPDATE course_table SET course_color = (:course_color) WHERE course_name = (:course_name)")
     fun insertCourseColorIntoTable(course_color: Int, course_name: String)
-
+    @Query("UPDATE course_table SET isAllreadyGenerated = (:generate) WHERE course_id = (:uid)")
+    fun updateCourseIsGeneratedFlag(
+        uid:Long,
+        generate:Boolean
+    )
     //通过id进行更新
     @Query("UPDATE course_table SET course_name = (:name),class_address = (:address),course_notice = (:notice),course_focus = (:focus), course_mute = (:mute),course_detail=(:detail),course_reminder = (:reminder) WHERE course_id = (:course_id)")
     fun updateCourseDetailById(
@@ -307,4 +312,12 @@ interface RoomDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addFocusData(mf: MyFocusEntry)
 
+    @Query("SELECT * FROM focusTable WHERE (focusDate in (SELECT MAX(focusDate) FROM focusTable))")
+    fun getNearestFocusData():List<MyFocusEntry>
+
+    @Query("UPDATE focusTable SET isCanceled = (:set_boolean) WHERE uid = (:before_id)")
+    fun updateFocusData(
+        before_id:Long,
+        set_boolean:Boolean
+    )
 }

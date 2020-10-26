@@ -61,6 +61,7 @@ class CourseAddActivity : AppCompatActivity(),
     private val resultList = arrayListOf<CourseDate>()
     private val resultCoruseList = ArrayList<Course>()
     private var hintedFlag : Int = 0
+    private var courseCount : Int = 0
     companion object {
         var detail = CourseDetails()
     }
@@ -137,7 +138,7 @@ class CourseAddActivity : AppCompatActivity(),
                     listSize = 0
                     repeatCourse = ""
                     hintedFlag = 0
-
+                    courseCount = 0
                     if (detail.courseWeekBegin > detail.courseWeekEnd){
                         Toast.makeText(this@CourseAddActivity,"小猫咪说你的课程时间的设置错了啦",Toast.LENGTH_SHORT).show()
                     }
@@ -171,6 +172,7 @@ class CourseAddActivity : AppCompatActivity(),
                                         result.weekBegin = week
                                         result.dayOfWeek = detail.courseDayOfWeek
                                         result.courseAddress = detail.courseAddress
+                                        courseCount += 1
                                         resultList.add(result)
                                     }
                                 }
@@ -202,6 +204,7 @@ class CourseAddActivity : AppCompatActivity(),
                                                 result.weekBegin = week
                                                 result.dayOfWeek = CourseWeek.ITEMS[ele].dayOfWeek
                                                 result.courseAddress = CourseWeek.ITEMS[ele].courseAddress
+                                                courseCount += 1
                                                 resultList.add(result)
                                                 HaveFlag = 0
                                             }
@@ -234,16 +237,22 @@ class CourseAddActivity : AppCompatActivity(),
                                             detail.focus,
                                             detail.mute,
                                             EventDetailList.ITEMS.toList(),
-                                            EventReminderList.ITEMS.toList()
+                                            EventReminderList.ITEMS.toList(),
+                                            false
                                         )
+                                        courseCount += 1
                                         resultCoruseList.add(course)
                                     }
                                 }
-                                val repeatList = ArrayList<Course>()
-                                CourseList.importClassWithoutRepeat(resultCoruseList,repeatList)
-                                val data = Intent()
-                                setResult(RESULT_ADD_NEW_COURSE, data)
-                                finish()
+                                if(courseCount != 0){
+                                    val repeatList = ArrayList<Course>()
+                                    CourseList.importClassWithoutRepeat(resultCoruseList,repeatList)
+                                    val data = Intent()
+                                    setResult(RESULT_ADD_NEW_COURSE, data)
+                                }else{
+                                    Toast.makeText(this@CourseAddActivity,"没有课程被修改或新建",Toast.LENGTH_SHORT).show()
+                                    finish()
+                                }
                             }
                         }
                     }
@@ -734,49 +743,10 @@ class CourseAddActivity : AppCompatActivity(),
             .setHighTargetGraphStyle(Component.CIRCLE)
         builder.setOnVisibilityChangedListener(object : GuideBuilder.OnVisibilityChangedListener {
             override fun onShown() {}
-            override fun onDismiss() {
-                showDeleteCourseGuideView()
-            }
+            override fun onDismiss() {}
         })
         builder.addComponent(AffairDetailActivity.AddReminderComponent())
         val guide = builder.createGuide()
         guide.show(this)
-    }
-
-    private fun showDeleteCourseGuideView(){
-//        scrollView.fullScroll(ScrollView.FOCUS_DOWN)
-
-        val builder = GuideBuilder()
-        builder.setTargetView(deleteCard).setAlpha(150).setHighTargetPadding(5)
-            .setHighTargetGraphStyle(Component.ROUNDRECT)
-        builder.setOnVisibilityChangedListener(object : GuideBuilder.OnVisibilityChangedListener {
-            override fun onShown() {}
-            override fun onDismiss() {}
-        })
-        builder.addComponent(DeleteCourseComponent())
-        val guide = builder.createGuide()
-        guide.show(this)
-    }
-
-    class DeleteCourseComponent:Component{
-        override fun getView(inflater: LayoutInflater?): View {
-            return inflater?.inflate(R.layout.layer_delete_course, null) as LinearLayout
-        }
-
-        override fun getAnchor(): Int {
-            return Component.ANCHOR_TOP
-        }
-
-        override fun getFitPosition(): Int {
-            return Component.FIT_END
-        }
-
-        override fun getXOffset(): Int {
-            return 0
-        }
-
-        override fun getYOffset(): Int {
-            return -40
-        }
     }
 }

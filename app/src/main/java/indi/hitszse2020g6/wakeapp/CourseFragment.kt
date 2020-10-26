@@ -62,11 +62,7 @@ class CourseFragment : Fragment() {
 
         //为ViewPager2设置适配器
         Log.d("CourseFragment", "got view")
-        val maxWeek = 17
-        val myAdapter =  MyViewPageAdapter(this@CourseFragment)
-        if (maxWeek != null) {
-            myAdapter.maxWeek = maxWeek
-        }
+
         var mySharedPreferences: SharedPreferences = requireActivity().getSharedPreferences(
             "schedule_time",
             Context.MODE_PRIVATE
@@ -86,6 +82,11 @@ class CourseFragment : Fragment() {
             week = ((stopTime - startTime + (startDayOfWeek-2)*24*60*60*1000)/7/(24*60*60*1000)).toInt()
 
 
+        }
+        val maxWeek = 18
+        val myAdapter =  MyViewPageAdapter(this@CourseFragment)
+        if (maxWeek != null) {
+            myAdapter.maxWeek = maxWeek
         }
         viewPager2.adapter = myAdapter
         viewPager2.currentItem = week
@@ -131,10 +132,15 @@ class MyViewPageAdapter(val fragment: CourseFragment):FragmentStateAdapter(fragm
         position: Int,
         payloads: MutableList<Any>
     ) {
-        super.onBindViewHolder(holder, position, payloads)
-        val fragment:WeekCourseFragment? = fragment.fragmentManager?.findFragmentById(position) as WeekCourseFragment?
+        val tag = "f" + holder.itemId
+        Log.d("tag",tag)
+        val fragment:WeekCourseFragment? = fragment.childFragmentManager?.findFragmentByTag(tag) as WeekCourseFragment?
         if (fragment != null) {
+            Log.d("tag-onBindViewHolder",tag)
             fragment.updateCourseCardView()
+        }else{
+            Log.d("tag-onBindViewHolder","null")
+            super.onBindViewHolder(holder, position, payloads)
         }
     }
 
