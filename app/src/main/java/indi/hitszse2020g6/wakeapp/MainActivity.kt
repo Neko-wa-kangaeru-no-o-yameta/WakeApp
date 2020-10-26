@@ -3,14 +3,13 @@ package indi.hitszse2020g6.wakeapp
 import android.Manifest
 import android.app.AlarmManager
 import android.app.AppOpsManager
+import android.app.NotificationManager
 import android.content.*
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.*
 import android.provider.Settings
 import android.util.Log
-import android.view.WindowManager
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -22,7 +21,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.util.*
-import kotlin.system.exitProcess
 
 
 const val INTENT_AFFAIR_DETAIL = 1
@@ -87,17 +85,20 @@ class MainActivity() : AppCompatActivity() {
             val c = Calendar.getInstance().apply { timeInMillis = MainPageEventList.termStart.toLong() }
             c.firstDayOfWeek = Calendar.MONDAY
             c.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
-            Log.d("MainActivity", "start time in millis: ${c.timeInMillis}, $c, ${MainPageEventList.termStart}")
+            Log.d(
+                "MainActivity",
+                "start time in millis: ${c.timeInMillis}, $c, ${MainPageEventList.termStart}"
+            )
             MainPageEventList.currentWeek = ((System.currentTimeMillis() - c.timeInMillis) / (7 * 24 * 60 * 60 * 1000) + 1).toInt()
             MainPageEventList.currentDayOfWeek =
                 mapOf(
-                    Calendar.MONDAY     to 1,
-                    Calendar.TUESDAY    to 2,
-                    Calendar.WEDNESDAY  to 3,
-                    Calendar.THURSDAY   to 4,
-                    Calendar.FRIDAY     to 5,
-                    Calendar.SATURDAY   to 6,
-                    Calendar.SUNDAY     to 7,
+                    Calendar.MONDAY to 1,
+                    Calendar.TUESDAY to 2,
+                    Calendar.WEDNESDAY to 3,
+                    Calendar.THURSDAY to 4,
+                    Calendar.FRIDAY to 5,
+                    Calendar.SATURDAY to 6,
+                    Calendar.SUNDAY to 7,
                 )[Calendar.getInstance().get(Calendar.DAY_OF_WEEK)] ?: error("MAP ERROR")
         }
 
@@ -203,6 +204,13 @@ class MainActivity() : AppCompatActivity() {
             startActivity(intent)
             Log.d("BCKGRND", "can't draw overlay")
         }
+
+        if (!(getSystemService(NOTIFICATION_SERVICE) as NotificationManager).isNotificationPolicyAccessGranted) {
+            val intent = Intent(
+                Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS
+            )
+            startActivity(intent)
+        }
     }
 
     override fun onResume() {
@@ -297,37 +305,36 @@ class MainActivity() : AppCompatActivity() {
 class FocusReceiver: BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         Log.d("Receiver", "received")
-        Toast.makeText(context, "receiver received!", Toast.LENGTH_SHORT).show()
         Log.d("Receiver", "uid: ${intent?.getLongExtra(PARAM_START_FOCUS_FROM_BACKGROUND, -1)}")
-//        context!!.startActivity(Intent(context, MainActivity::class.java).apply {
-//            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-//            putExtra("RequestCode", REQUEST_OPEN_TIMER_FRG)
-//            putExtra(
-//                PARAM_START_FOCUS_FROM_BACKGROUND, intent?.getLongExtra(
-//                    PARAM_START_FOCUS_FROM_BACKGROUND,
-//                    -1
-//                )
-//            )
-//        })
-        val binder = peekService(context, Intent(context, BackgroundService::class.java)) as BackgroundService.MyBinder
+        val binder = peekService(context, Intent(context, BackgroundService::class.java)) as BackgroundService.MyBinder?
+        if(binder == null) {
+            Intent(context, BackgroundService::class.java).also { intent ->
+                context?.startService(intent)
+            }
+        }
         GlobalScope.launch(Dispatchers.IO) {
-            val entry = MainPageEventList.DAO.getEvent(intent!!.getLongExtra(PARAM_START_FOCUS_FROM_BACKGROUND, -1))
+            val entry = MainPageEventList.DAO.getEvent(
+                intent!!.getLongExtra(
+                    PARAM_START_FOCUS_FROM_BACKGROUND,
+                    -1
+                )
+            )
             //抓紧时间写一下表
             val mt = MyFocusEntry(
                 uid = System.currentTimeMillis(),
-                totalFocusTime = entry.stopTime-entry.startTime,
+                totalFocusTime = entry.stopTime - entry.startTime,
                 focusDate = System.currentTimeMillis(),
                 entry.title,
                 false
             )
             MainPageEventList.DAO.addFocusData(mt)
-            Log.d("YYYYYYes","write")
+            Log.d("YYYYYYes", "write")
             Handler(Looper.getMainLooper()).postDelayed({
                 Log.d("FocusReceiver", "Starting Timer...")
-                binder.setUseCustomWhiteList(entry.hasCustomWhiteList)
-                binder.setCustomWhiteList(entry.customWhiteList)
-                binder.setIsBlocking(true)
-                binder.startTimer(entry)
+                binder?.setUseCustomWhiteList(entry.hasCustomWhiteList)
+                binder?.setCustomWhiteList(entry.customWhiteList)
+                binder?.setIsBlocking(true)
+                binder?.startTimer(entry)
             }, 500)
         }
     }

@@ -6,6 +6,7 @@ import android.app.usage.UsageStatsManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.PixelFormat
+import android.media.AudioManager
 import android.net.Uri
 import android.os.*
 import android.provider.Settings
@@ -45,10 +46,12 @@ val forceWhiteList: List<String> = arrayListOf(
     "com.samsung.android.contacts",
     "com.samsung.android.phone",
     "com.google.android.permissioncontroller",
+    "com.android.permissioncontroller",
     "indi.hitszse2020g6.wakeapp",
     "",
     "com.google.android.apps.nexuslauncher",
     "com.miui.home",
+    "com.huawei.android.launcher"
     // ADD YOUR LAUNCHER HERE!!!
 )
 
@@ -181,6 +184,7 @@ class BackgroundService : Service() {
                 myCountDownTimer!!.cancel()
             }
             isBlocking = false
+            (getSystemService(Context.AUDIO_SERVICE) as AudioManager).ringerMode = AudioManager.RINGER_MODE_NORMAL
             Log.d("BlockAppService","stopCountDownTimer")
         }
 
@@ -205,6 +209,9 @@ class BackgroundService : Service() {
             }
             useCustomWhiteList = true
             customWhiteList = entry.customWhiteList
+            if(entry.mute) {
+                (getSystemService(Context.AUDIO_SERVICE) as AudioManager).ringerMode = AudioManager.RINGER_MODE_SILENT
+            }
             startMyCountDownTimer(totalTime,entry.title)
             //发送BroadCast通知切换页面
             val myIntent = Intent()
@@ -242,6 +249,7 @@ class BackgroundService : Service() {
                     isStored = false
                     isBlocking = false
                     Log.d(TAG,"BACKGROUND TIMER FINISHED")
+                    (getSystemService(Context.AUDIO_SERVICE) as AudioManager).ringerMode = AudioManager.RINGER_MODE_NORMAL
                 }
             }.start()
             Log.d("BlockAppService","startCountDownTimer")
