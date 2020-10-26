@@ -297,7 +297,6 @@ class MainActivity() : AppCompatActivity() {
 class FocusReceiver: BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         Log.d("Receiver", "received")
-        Toast.makeText(context, "receiver received!", Toast.LENGTH_SHORT).show()
         Log.d("Receiver", "uid: ${intent?.getLongExtra(PARAM_START_FOCUS_FROM_BACKGROUND, -1)}")
         val binder = peekService(context, Intent(context, BackgroundService::class.java)) as BackgroundService.MyBinder?
         if(binder == null) {
