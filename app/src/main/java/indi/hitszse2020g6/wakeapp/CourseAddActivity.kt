@@ -61,6 +61,7 @@ class CourseAddActivity : AppCompatActivity(),
     private val resultList = arrayListOf<CourseDate>()
     private val resultCoruseList = ArrayList<Course>()
     private var hintedFlag : Int = 0
+    private var courseCount : Int = 0
     companion object {
         var detail = CourseDetails()
     }
@@ -137,7 +138,7 @@ class CourseAddActivity : AppCompatActivity(),
                     listSize = 0
                     repeatCourse = ""
                     hintedFlag = 0
-
+                    courseCount = 0
                     if (detail.courseWeekBegin > detail.courseWeekEnd){
                         Toast.makeText(this@CourseAddActivity,"小猫咪说你的课程时间的设置错了啦",Toast.LENGTH_SHORT).show()
                     }
@@ -171,6 +172,7 @@ class CourseAddActivity : AppCompatActivity(),
                                         result.weekBegin = week
                                         result.dayOfWeek = detail.courseDayOfWeek
                                         result.courseAddress = detail.courseAddress
+                                        courseCount += 1
                                         resultList.add(result)
                                     }
                                 }
@@ -202,6 +204,7 @@ class CourseAddActivity : AppCompatActivity(),
                                                 result.weekBegin = week
                                                 result.dayOfWeek = CourseWeek.ITEMS[ele].dayOfWeek
                                                 result.courseAddress = CourseWeek.ITEMS[ele].courseAddress
+                                                courseCount += 1
                                                 resultList.add(result)
                                                 HaveFlag = 0
                                             }
@@ -237,14 +240,19 @@ class CourseAddActivity : AppCompatActivity(),
                                             EventReminderList.ITEMS.toList(),
                                             false
                                         )
+                                        courseCount += 1
                                         resultCoruseList.add(course)
                                     }
                                 }
-                                val repeatList = ArrayList<Course>()
-                                CourseList.importClassWithoutRepeat(resultCoruseList,repeatList)
-                                val data = Intent()
-                                setResult(RESULT_ADD_NEW_COURSE, data)
-                                finish()
+                                if(courseCount != 0){
+                                    val repeatList = ArrayList<Course>()
+                                    CourseList.importClassWithoutRepeat(resultCoruseList,repeatList)
+                                    val data = Intent()
+                                    setResult(RESULT_ADD_NEW_COURSE, data)
+                                }else{
+                                    Toast.makeText(this@CourseAddActivity,"没有课程被修改或新建",Toast.LENGTH_SHORT).show()
+                                    finish()
+                                }
                             }
                         }
                     }
