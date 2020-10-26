@@ -32,6 +32,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:autofillHints="事件标题"
+                    android:maxLength="30"
                     android:ems="10"
                     android:hint="@string/eventDetail_eventTitleInputField"
                     android:inputType="text"

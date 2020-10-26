@@ -10,6 +10,7 @@
         android:id="@+id/eventDetail_detailListItem_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:maxLength="10"
         android:minWidth="64dp"
         android:textAppearance="?attr/textAppearanceListItem"
         app:layout_constraintBottom_toBottomOf="parent"
