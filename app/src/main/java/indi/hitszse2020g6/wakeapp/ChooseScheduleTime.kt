@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_choose_schedule_time.*
 import java.util.*
@@ -57,10 +58,17 @@ class ChooseScheduleTime : AppCompatActivity() {
             val editor = mySharedPreferences.edit()
             startTime = getTimeInMills(startYear,startMonth,startDay)
             endTime = getTimeInMills(endYear,endMonth,endDay)
-            editor.putLong("startTime",startTime)
-            editor.putLong("endTime",endTime)
-            editor.apply()
-            finish()
+            Log.d("ChooseScheduleTime",startTime.toString())
+            Log.d("ChooseScheduleTime",endTime.toString())
+            //判一下
+            if(endTime<=startTime){
+                Toast.makeText(this,"学期结束时间不能早于学期开始时间!",Toast.LENGTH_SHORT).show()
+            }else{
+                editor.putLong("startTime",startTime)
+                editor.putLong("endTime",endTime)
+                editor.apply()
+                finish()
+            }
         }
 
         dateStartPickerDialog = DatePickerDialog(

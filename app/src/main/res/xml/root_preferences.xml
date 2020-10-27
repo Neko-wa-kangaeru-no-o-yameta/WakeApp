@@ -4,11 +4,11 @@
 
         <Preference
             app:key="clear_event_table"
-            app:title="Clear the event table"
+            app:title="清空待办事项"
             app:useSimpleSummaryProvider="true" />
         <Preference
             app:key="clear_course_table"
-            app:title="Clear the course table"
+            app:title="清空课程表"
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 

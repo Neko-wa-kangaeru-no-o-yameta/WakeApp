@@ -95,7 +95,7 @@
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="16dp"
                         android:layout_marginEnd="16dp"
-                        android:text="文件管理->搜索文件->xxx.xlsx->移动到download文件夹->打开wakeApp->导入课程表->在所有文件夹的下方查找xlsx文件->导入"
+                        android:text="文件管理->搜索文件->xxx.xlsx->移动到download文件夹->打开wakeApp->导入课程表->在所有文件夹的下方查找xlsx文件->导入，请尽量使用安卓自带的文件选择器导入课表，若使用wps，由于wps自启动时长的原因，可能导致导入较慢"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/textView6" />
@@ -268,6 +268,39 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
 
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:id="@+id/textView61"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="7.关于本app的课程表xlsx解析支持"
+                        android:textSize="18sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/textView62"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:text="暂时只支持HITSZ教务系统提供的xlsx格式课程表，已设置导入文件格式检测，请导入xlsx格式的课程表，否则将无法解析。如您所在的学校想要使用此app，请提供所在学校的xlsx格式课程表并与开发人员联系，我们将尽快为您解决。"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView61" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
+
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
@@ -282,7 +315,7 @@
                         android:id="@+id/textView12"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="7.项目管理人员邮箱"
+                        android:text="8.项目管理人员邮箱"
                         android:textSize="18sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
