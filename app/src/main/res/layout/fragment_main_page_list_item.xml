@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/default_event_title"
-
+            android:maxWidth="200dp"
             android:textColor="#000000"
             android:textSize="20sp"
             app:layout_constraintBottom_toTopOf="@+id/divider"
@@ -59,13 +59,22 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/mute_on_24" />
 
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/eventList_barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="eventList_eventTitle, eventList_muteBtn"
+            tools:layout_editor_absoluteX="98dp"
+            tools:layout_editor_absoluteY="43dp" />
+
         <View
             android:id="@+id/divider"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="?android:attr/listDivider"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/eventList_noticeBtn" />
+            app:layout_constraintTop_toBottomOf="@id/eventList_barrier" />
 
         <TextView
             android:id="@+id/eventDetail_startTimeTV"

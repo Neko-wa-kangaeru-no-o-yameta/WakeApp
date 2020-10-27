@@ -17,6 +17,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import indi.hitszse2020g6.wakeapp.AppRoomDB
 import indi.hitszse2020g6.wakeapp.R
+import indi.hitszse2020g6.wakeapp.mainPage.MainPageEventList
 import kotlinx.android.synthetic.main.activity_choose_schedule_time.*
 import kotlinx.android.synthetic.main.fragment_course.*
 import kotlinx.coroutines.Dispatchers
@@ -70,16 +71,18 @@ class CourseFragment : Fragment() {
 
 
         if(mySharedPreferences.getLong("startTime", -1).toInt() !=-1){
-            val calendar = Calendar.getInstance()
-
             val startTime = mySharedPreferences.getLong("startTime", -1)
+            Log.d("startTime1", startTime.toString())
+            val calendar = Calendar.getInstance().apply { timeInMillis =  startTime}
             val stopTime = System.currentTimeMillis()
-            calendar.time = Date(startTime)
-            val startDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
+            calendar.firstDayOfWeek = Calendar.MONDAY
+            calendar.set(Calendar.DAY_OF_WEEK,Calendar.MONDAY)
+            Log.d("timeIntMills1",calendar.timeInMillis.toString())
 //            calendar.firstDayOfWeek = Calendar.MONDAY
 //
 //            val startWeekMonday = calendar.timeInMillis
-            week = ((stopTime - startTime + (startDayOfWeek-2)*24*60*60*1000)/7/(24*60*60*1000)).toInt()
+            week = ((stopTime - calendar.timeInMillis)/(7*24*60*60*1000)).toInt()
+            Log.d("WEEK1",week.toString())
 
 
         }

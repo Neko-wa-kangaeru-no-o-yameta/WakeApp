@@ -70,7 +70,7 @@ class WeekCourseFragment : Fragment() {
             Log.d("get in2", "get in")
             param1?.toInt()?.let {
                 requireActivity().findViewById<ViewPager2>(R.id.viewPager2).adapter?.notifyDataSetChanged()
-//                requireActivity().findViewById<ViewPager2>(R.id.viewPager2).currentItem = it
+                requireActivity().findViewById<ViewPager2>(R.id.viewPager2).currentItem = it - 1
             }
             updateCourseCardView()
             if(resultCode == RESULT_ADD_NEW_COURSE){

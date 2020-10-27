@@ -166,16 +166,18 @@ class ScheduleFragment : Fragment(),
 
 
         if(mySharedPreferences.getLong("startTime", -1).toInt() !=-1){
-            val calendar = Calendar.getInstance()
-
             val startTime = mySharedPreferences.getLong("startTime", -1)
+            Log.d("startTime1", startTime.toString())
+            val calendar = Calendar.getInstance().apply { timeInMillis =  startTime}
             val stopTime = System.currentTimeMillis()
-            calendar.time = Date(startTime)
-            val startDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
+            calendar.firstDayOfWeek = Calendar.MONDAY
+            calendar.set(Calendar.DAY_OF_WEEK,Calendar.MONDAY)
+            Log.d("timeIntMills1",calendar.timeInMillis.toString())
 //            calendar.firstDayOfWeek = Calendar.MONDAY
 //
 //            val startWeekMonday = calendar.timeInMillis
-            week = ((stopTime - startTime + (startDayOfWeek-2)*24*60*60*1000)/7/(24*60*60*1000)).toInt()
+            week = ((stopTime - calendar.timeInMillis)/(7*24*60*60*1000)).toInt()
+            Log.d("WEEK1",week.toString())
 
 
         }
@@ -211,7 +213,7 @@ class ScheduleFragment : Fragment(),
                 Log.d("fileName",fileName.toString())
                 val type = split?.last()
                 if(type == "xlsx"){
-                    Log.d("type::",type)
+                    Log.d("type:?",type)
                     parseCourse(uri)
                 }
             }

@@ -13,7 +13,10 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
+import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.binioter.guideview.Component
 import com.binioter.guideview.GuideBuilder
@@ -102,13 +105,62 @@ class MainPageFragment : Fragment() {
             editor.putBoolean("isNewMainPageFragment", false)
             editor.apply()
         }
+        view.apply {
+            if(WeatherData.weatherID != -1) {
+                findViewById<TextView>(R.id.mainPage_tempStr)?.text = "${String.format("%.0f", WeatherData.temperature)}°C"
+                findViewById<TextView>(R.id.mainPage_weatherStr)?.text = WeatherData.weatherDesc
+                findViewById<ImageView>(R.id.mainPage_weatherIcon)?.setImageDrawable(
+                    mapOf(
+                        "01d" to ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_wb_sunny_24, null),
+                        "01n" to ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_wb_sunny_24, null),
+                        "02d" to ResourcesCompat.getDrawable(resources, R.drawable.ic_weather_partly_cloudy, null),
+                        "02n" to ResourcesCompat.getDrawable(resources, R.drawable.ic_weather_partly_cloudy, null),
+                        "03d" to ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_wb_cloudy_24, null),
+                        "03n" to ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_wb_cloudy_24, null),
+                        "04d" to ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_wb_cloudy_24, null),
+                        "04n" to ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_wb_cloudy_24, null),
+                        "09d" to ResourcesCompat.getDrawable(resources, R.drawable.ic_weather_pouring, null),
+                        "09n" to ResourcesCompat.getDrawable(resources, R.drawable.ic_weather_pouring, null),
+                        "10d" to ResourcesCompat.getDrawable(resources, R.drawable.ic_weather_pouring, null),
+                        "10n" to ResourcesCompat.getDrawable(resources, R.drawable.ic_weather_pouring, null),
+                        "11d" to ResourcesCompat.getDrawable(resources, R.drawable.ic_weather_lightning, null),
+                        "11n" to ResourcesCompat.getDrawable(resources, R.drawable.ic_weather_lightning, null),
+                        "13d" to ResourcesCompat.getDrawable(resources, R.drawable.ic_weather_snowy_heavy, null),
+                        "13n" to ResourcesCompat.getDrawable(resources, R.drawable.ic_weather_snowy_heavy, null),
+                        "50d" to ResourcesCompat.getDrawable(resources, R.drawable.ic_weather_fog, null),
+                        "50n" to ResourcesCompat.getDrawable(resources, R.drawable.ic_weather_fog, null),
+                    )[WeatherData.weatherIcon]
+                )
+            }
+        }
     }
 
     override fun onResume() {
         view?.findViewById<RecyclerView>(R.id.mainPageRecyclerView)?.adapter?.notifyDataSetChanged()
+
+        MainPageEventList.termStart = requireActivity().getSharedPreferences("schedule_time", Context.MODE_PRIVATE).getLong("startTime", -1)
+        Log.d("MainActivity", "start at ${MainPageEventList.termStart}")
+        if(MainPageEventList.termStart != -1L) {
+            val c = Calendar.getInstance().apply { timeInMillis = MainPageEventList.termStart.toLong() }
+            c.firstDayOfWeek = Calendar.MONDAY
+            c.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
+            MainPageEventList.currentWeek = ((System.currentTimeMillis() - c.timeInMillis) / (7 * 24 * 60 * 60 * 1000) + 1).toInt()
+            MainPageEventList.currentDayOfWeek =
+                mapOf(
+                    Calendar.MONDAY to 1,
+                    Calendar.TUESDAY to 2,
+                    Calendar.WEDNESDAY to 3,
+                    Calendar.THURSDAY to 4,
+                    Calendar.FRIDAY to 5,
+                    Calendar.SATURDAY to 6,
+                    Calendar.SUNDAY to 7,
+                )[Calendar.getInstance().get(Calendar.DAY_OF_WEEK)] ?: error("MAP ERROR")
+        }
+
         if(MainPageEventList.initComplete) {
             MainPageEventList.updateStatus()
         }
+
         super.onResume()
     }
 

@@ -45,8 +45,10 @@ class MyDescriptionRecyclerViewAdapter(
 
         init {
             delBtnView.setOnClickListener {
-                EventDetailList.ITEMS.removeAt(adapterPosition)
-                notifyItemRemoved(adapterPosition)
+                if(adapterPosition < EventDetailList.ITEMS.size) {
+                    EventDetailList.ITEMS.removeAt(adapterPosition)
+                    notifyItemRemoved(adapterPosition)
+                }
             }
         }
 
