@@ -49,7 +49,8 @@ class CourseDetails {
 class CourseAddActivity : AppCompatActivity(),
         TimePickFragment.TimePickerDialogListener,
         WeekPickerFragment.WeekPickerDialogListner,
-        CourseChangeSelectFragment.CourseChangeSelectDailogListner{
+        CourseChangeSelectFragment.CourseChangeSelectDailogListner,
+    ReminderChooseDialog.ReminderChooseListener{
     private var isNewCourse = true
     private var courseId: Long? = null
     private val chineseWeek = arrayOf("星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日")
@@ -565,6 +566,10 @@ class CourseAddActivity : AppCompatActivity(),
         override fun getYOffset(): Int {
             return -20
         }
+    }
+    override fun onReminderChosen(delta: Long, pos: Int) {
+        EventReminderList.ITEMS[pos].delta = delta
+        findViewById<RecyclerView>(R.id.eventDetail_reminderListContainer).adapter!!.notifyItemChanged(pos)
     }
 
     private fun showCourseMuteGuideView(){
