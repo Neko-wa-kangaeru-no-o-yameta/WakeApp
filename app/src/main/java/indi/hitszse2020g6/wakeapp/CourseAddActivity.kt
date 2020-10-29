@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -67,7 +68,7 @@ class CourseAddActivity : AppCompatActivity(),
         var detail = CourseDetails()
     }
 
-    @SuppressLint("CutPasteId")
+//    @SuppressLint("CutPasteId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         ThemeColors(this)
@@ -97,8 +98,23 @@ class CourseAddActivity : AppCompatActivity(),
             detail.alarm = courseDetail.notice
             detail.focus = courseDetail.focus
             detail.mute = courseDetail.mute
-            EventDetailList.ITEMS = courseDetail.detail.toMutableList()
-            EventReminderList.ITEMS =courseDetail.reminder.toMutableList()
+            Log.d("courseName:",detail.courseName)
+            Log.d("week",courseDetail.week.toString())
+            Log.d("dayOfweek",courseDetail.dayOfWeek.toString())
+            Log.d("courseTime",courseDetail.time.toString())
+            for(temp in courseDetail.detail){
+                Log.d("beizhu",temp.content)
+            }
+            EventDetailList.ITEMS = courseDetail.detail.map { Detail(it.title, it.content) }.toMutableList()
+            EventReminderList.ITEMS =courseDetail.reminder.map { Reminder(
+                delta = it.delta,
+                ring = it.ring,
+                vibration = it.vibration,
+                notification = it.notification,
+                description = it.description
+            ) }.toMutableList()
+//            findViewById<RecyclerView>(R.id.eventDetail_descriptionListContainer).adapter?.notifyDataSetChanged()
+//            findViewById<RecyclerView>(R.id.eventDetail_reminderListContainer).adapter?.notifyDataSetChanged()
             //修改显示
             findViewById<EditText>(R.id.addCourseDetail_courseName).setText(detail.courseName)
             findViewById<EditText>(R.id.addCourseDetail_courseAddress).setText(detail.courseAddress)
@@ -268,7 +284,16 @@ class CourseAddActivity : AppCompatActivity(),
                         findViewById<EditText>(R.id.addCourseDetail_courseName).text.toString()
                     detail.courseAddress =
                         findViewById<EditText>(R.id.addCourseDetail_courseAddress).text.toString()
-                    //弹出选择范围的弹窗
+                for(item in CourseList.courseList){
+                    Log.d("debug1029Before-1:courseName:",item.courseName)
+                    Log.d("debug1029Before-1:week",item.week.toString())
+                    Log.d("debug1029Before-1:dayOfweek",item.dayOfWeek.toString())
+                    Log.d("debug1029Before-1:courseTime",item.time.toString())
+                    for(temp in item.detail){
+                        Log.d("debug1029Before:beizhu",temp.content)
+                    }
+                }
+                //弹出选择范围的弹窗
                     CourseChangeSelectFragment().show(supportFragmentManager,"WeekPickerFragment")
                 }
         }
@@ -441,7 +466,7 @@ class CourseAddActivity : AppCompatActivity(),
     //TODO 提醒我 还要等带庚宝，所以暂时留个坑
     override fun onDialogPositiveClickForCourseChangeSelect(dialog: DialogFragment) {
         val select = (dialog as CourseChangeSelectFragment).selectItem
-
+        Log.d("debug1029:SELECT:",select.toString())
         if(select == 0){
             courseId?.let {
                 CourseList.updateCourseDetailById(
@@ -457,6 +482,16 @@ class CourseAddActivity : AppCompatActivity(),
             }
         }
         else if(select == 1){
+            Log.d("debug1029:SELECT","1")
+            for(item in CourseList.courseList){
+                Log.d("debug1029Before0:courseName:",item.courseName)
+                Log.d("debug1029Before0:week",item.week.toString())
+                Log.d("debug1029Before0:dayOfweek",item.dayOfWeek.toString())
+                Log.d("debug1029Before0:courseTime",item.time.toString())
+                for(temp in item.detail){
+                    Log.d("debug1029Before:beizhu",temp.content)
+                }
+            }
             CourseList.updateCourseDetailByTime(
                 detail.courseName,
                 detail.courseAddress,

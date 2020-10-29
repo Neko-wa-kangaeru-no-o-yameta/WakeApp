@@ -66,6 +66,8 @@ class BackgroundService : Service() {
     var customWhiteList:List<String> = ArrayList()
     var defaultWhiteList:MutableList<String> = ArrayList()
 
+    var muteStatus = AudioManager.RINGER_MODE_NORMAL
+
     var isStored:Boolean = false
     var isBlocking: Boolean = false
     var startBlocking: Long = -1
@@ -184,7 +186,7 @@ class BackgroundService : Service() {
                 myCountDownTimer!!.cancel()
             }
             isBlocking = false
-            (getSystemService(Context.AUDIO_SERVICE) as AudioManager).ringerMode = AudioManager.RINGER_MODE_NORMAL
+            (getSystemService(Context.AUDIO_SERVICE) as AudioManager).ringerMode = muteStatus
             Log.d("BlockAppService","stopCountDownTimer")
         }
 
@@ -210,7 +212,10 @@ class BackgroundService : Service() {
             useCustomWhiteList = true
             customWhiteList = entry.customWhiteList
             if(entry.mute) {
-                (getSystemService(Context.AUDIO_SERVICE) as AudioManager).ringerMode = AudioManager.RINGER_MODE_SILENT
+                (getSystemService(Context.AUDIO_SERVICE) as AudioManager).apply {
+                    muteStatus = ringerMode
+                    ringerMode = AudioManager.RINGER_MODE_VIBRATE
+                }
             }
             startMyCountDownTimer(totalTime,entry.title)
             //发送BroadCast通知切换页面
@@ -249,7 +254,7 @@ class BackgroundService : Service() {
                     isStored = false
                     isBlocking = false
                     Log.d(TAG,"BACKGROUND TIMER FINISHED")
-                    (getSystemService(Context.AUDIO_SERVICE) as AudioManager).ringerMode = AudioManager.RINGER_MODE_NORMAL
+                    (getSystemService(Context.AUDIO_SERVICE) as AudioManager).ringerMode = muteStatus
                 }
             }.start()
             Log.d("BlockAppService","startCountDownTimer")
