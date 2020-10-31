@@ -6,11 +6,8 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.media.MediaPlayer
 import android.media.RingtoneManager
-import android.os.Build
+import android.os.*
 import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import android.os.VibrationEffect
-import android.os.Vibrator
 import android.util.Log
 import android.view.WindowManager
 import android.widget.Button
@@ -20,6 +17,7 @@ import indi.hitszse2020g6.wakeapp.mainPage.MainPageEventList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.math.abs
 
 class AlarmActivity : AppCompatActivity() {
@@ -39,7 +37,12 @@ class AlarmActivity : AppCompatActivity() {
         GlobalScope.launch(Dispatchers.IO) {
             MainPageEventList.DAO = AppRoomDB.getDataBase(this@AlarmActivity).getDAO()
             MainPageEventList.getEventListFromDB()
-            updateView()
+//            withContext(Dispatchers.Main){
+//                updateView()
+//            }
+            Handler(Looper.getMainLooper()).post{
+                updateView()
+            }
         }
     }
 
@@ -76,9 +79,9 @@ class AlarmActivity : AppCompatActivity() {
         }
 
         findViewById<Button>(R.id.alarm_returnToMain).setOnClickListener {
-            startActivity(Intent(this, MainActivity::class.java))
             mp.stop()
             vb.cancel()
+            startActivity(Intent(this, MainActivity::class.java))
         }
     }
 }
