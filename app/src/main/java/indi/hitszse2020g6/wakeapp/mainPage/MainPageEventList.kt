@@ -29,11 +29,9 @@ object MainPageEventList {
     var termStart = -1L
 
     fun getEventListFromDB() {
-        GlobalScope.launch(Dispatchers.IO) {
-            eventList = DAO.getEvents().toMutableList()
-            initComplete = true
-            updateStatus()
-        }
+        eventList = DAO.getEvents().toMutableList()
+        initComplete = true
+        updateStatus()
     }
 
     fun addAffair(

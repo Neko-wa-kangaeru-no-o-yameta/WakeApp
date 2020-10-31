@@ -1,22 +1,22 @@
 package indi.hitszse2020g6.wakeapp
 
 import android.Manifest
-import android.app.AlarmManager
-import android.app.AppOpsManager
-import android.app.NotificationManager
+import android.app.*
 import android.content.*
 import android.content.pm.PackageManager
-import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.*
 import android.provider.Settings
 import android.util.Log
-import android.util.Xml
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.app.NotificationManagerCompat.from
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.content.res.ResourcesCompat
 import androidx.navigation.findNavController
 import indi.hitszse2020g6.wakeapp.mainPage.MainPageEventList
@@ -26,12 +26,9 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import org.xmlpull.v1.XmlPullParser
-import java.lang.Exception
-import java.net.URL
+import java.lang.Math.abs
 import java.net.UnknownHostException
 import java.util.*
-import javax.net.ssl.HttpsURLConnection
 
 
 const val INTENT_AFFAIR_DETAIL = 1
@@ -68,6 +65,7 @@ class MainActivity() : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.O_MR1)
     override fun onCreate(savedInstanceState: Bundle?) {
+        createNotificationChannel(this)
         Log.d("MainActivity", "Oncreate")
         super.onCreate(savedInstanceState)
         ThemeColors(this)
@@ -86,7 +84,9 @@ class MainActivity() : AppCompatActivity() {
         Log.d("Main activity", "Waking up...")
 
         MainPageEventList.DAO = AppRoomDB.getDataBase(this).getDAO()
-        MainPageEventList.getEventListFromDB()
+        GlobalScope.launch(Dispatchers.IO) {
+            MainPageEventList.getEventListFromDB()
+        }
         MainPageEventList.context = this
         MainPageEventList.alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
@@ -308,6 +308,16 @@ class MainActivity() : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
     }
 
+    private fun createNotificationChannel(c: Context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = "事务提醒"
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel(PARAM_ALARM_UID, name, importance)
+            val notificationManager: NotificationManager =
+                getSystemService(c, NotificationManager::class.java) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
     private fun hasPermissionToReadNetworkStats(): Boolean {
         val appOps = getSystemService(APP_OPS_SERVICE) as AppOpsManager
         val mode = appOps.checkOpNoThrow(
@@ -392,5 +402,39 @@ class AlarmReceiver: BroadcastReceiver() {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             putExtra(PARAM_ALARM_UID, intent.getLongExtra(PARAM_ALARM_UID, -1))
         })
+        val entry = MainPageEventList.DAO.getEvent(
+            intent!!.getLongExtra(
+                PARAM_ALARM_UID,
+                -1
+            )
+        )
+        val reminderContext = findReminder(entry)
+        val notificationBuilder = NotificationCompat.Builder(context, PARAM_ALARM_UID)
+            .setSmallIcon(R.mipmap.launcher_icon)
+            .setContentTitle(entry.title)
+            .setContentText(reminderContext.description)//entry.detail[0].content
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+        with(NotificationManagerCompat.from(context)) {
+            notify(intent!!.getLongExtra(PARAM_ALARM_UID, -1).toInt(), notificationBuilder.build())
+        }
+    }
+    private fun findReminder(entry: EventTableEntry):Reminder{
+        val nowTime = Calendar.getInstance().timeInMillis
+        var closestReminder = entry.reminder[0]
+        for(i in entry.reminder.indices){
+            if(!entry.isAffair && 1000*(entry.startTime - entry.reminder[i].delta) <= nowTime){
+                if(kotlin.math.abs(nowTime - 1000*(entry.startTime - entry.reminder[i].delta)) < kotlin.math.abs(
+                        nowTime - 1000*(entry.startTime - closestReminder.delta))){
+                    closestReminder = entry.reminder[i]
+                }
+            }
+            else if(entry.isAffair && 1000*(entry.stopTime - entry.reminder[i].delta) <= nowTime){
+                if(kotlin.math.abs(nowTime - 1000*(entry.stopTime - entry.reminder[i].delta)) < kotlin.math.abs(
+                        nowTime - 1000*(entry.stopTime - closestReminder.delta))){
+                    closestReminder = entry.reminder[i]
+                }
+            }
+        }
+        return closestReminder
     }
 }

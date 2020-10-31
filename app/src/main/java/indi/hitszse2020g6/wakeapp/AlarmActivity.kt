@@ -17,6 +17,9 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import indi.hitszse2020g6.wakeapp.mainPage.MainPageEventList
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlin.math.abs
 
 class AlarmActivity : AppCompatActivity() {
@@ -24,15 +27,6 @@ class AlarmActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_alarm)
-//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O_MR1) {
-//            setTurnScreenOn(true)
-//        } else {
-//            window.addFlags(
-//                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
-//                        WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
-//                        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
-//            )
-//        }
 
         window.addFlags(
             WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
@@ -41,6 +35,15 @@ class AlarmActivity : AppCompatActivity() {
         )
 
         Log.d("Alarm activity", "Waking up...")
+
+        GlobalScope.launch(Dispatchers.IO) {
+            MainPageEventList.DAO = AppRoomDB.getDataBase(this@AlarmActivity).getDAO()
+            MainPageEventList.getEventListFromDB()
+            updateView()
+        }
+    }
+
+    fun updateView(){
 
         for(e in MainPageEventList.eventList) {
             if (e.uid == intent.getLongExtra(PARAM_ALARM_UID, -1)) {
@@ -60,7 +63,7 @@ class AlarmActivity : AppCompatActivity() {
         }
         val mp = MediaPlayer()
         if(reminder.ring) {
-             mp.apply {
+            mp.apply {
                 setDataSource(this@AlarmActivity, RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM))
                 prepare()
                 start()
