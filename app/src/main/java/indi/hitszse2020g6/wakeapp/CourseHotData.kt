@@ -140,8 +140,8 @@ object CourseList{
                 item.notice = notice
                 item.focus = focus
                 item.mute = mute
-                item.detail = detail
-                item.reminder = reminder
+                item.detail = detail.toList()
+                item.reminder = reminder.toList()
             }
         }
         GlobalScope.launch(Dispatchers.IO){
@@ -161,6 +161,16 @@ object CourseList{
         oldName: String,
         dayOfWeek: Int
     ){
+        Log.d("debug1029:","updateCourseDetailByTime")
+        for(item in courseList){
+            Log.d("debug102911Before:courseName:",item.courseName)
+            Log.d("debug102911Before:week",item.week.toString())
+            Log.d("debug102911Before:dayOfweek",item.dayOfWeek.toString())
+            Log.d("debug102911Before:courseTime",item.time.toString())
+            for(temp in item.detail){
+                Log.d("debug102911Before:beizhu",temp.content)
+            }
+        }
         for(item in courseList){
             if((item.time == time)&&(item.courseName == oldName)&&(item.dayOfWeek == dayOfWeek)){
                 item.courseName = name
@@ -168,8 +178,24 @@ object CourseList{
                 item.notice = notice
                 item.focus = focus
                 item.mute = mute
-                item.detail = detail
-                item.reminder = reminder
+                item.detail = detail.toList()
+                item.reminder = reminder.toList()
+                Log.d("debug1029:courseName:",item.courseName)
+                Log.d("debug1029:week",item.week.toString())
+                Log.d("debug1029:dayOfweek",item.dayOfWeek.toString())
+                Log.d("debug1029:courseTime",item.time.toString())
+                for(temp in item.detail){
+                    Log.d("debug1029:beizhu",temp.content)
+                }
+            }
+        }
+        for(item in courseList){
+            Log.d("debug102911aLL:courseName:",item.courseName)
+            Log.d("debug102911aLL:week",item.week.toString())
+            Log.d("debug102911aLL:dayOfweek",item.dayOfWeek.toString())
+            Log.d("debug102911aLL:courseTime",item.time.toString())
+            for(temp in item.detail){
+                Log.d("debug102911aLL:beizhu",temp.content)
             }
         }
         GlobalScope.launch(Dispatchers.IO){
@@ -205,8 +231,8 @@ object CourseList{
                 item.notice = notice
                 item.focus = focus
                 item.mute = mute
-                item.detail = detail
-                item.reminder = reminder
+                item.detail = detail.toList()
+                item.reminder = reminder.toList()
             }
         }
         GlobalScope.launch(Dispatchers.IO){

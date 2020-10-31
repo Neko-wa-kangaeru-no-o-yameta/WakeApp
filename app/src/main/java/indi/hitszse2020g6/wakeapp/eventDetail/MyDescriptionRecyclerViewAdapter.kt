@@ -1,5 +1,6 @@
 package indi.hitszse2020g6.wakeapp.eventDetail
 
+import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.core.widget.addTextChangedListener
+import indi.hitszse2020g6.wakeapp.CourseList
 import indi.hitszse2020g6.wakeapp.Detail
 import indi.hitszse2020g6.wakeapp.R
 
@@ -33,6 +35,15 @@ class MyDescriptionRecyclerViewAdapter(
 
         holder.contentView.addTextChangedListener {
             item.content = holder.contentView.text.toString()
+            for(item in CourseList.courseList){
+                Log.d("  :courseName:",item.courseName)
+                Log.d("debug1029Before-2:week",item.week.toString())
+                Log.d("debug1029Before-2:dayOfweek",item.dayOfWeek.toString())
+                Log.d("debug1029Before-2:courseTime",item.time.toString())
+                for(temp in item.detail){
+                    Log.d("debug1029Before-2:beizhu",temp.content)
+                }
+            }
         }
     }
 

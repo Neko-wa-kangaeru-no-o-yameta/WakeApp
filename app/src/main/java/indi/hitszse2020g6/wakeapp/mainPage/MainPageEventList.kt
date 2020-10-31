@@ -404,7 +404,7 @@ object MainPageEventList {
                         }
                     })
                 },
-                reminder = c.reminder,
+                reminder = c.reminder.toMutableList(),
                 startTime = Calendar.getInstance().let {
                     if(c.dayOfWeek != currentDayOfWeek) {
                         it.set(Calendar.DAY_OF_YEAR, it.get(Calendar.DAY_OF_YEAR) + 1)
