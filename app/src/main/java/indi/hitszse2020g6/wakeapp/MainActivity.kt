@@ -3,6 +3,7 @@ package indi.hitszse2020g6.wakeapp
 import android.Manifest
 import android.app.*
 import android.content.*
+import android.content.Context.POWER_SERVICE
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.*
@@ -402,23 +403,27 @@ class AlarmReceiver: BroadcastReceiver() {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             putExtra(PARAM_ALARM_UID, intent.getLongExtra(PARAM_ALARM_UID, -1))
         })
+
         val entry = MainPageEventList.DAO.getEvent(
             intent!!.getLongExtra(
                 PARAM_ALARM_UID,
                 -1
             )
         )
-        val reminderContext = findReminder(entry)
+        var reminderContext = findReminder(entry)
+        if(reminderContext == ""){
+            reminderContext = " "
+        }
         val notificationBuilder = NotificationCompat.Builder(context, PARAM_ALARM_UID)
             .setSmallIcon(R.mipmap.launcher_icon)
             .setContentTitle(entry.title)
-            .setContentText(reminderContext.description)//entry.detail[0].content
+            .setContentText(reminderContext)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
         with(NotificationManagerCompat.from(context)) {
             notify(intent!!.getLongExtra(PARAM_ALARM_UID, -1).toInt(), notificationBuilder.build())
         }
     }
-    private fun findReminder(entry: EventTableEntry):Reminder{
+    private fun findReminder(entry: EventTableEntry):String{
         val nowTime = Calendar.getInstance().timeInMillis
         var closestReminder = entry.reminder[0]
         for(i in entry.reminder.indices){
@@ -435,6 +440,6 @@ class AlarmReceiver: BroadcastReceiver() {
                 }
             }
         }
-        return closestReminder
+        return closestReminder.description
     }
 }
